@@ -1,0 +1,9 @@
+Study.ID,Reference number of the study. Same as that found in the main datasheet
+Reference,Match what is in the master data sheet.
+Site,Match the site name in the master data sheet. This one is very important.
+Lat,"Latitude of a point in decimal degrees. Remember North is positive, South is negative"
+Long,"Longitude of a point in decimal degrees. Remember, West is negative, East is positive"
+Shape,"Accepted values: ""Line"", ""Point"", ""Polygon"""
+Source,How did you get the data?
+Checked,How did you check that these points are right? Most likely google maps
+Notes,Additional notes that don't fit into the other fields.

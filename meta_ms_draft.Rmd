@@ -1,0 +1,263 @@
+r---
+output: word_document
+---
+
+Meta analysis MS
+
+*Introduction*
+
+Globally, species diversity is rapidly declining. However, recent syntheses have found that at local scales, species diversity is not changing--on average (Vellend, Dornelas). Yet, these syntheses have not accounted for human impacts, and local, immediate events that can drive changes in species richness at local scales (Murphy and Romanuk, Bennett et al. ). Further, larger scale processes such as climate change are likely to affect the distribution of species, leading to range contractions and expansions (ref, ref, ref). When expansions and species gains exceed species losses, local diversity will increases. This may reflect range expansions of warm water species into colder, and possibly species poor areas (ref - latitudinal diversity gradient )
+
+
+
+The results of these syntheses have been consistent in finding no mean changes species richness on average at local scales (the community within a single plot) 
+
+
+Local events and human cumulative impacts
+
+Local events are important drivers of community change at local scales (Murphy and Romanuk, Bennett et al., Elahi et al). However, identification of local events is not always possible, therefore, we ask whether the pattern of local scale species diversity change can be explained using broad scale metrics of human impacts and climate velocity.
+
+
+Climate velocity paragraph - including outline of hypotheses?
+
+
+
+Here we use meta-analysis to examine how local scale events, large scale cumulative human impacts, and climate velocity can affect species richness. 
+
+We begin to attribute drivers of local biodiversity change. 
+
+Our drivers are:
+
+- cumulative human impacts
+- two climate drivers (linear temperature change, climate velocities)
+- more specific drivers (invasive species, organic pollution, inorganic pollution, and fertilizers)
+
+
+Cumulative human impacts summarise 17 different drivers that may affect local biodiversity. 
+
+
+
+
+
+*Methods*
+
+
+
+*Results*
+
+Figures of interest:
+
+```{r setup, echo = FALSE}
+setwd('Meta_analysis_ms')
+
+library(dplyr)
+library(ggplot2)
+library(metafor)
+library(nlme)
+
+source('02_functions.R')
+
+data <- read.csv("Data/full_data_with_impacts_velocity_invasives20150603.csv")
+# No need for the different taxonomic 1/0 categories:
+data <- tbl_df(data)
+
+data <- select(data, -one_of(c('coral', 'plant', 'algae', 'fish', 
+                      'inverts', 'mobile.inverts', 'sessile.inverts', 
+                      'marine.mammals', 'phytoplankton', 'zooplankton')))
+
+# Are there any data missing ROM variances?
+filter(data, is.na(yi.SppR.ROM))
+
+# Remove duplicate data if there is any
+filter(data, duplicated(id))
+
+
+event <- filter(data, Event. == 'Yes')
+
+# Need to add a few event classifications - make sure fixed after next master 
+# cleaning script gets run
+filter(event, is.na(Expected.Change.Direction))
+
+event[c(40, 41, 56, 59, 60), 'Expected.Change.Direction'] <- c('Uncertain', 'Uncertain', 'Uncertain', 'Positive', 'Positive')
+
+no_event <- data[which(data$Event. == 'No' | is.na(data$Event.)), ]
+
+```
+
+```{r}
+
+```
+
+Our data span a gradient of human disturbance, with cumulative human impact scores ranging from `range(data$mean_imps, na.rm = T)`. 
+
+```{r impact_spread}
+ggplot(data = data, aes(x = mean_imps)) + 
+  geom_histogram() +
+  theme_bw()
+```
+
+For comparison with recent syntheses, we also examine the mean pattern in local species richness change with our dataset. In concordance with these recent synthese we find no evidence of any change in average local scale richness. Our first is a variance weighted meta-regression that includes a duration term and intercept. All analyses account for non-independence of sites within studies by including study as a random effect. The intercept value reflects baseline variation that would be expected with multiple resampling (this is essentially an error estimate?). We include a duration term in all of our models to ___________________
+
+Larger changes in species richness are expected over longer time periods (Gonzalez et al in prep) because of extinction debt and ______________. Alternatively, declines in species richness may be mitigated by species gains through time. In particular, species richness may be expected to increase in temperate and polar regions, because on average, these regions tend to have fewer species. As waters warm and lower latitude species expand their ranges into these less speciose communities (ref), gains could either keep pace with losses, or even exceed losses (Elahi et al.)
+
+
+```{r naive_model, fig.width=8, fig.height=6, fig.cap = "A variance weighted meta-regression with only duration and an intercept fitted, for 152 sites and 36 studies. There was no significant change in species richness over time. "}
+mod1 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + 1)
+
+mod1
+
+# Study count
+study_cnt <- length(unique(data[which(data$rich_ROM_w == 1), 'Study.ID']))
+# Site count
+site_cnt <- sum(data$rich_ROM_w)
+
+ggplot(data = data[which(data$rich_ROM_w == 1), ], aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
+  geom_point(size = 3) + 
+  ylab('Log Ratio') +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16), 
+        axis.title = element_text(size = 18), 
+        legend.position = 'none') + 
+  geom_hline(y = 0, colour = 'red', linetype = 'dashed') +
+  annotate('text', x = 50, y = -2.0, label = paste0('studies = ', study_cnt), 
+           hjust = 0) +
+  annotate('text', x = 50, y = -2.5, label = paste('sites = ', site_cnt), 
+           hjust = 0)
+
+```
+
+```{r naive_model, fig.width=8, fig.height=6, fig.cap = "An unweighted meta-regression with only duration and an intercept fitted, for 368 sites and 89 studies. There was no significant change in species richness over time. "}
+lme1 <- 
+  lme(yi.SppR.ROM ~ Duration + 1, random = ~ 1 | factor(Study.ID), 
+      weights = NULL, control=lmeControl(sigma = 1), data=no_event, 
+      na.action = na.exclude)
+summary(lme1)
+
+
+# Study count
+study_cnt <- length(unique(data$Study.ID))
+# Site count
+site_cnt <- length(data$id)
+
+ggplot(data = data, aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
+  geom_point(size = 3) + 
+  ylab('Log Ratio') +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16), 
+        axis.title = element_text(size = 18), 
+        legend.position = 'none') + 
+  geom_hline(y = 0, colour = 'red', linetype = 'dashed') +
+  annotate('text', x = 50, y = -2.0, label = paste0('studies = ', study_cnt), 
+           hjust = 0) +
+  annotate('text', x = 50, y = -2.5, label = paste('sites = ', site_cnt), 
+           hjust = 0)
+
+```
+In both the weighted and unweighted analyses, on average, there is no relationship between duration and the change in the log ratio. On average, plot-scale richness has not changed over time. 
+
+To examine the effects of direct events local species richness change, we subsetted our data to those studies for which authors recorded events that may have affected local richness. Events are likely to affect the trajectory of richness change differently. We have attempted to assign predicted change direction to the events based on expectations from the literature (still need to do). When multiple events were recorded, the direction has been classified as 'uncertain'. Or when expected direction is unclear from the literature, these results were also recorded as 'uncertain'. In our weighted model we include initial richness, duration, and each expected direction as predictors. We believe that the interaction between duration and event type may be important, particularly in the case of press and pulse events, where longer durations may be associated with larger effect sizes when associated with a press disturbance. However, we are data limited when we include the duration event type interaction in our model. 
+
+```{r event_model, fig.width=8, fig.height=6, fig.cap = "A variance waited meta-regression with Duration, initial richness, and event type as predictors. We used 368 sites and 89 studies. There was no significant change in species richness over time. "}
+mod2 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + factor(Expected.Change.Direction) + 1)
+
+mod2_summ_df <- 
+  mk_summary_df(event, rma_object = mod2, moderators = FALSE, 
+                mods = 'Expected.Change.Direction')
+row.names(mod2_summ_df) <- c(' Duration*Negative', ' Duration*Positive', ' Duration*Uncertain')
+
+# How many studies and sites per driver
+data %>%
+  filter(!is.na(yi.SppR.ROM))
+
+event[which(is.na(event$yi.SppR.ROM) | is.na(event$vi.SppR.ROM)), ]
+
+is.na(event$yi.SppR.ROM)
+is.na(event$vi.SppR.ROM)
+is.na(event$Expected.Change.Direction)
+
+# Study count
+study_cnt <- length(unique(data[which(data$rich_ROM_w == 1), 'Study.ID']))
+# Site count
+site_cnt <- sum(data$rich_ROM_w)
+
+
+
+ggplot(data = mod2_summ_df) +
+  geom_point(aes(y = row.names(mod2_summ_df), x = mean_estimate), size = 4) +
+  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
+                    y = row.names(mod2_summ_df), height = 0), size = 1) +
+  theme_bw() + 
+  xlab('Change in log ratio/year\n') +
+  ylab('\nEvent Type\n') + 
+  theme(axis.text.x = element_text(size = 18), 
+        axis.text.y = element_text(size = 18, hjust = 0), 
+        axis.title.y = element_text(vjust = 1.6, size = 20),
+        axis.title.x = element_text(vjust = -0.5, size = 20), 
+        panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_vline(y = 0, linetype = "dashed", colour = 'red') +
+  xlim(c(-0.15, 0.15)) +
+  scale_y_discrete(labels = paste(row.names(mod2_summ_df), "\n studies = ", as.character(mod2_summ_df$studies_per_mod), "\n sites = ", as.character(mod2_summ_df$sites_per_mod)))
+
+
+
+```
+
+
+
+
+```{r}
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration:mean_imps + Duration + SppR1 + vel_decade:Duration + 1)
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ scale(Duration):scale(mean_imps) + scale(Duration) + scale(SppR1) + scale(raster_vel):scale(Duration) + scale(raster_vel) + 1)
+
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ mean_imps + Duration + SppR1 + Duration + raster_vel + 1)
+
+
+
+```
+
+
+
+```{r leave1out_mod1}
+
+mod1_wt_data <- data[which(data$rich_ROM_w == 1), ]
+study_count <- length(unique(data[which(data$rich_ROM_w == 1), 'Study.ID']))
+
+mod1_list <- vector("list", study_count)
+for (i in 1:study_count) {
+    leave1out_data <- 
+        mod1_wt_data[-which(mod1_wt_data$Study.ID == mod1_wt_data$Study.ID[i]), ]
+    mod1 <- rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = leave1out_data, 
+                   random = ~ 1 | factor(Study.ID), 
+                   mods = ~ Duration + 1)
+    mod1_list[[i]] <- mod1
+}
+
+```
+
+```{r unweighted_mod1}
+
+
+
+
+
+```
+
+Inverse variance weightings that rely on standard deviations and sample sizes (pooled variances) may not be the best weighting strategy for the data in our study. Because we are taking to points in time 

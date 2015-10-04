@@ -1,0 +1,677 @@
+Loading \'cleaned\' data and doing a little bit of extra cleanup. This needs to be moved into the master cleaning script.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(metafor)
+library(lme4)
+library(car)
+library(raster)
+
+#source('02_functions.R')
+
+data <- read.csv("Data/full_data_with_impacts_velocity_invs_fert_pest20150921.csv")
+# No need for the different taxonomic 1/0 categories:
+data <- data[, setdiff(names(data), c('coral', 'plant', 'algae', 'fish', 
+                      'inverts', 'mobile.inverts', 'sessile.inverts', 
+                      'marine.mammals', 'phytoplankton', 'zooplankton'))]
+
+
+# More clean up... grrr - this should be removed by the time we're done
+# Remove study 47
+data <- filter(data, vi.SppR.ROM != 0)
+
+# Remove duplicate data
+data <- filter(distinct(data))
+
+# Remove data with duration == -1 :| wth.
+data <- filter(data, Duration != -1)
+
+# Make Study.ID a factor
+data$Study.ID <- as.factor(data$Study.ID)
+
+
+event <- filter(data, Event. == 'Yes')
+
+# Need to add a few event classifications - make sure fixed after next master 
+# cleaning script gets run
+
+event[c(40, 41, 56, 59, 60), 'Expected.Change.Direction'] <- c('Uncertain', 'Uncertain', 'Uncertain', 'Positive', 'Positive')
+
+no_event <- data[which(data$Event. == 'No' | is.na(data$Event.)), ]
+
+```
+
+
+```{r}
+# Weighted analysis - and naive model plot
+mod1 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
+       data = filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0),
+       random = ~ 1 | Study.ID, 
+       mods = ~ Duration)
+
+filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
+  geom_point(size = 3) + 
+  ylab('Log Ratio') +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16), 
+        axis.title = element_text(size = 18), 
+        legend.position = 'none') + 
+  #geom_abline(intercept = -0.0112, slope = -0.0084, colour = 'white', lwd = 1.5) +
+  geom_hline(y = 0, colour = 'red', linetype = 'dashed')
+
+
+# Unweighted analysis
+lme1 <- 
+lmer(yi.SppR.ROM ~ Duration + (1 | Study.ID), data = data)
+
+filter(data, !is.na(yi.SppR.ROM)) %>%
+ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
+  geom_point(size = 3) + 
+  ylab('Log Ratio') +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16), 
+        axis.title = element_text(size = 18), 
+        legend.position = 'none') + 
+  #geom_abline(intercept = -0.0112, slope = -0.0084, colour = 'white', lwd = 1.5) +
+  geom_hline(y = 0, colour = 'red', linetype = 'dashed')
+
+```
+
+Both the weighted and unweighted naive models, where duration is the only predictor, show no significant change in species richness on average.  
+
+When we examine the change in species richness as may be affected by direct/local scale events, there is no significant effect of the even directions. However, there does seem to be a negative affect of duration. The log ratio is -0.01 in the weighted analysis.
+
+```{r}
+local <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + factor(Expected.Change.Direction) + 1)
+
+```
+
+What kind of power do we have for this local even dataset? The weighted analysis is done using 8 negative events, 22 positive events, and 7 uncertain events.
+
+```{r}
+filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+  count(., Expected.Change.Direction)
+
+```
+
+I don't entirely know how to interpret the output of this unweighted model. Interestingly, it looks like there is no change in richness over time, or based on the expected direction of the local event. 
+
+```{r}
+local_lme <- 
+lmer(yi.SppR.ROM ~ Duration + Expected.Change.Direction + (1 | Study.ID), data = event)
+
+summary(local_lme)
+```
+
+What is correlation of fixed effects? When you do `summary(fit)`?
+
+Run the global models on no_event, and then all data out of interest 
+
+```{r}
+
+global1 <- 
+  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
+         data = filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)), 
+         random = ~ 1 | Study.ID, 
+         mods = ~ Duration * mean_imps)
+
+filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+  count(.)
+
+
+global_lme <- 
+filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+  lmer(yi.SppR.ROM ~ Duration*mean_imps + (1 | Study.ID), data = .)
+summary(global_lme)
+
+
+global2 <- 
+filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (raster_vel + raster_lin + mean_invs + mean_pest))
+
+# Wait, what do you do about high VIFs when working with interaction effects? 
+
+global2_lme <- 
+filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+    lmer(yi.SppR.ROM ~ Duration * (raster_vel + raster_lin + mean_invs + mean_pest) + (1 | Study.ID), data = .)
+summary(global2_lme)
+# scaling?
+
+# testing for multicollinearity using vif (modified for class lmerMod)
+# http://jonlefcheck.net/2012/12/28/dealing-with-multicollinearity-using-variance-inflation-factors/
+vif.lme <- function (fit) {
+    ## adapted from rms::vif
+    v <- vcov(fit)
+    nam <- names(fixef(fit))
+    ## exclude intercepts
+    ns <- sum(1 * (nam == "Intercept" | nam == "(Intercept)"))
+    if (ns > 0) {
+        v <- v[-(1:ns), -(1:ns), drop = FALSE]
+        nam <- nam[-(1:ns)] }
+    d <- diag(v)^0.5
+    v <- diag(solve(v/(d %o% d)))
+    names(v) <- nam
+    v }
+
+vif.lme(global2_lme)
+
+
+# Look at this now
+cor()
+
+```
+
+Warning message:  
+Some predictor variables are on very different scales: consider rescaling   
+
+can rescale - change by magnitude of 10 or 100 or 1000 or whatever - then go back 
+and compare with the original test to make sure that the coefficients are identical,
+but just off by whatever magnitude that you rescaled by
+
+interactions - high VIF 
+- can centre values (values that are really big are more likely to be highly collinear
+  )
+- if the results don't change ok then you can continue to run with the rescaled values
+
+- predicts doesn't account for centering...
+
+- wrapper function - need to centre values before putting them into the prediction
+- the expected y values won't change depending on centred vs. not centred - even though 
+the coefficients will be different between a model with raw vs. centred values
+
+f(x1, x2) {
+  X1A = x1 = x_bar1
+  X2A = x2 = x_bar2
+
+pred(mod, df[x1A, x2A])
+
+}
+
+
+
+- centering everything
+- some people scale everything (z - scoring) 
+
+
+
+
+### Making the prediction map for just a subset of the cumulative impact data
+
+```{r}
+impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data/CI_2013_OneTimePeriod'
+imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif'))
+
+
+# Create cropped raster
+
+#(xmin, xmax, ymin, ymax)
+
+# smaller extent
+e <- as(extent(-71.705531, -67.944214, 41.377132, 43.180299), 
+       'SpatialPolygons')
+
+# boston harbour extent
+e <- as(extent(-71.085674, -70.581677, 42.196429, 42.544938), 'SpatialPolygons')
+
+# east coast
+e <- as(extent(-71.254492, -69.784015, 40.963025, 43.861433), 'SpatialPolygons') 
+
+# bigger extent I can look at
+#e <- as(extent(-76.998293, -36.612552, 31.445744, 52.414631), 
+       #'SpatialPolygons')
+
+proj4string(e) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+
+e <- spTransform(e, CRS("+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"))
+
+crop_imp <- crop(imp_map, e)
+plot(crop_imp)
+
+
+
+# Create raster layers for different durations 
+time_map1 <- crop_imp > 0
+names(time_map1) <- 'Duration'
+time_map10 <- time_map1 * 10
+time_map20 <- time_map1 * 20
+time_map50 <- time_map1 * 50
+
+
+# Create a raster stack with the predictor layers
+# Duration1
+# Cumulative Impacts
+
+# make sure the names of the raster layers match up with the names used in the model
+
+names(global_lme@frame)
+
+names(crop_imp) <- 'mean_imps'
+imp_preds <- stack(time_map1, crop_imp)
+
+# re.form: formula for random effects to condition on.  If 'NULL', include all 
+# random effects; if 'NA' or '~0', include no random effects
+predict1 <- predict(imp_preds, global_lme, fun = lme4:::predict.merMod, re.form=~0)
+
+predict1_percent <- (exp(predict1) - 1) * 100
+
+plot(predict1_percent, col = heat.colors(3))
+
+plot(predict1_percent, col = rainbow(255))
+
+```
+
+
+
+
+The log ratio is the log of the proportion of change in species richness over time. If the log ratio = 0.1, 
+
+log(SppR2 / SppR1) = LR
+
+LR ^ e = SppR2 / SppR1
+
+> exp(-0.13)
+[1] 0.8780954
+
+> exp(-0.14)
+[1] 0.8693582
+
+
+exp(0.13) - 1
+
+exp(-0.13) - 1
+
+predict1_percent <- exp(predict1) - 1
+
+
+```{r}
+# Create raster layers for different durations 
+time_map1 <- imp_map > 0
+names(time_map1) <- 'Duration'
+beep()
+
+time_map10 <- time_map1 * 10
+time_map20 <- time_map1 * 20
+time_map50 <- time_map1 * 50
+
+
+# Create a raster stack with the predictor layers
+# Duration1
+# Cumulative Impacts
+
+# make sure the names of the raster layers match up with the names used in the model
+
+names(global_lme@frame)
+
+names(imp_map) <- 'mean_imps'
+imp_preds <- stack(time_map1, imp_map)
+
+# re.form: formula for random effects to condition on.  If 'NULL', include all 
+# random effects; if 'NA' or '~0', include no random effects
+predict1 <- predict(imp_preds, global_lme, fun = lme4:::predict.merMod, re.form=~0)
+
+plot(predict1)
+
+
+```
+
+
+
+
+the log proportional change in the means of a treatment and control group.
+
+# Including an intercept changes the outcome of the results where there is a 
+# decline on average over time, but there is no relationship between event 
+# categories and log ratio.
+# Including duration as an interaction with expected change direction has no 
+# effect on the direction of the response.
+
+global1 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_imps + 1)
+
+global2 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + raster_vel + 1)
+
+global3 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_imps + raster_vel + 1)
+
+global4 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration:mean_imps + Duration:raster_vel + 1)
+
+global5 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_imps + raster_lin + 1)
+
+global6 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_invs + raster_lin + 1)
+
+global7 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_invs + raster_vel + 1)
+
+
+
+
+global8 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_imps + 1)
+
+global9 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + raster_vel + 1)
+
+global10 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_imps + raster_vel + 1)
+
+global11 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration:mean_imps + Duration:raster_vel + 1)
+
+global12 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_imps + raster_lin + 1)
+
+global13 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + mean_invs + raster_lin + 1)
+
+global14 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+       random = ~ 1 | factor(Study.ID),
+       mods   = ~ Duration + Duration*mean_invs + raster_vel + 1)
+
+
+# Unweighted
+lme1 <- lme(yi.SppR.ROM ~ Duration + 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=data, na.action = na.exclude)
+summary(lme1)
+
+lme2 <- lme(yi.SppR.ROM ~ Duration - 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=data, na.action = na.exclude)
+summary(lme2)
+
+
+local_lme1 <-
+  lme(yi.SppR.ROM ~ Duration - 1 , random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=data, na.action = na.exclude)
+summary(lme1)
+
+
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration:factor(Expected.Change.Direction) - 1)
+
+local_lme2 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + factor(Expected.Change.Direction) - 1)
+
+local_lme3 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + factor(Expected.Change.Direction) - 1)
+
+local_lme4 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + factor(Expected.Change.Direction) + 1)
+
+
+
+
+
+res.lme <- lme(yi.SppR.ROM ~ Duration + 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=no_event, na.action = na.exclude)
+summary(res.lme)
+
+event.lme <- lme(yi.SppR.ROM ~ Duration + Expected.Change.Direction - 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=event, na.action = na.exclude)
+summary(event.lme)
+
+
+mod1 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID))
+
+mod2 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + 1)
+
+mod3 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration - 1)
+
+
+
+
+
+# use a weighting that is based on sample size
+
+# power analysis and compare with and without variance weight
+
+# linear model - plain - is unweighted
+# linear model - assign weight argument (will make it weighted) - relative to the maximum weighting
+# variance weighted meta-analysis is different - because it's operating from the fact that you know the variance surrounding each study around the 
+
+# sample size weighted 
+
+
+# Result #1 
+# Let's do it like everyone else
+# 1.2% decrease per year - it's negative
+# Naive analysis:
+mod1 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + 1)
+
+ggplot(data = data, aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
+  geom_point(size = 3) + 
+  ylab('Log Ratio') +
+  #theme_wb() +
+  theme(axis.text = element_text(size = 16), 
+        axis.title = element_text(size = 18), 
+        legend.position = 'none') + 
+  #geom_abline(intercept = -0.0112, slope = -0.0084, colour = 'white', lwd = 1.5) +
+  geom_hline(y = 0, colour = 'red', linetype = 'dashed')
+
+# Result #2
+#- lets look at the ecological 
+#- oh look, this matches our expectations
+#- event types model: 
+#- how did we get these, expected change directions
+
+mod2 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration:factor(Expected.Change.Direction) - 1)
+
+mod2_summ_df <- 
+  mk_summary_df(event, rma_object = mod2, moderators = FALSE, 
+                mods = 'Expected.Change.Direction')
+row.names(mod2_summ_df) <- c(' Duration*Negative', ' Duration*Positive', ' Duration*Uncertain')
+
+event_counts <- ddply(event[which(event$rich_ROM_w == 1), ], .(Expected.Change.Direction), summarise, 'studies' = length(unique(Study.ID)), 'sites' = length(unique(id)))
+rownames(event_counts) <- c('Duration*Negative', 'Duration*Positive', 'Duration*Uncertain')
+
+
+mod3 <- rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+               random = ~ 1 | factor(Study.ID),
+               mods = ~ Duration - 1)
+
+mod3_summ_df <- 
+  mk_summary_df(no_event, rma_object = mod3, moderators = FALSE)
+studies <- length(unique(no_event[which(no_event$rich_ROM_w == 1), ]$Study.ID))
+sites <- length(no_event[which(no_event$rich_ROM_w == 1), ]$id)
+rownames(mod3_summ_df) <- ' Duration'
+
+noevent_counts <- data.frame('studies' = studies, 'sites' = sites)
+noevent_counts
+
+x <- rbind(mod2_summ_df, mod3_summ_df)
+x$studies_per_mod[1:3] <- as.vector(unlist(event_counts['studies']))
+x$studies_per_mod[4] <- as.vector(unlist(noevent_counts['studies']))
+x$sites_per_mod[1:3] <- as.vector(unlist(event_counts['sites']))
+x$sites_per_mod[4] <- as.vector(unlist(noevent_counts['sites']))
+
+all <- x
+all$predictors <- factor(rownames(all), levels = c(' Duration', ' Duration*Uncertain', ' Duration*Positive', ' Duration*Negative'), ordered = TRUE)
+all$predictors <- factor(all$predictors, levels=rev(levels(all$predictors)))
+
+# plot
+ggplot(data = all) +
+  geom_point(aes(y = factor(predictors), x = mean_estimate), size = 4, colour = 'white') +
+  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
+                    y = factor(predictors), height = 0), size = 1, colour = 'white') +
+  theme_wb() + 
+  xlab('Change in log ratio/year\n') +
+  ylab('\nEvent Type\n') + 
+  theme(axis.text.x = element_text(size = 18), 
+        axis.text.y = element_text(size = 18, hjust = 0), 
+        axis.title.y = element_text(vjust = 1.6, size = 20),
+        axis.title.x = element_text(vjust = -0.5, size = 20), 
+        panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_vline(y = 0, linetype = "dashed", colour = 'yellow') +
+  xlim(c(-0.12, 0.12)) +
+  scale_y_discrete(labels = paste(all$predictors, "\n studies = ", as.character(all$studies), "\n sites = ", as.character(all$sites)))
+
+
+# Unweighted
+
+res.lme <- lme(yi.SppR.ROM ~ Duration + 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=no_event, na.action = na.exclude)
+summary(res.lme)
+
+event.lme <- lme(yi.SppR.ROM ~ Duration + Expected.Change.Direction - 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=event, na.action = na.exclude)
+summary(event.lme)
+
+
+
+
+# Result #3
+# In this model I include climate velocity - which I do not think should 
+# interact with duration. In a model with absolute temperature change alone, I
+# would include the effect of duration.
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ mean_imps + Duration:mean_imps + Duration + SppR1 + Duration:raster_vel + 1)
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ mean_imps + Duration + SppR1 + raster_vel + 1)
+
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ scale(mean_imps) + scale(Duration):scale(mean_imps) + scale(Duration) + scale(SppR1) + scale(Duration):scale(raster_vel) + 1)
+
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration:mean_imps + Duration + SppR1 + raster_lin + Duration:raster_lin + 1)
+
+
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration:mean_imps + Duration + SppR1 + Duration:vel_decade + 1)
+
+# Why not include a model where duration is not being included
+velocity_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + vel_decade + 1)
+
+imps_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration + mean_imps + 1)
+
+
+
+
+
+global_model <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
+       random = ~ 1 | Study.ID,
+       mods = ~ Duration:mean_imps + Duration + SppR1 + Duration*temp_changes+1)
+
+
+global_summ_df <- 
+  mk_summary_df(data, rma_object = global_model, moderators = FALSE, 
+                mods = c('mean_imp_vals', 'Duration', 'vel_decade'))
+row.names(global_summ_df) <- c('Intercept', 'Human Impact', 'Duration', 
+                               'Initial Richness', 'Climate Velocity')
+global_summ_df$predictors <- factor(row.names(global_summ_df), levels = c('Intercept', 'Duration', 'Initial Richness', 'Climate Velocity', 'Human Impact'))
+
+global_summ_df <- global_summ_df[-which(global_summ_df$predictors == 'Intercept'), ]
+
+ggplot(data = global_summ_df) +
+  geom_point(aes(x = mean_estimate, y = predictors), 
+             size = 4, colour = 'white') +
+  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
+                    y = predictors, height = 0), colour = 'white', 
+                    size = 1) + 
+  theme_wb() + 
+  xlab('Mean Effect Size\n') +
+  ylab('\nPredictor') + 
+  theme(axis.title.x = element_text(vjust = -0.5, size = 16), 
+        axis.text.x = element_text(size = 14), 
+        axis.text.y = element_text(size = 14), 
+        axis.title.y = element_text(vjust = 1.5, size = 16), 
+        panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_vline(y = 0, linetype = "dashed", colour = 'yellow') +
+  xlim(c(-0.07, 0.07))
+
+
+# HCI map, linear change, and climate velocities
+library(rasterVis)
+
+my_theme <- rasterTheme(region = colorRampPalette(c("blue","white", "red")),
+#alpha=0.6,
+panel.background = list(col = 'black')
+)
+
+rasterTheme
+
+col_theme <- colorRampPalette(c("blue","white", "red"))
+col_theme$panel.background$col = 'black' 
+
+levelplot(linear, col.regions = pal(101), at = seq(-0.3, 0.3, length.out = 101))
