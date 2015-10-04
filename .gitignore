@@ -1,0 +1,39 @@
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.dmb
+*.gz
+*.zip
+*.tar
+
+# Data #
+########
+*.nc
+Data_outputs/*.csv
+*.tif
+*.xlsx
+*.xls
+
+# Images #
+##########
+*.pdf
+*.eps
+*.jpg
+*.png
+
+# Workspace Data #
+##################
+*.sublime-project
+*.sublime-workspace
+
+# R data files #
+################
+.RData*
+.Rapp.history
+.Rhistory
+
+# Other #
+#########
+.httr-oauth
+
