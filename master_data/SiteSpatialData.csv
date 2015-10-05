@@ -1,607 +1,1213 @@
 Study.ID,Reference,Site,Lat,Long,Shape,Source,Checked,Notes,
+
 298,Moreira et al 2010,No name,42.121944,-8.845833,point,methods,Using google maps,NA,
+
 300,Ibarra-Obando et al 2009,Tidal,31.719494,-116.650333,point,Figure 1 + google maps,Using google maps,NA,
+
 300,Ibarra-Obando et al 2009,Non-tidal,31.718308,-116.65103,point,Figure 1 + google maps,Using google maps,NA,
+
 303,"Birchenough et al, 2010",I1,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",I2,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",I3,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",I4,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",I5,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",U1,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",U2,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",U3,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",U4,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",U5,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",U6,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 303,"Birchenough et al, 2010",U7,50.6179,-0.390931,point,Figure 1 + google maps,Using google maps,Figure and methods are vague on the exact positions. Assumption that they all fall within a relatively small area. This set of points may be better represented with a larger spatial buffer.,
+
 304,"Whanpetch et al, 2010",K2 non-veg,9.223611,98.327778,point,Methods,Using google maps,Replicates appear to be taken within 1km area,
+
 304,"Whanpetch et al, 2010",K2 veg,9.223611,98.327778,point,Methods,Using google maps,Replicates appear to be taken within 1km area,
+
 304,"Whanpetch et al, 2010",K3 non-veg,9.250556,98.341667,point,Methods,Using google maps,Replicates appear to be taken within 1km area,
+
 67,"Kilfoyle et al, 2013",N,26.01763679,-80.11303855,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.02577351,-80.11235828,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.03151834,-80.11198035,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.0369228,-80.11175359,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.03821956,-80.11145125,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.04102306,-80.11122449,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.04273143,-80.11099773,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.05087281,-80.11069539,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.05189671,-80.11046863,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.05394637,-80.11016629,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.05518213,-80.11046863,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.0565464,-80.1100907,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.05914456,-80.10986395,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,25.97777778,-80.11590563,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,25.97901235,-80.1152968,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,25.98916324,-80.11491629,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,25.99218107,-80.11476408,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,25.99348422,-80.11453577,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,25.9962963,-80.11415525,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,25.99780521,-80.11415525,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.00082305,-80.11362253,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.00932785,-80.11331811,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",N,26.01769547,-80.11324201,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",
+
 67,"Kilfoyle et al, 2013",B,26.04368781,-80.11084656,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04594281,-80.11054422,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04635442,-80.1106198,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04676231,-80.11039305,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04703609,-80.11039305,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04737739,-80.11031746,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04771962,-80.11031746,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.0481303,-80.11031746,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04840502,-80.11039305,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04881569,-80.11039305,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,26.04915979,-80.11054422,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98106996,-80.11468798,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98106996,-80.11544901,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98155007,-80.11506849,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.9824417,-80.11506849,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98655693,-80.11499239,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98689986,-80.11506849,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98710562,-80.11506849,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98744856,-80.11499239,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.9824417,-80.11461187,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98237311,-80.11544901,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98161866,-80.11544901,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 67,"Kilfoyle et al, 2013",B,25.98155007,-80.11476408,point,Figure 1 + webplot digitizer,Using google maps,"Looks like I was short two points but I think this was because they were virtually overlapping, so this should be good enough for getting the HCIs.",
+
 424,Zedler and West 2008,Natural,32.56495798,-117.1467815,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.57008403,-117.1289328,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.57067227,-117.1298387,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.57193277,-117.1286513,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.57134454,-117.1279454,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.56907563,-117.1321227,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.56739496,-117.1323059,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.56773109,-117.1300092,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.56512605,-117.1294832,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.56319328,-117.1279639,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.56109244,-117.1298429,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 424,Zedler and West 2008,Natural,32.55260504,-117.114558,point,Figure 1 + google maps,Using google maps,"All points are transects, pooled for sppr ",
+
 444,Rojo-Velazquez et al 2007,all sites,19.23218944,104.807318,point,Figure 1,Using google maps,Sites are all pooled together and no actual site by site data is reported,Punta El Estrecho
+
 444,Rojo-Velazquez et al 2007,all sites,19.23723016,104.7784941,point,Figure 1,Using google maps,Sites are all pooled together and no actual site by site data is reported,Caleta El Palmito
+
 444,Rojo-Velazquez et al 2007,all sites,19.23723016,104.7362531,point,Figure 1,Using google maps,Sites are all pooled together and no actual site by site data is reported,Bahia Cuastecomate
+
 444,Rojo-Velazquez et al 2007,all sites,19.21706726,104.7336579,point,Figure 1,Using google maps,Sites are all pooled together and no actual site by site data is reported,Punta Cuastecomatito
+
 444,Rojo-Velazquez et al 2007,all sites,19.20933815,104.6945246,point,Figure 1,Using google maps,Sites are all pooled together and no actual site by site data is reported,Bahia de Navidad
+
 444,Rojo-Velazquez et al 2007,all sites,19.16666,104.6686086,point,Figure 1,Using google maps,Sites are all pooled together and no actual site by site data is reported,Punta Graham
+
 126,"Sonnewald et al, 2012",All Sites,54.66516293,1.304702729,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.55594034,1.28741578,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.67960706,1.22372742,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.79832711,1.242586595,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.83655445,1.148875123,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.92930072,1.102696161,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.00979342,1.215266807,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.94555837,1.25822591,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.80048373,1.334646664,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.74093142,1.406169763,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.51516802,1.452559863,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.58854989,1.558792591,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.72171784,1.495089149,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.8263708,1.436192875,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.87880473,1.361506472,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.00231687,1.362897722,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.06148083,1.454867303,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.95700508,1.439160122,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.90214682,1.534485294,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.80956268,1.512410031,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.78800395,1.588634727,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.94937771,1.65028334,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.8542863,1.683767612,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.87823164,1.602777223,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.9684254,1.631205487,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.01615019,1.539066241,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.1277481,1.556349419,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.19405683,1.640371151,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.0943053,1.635767582,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,54.94688929,1.697906338,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.03234752,1.719992912,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.10573316,1.824638331,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.16534203,1.729305619,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.28163775,1.768803562,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.35268956,1.855992369,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.34300359,1.933785521,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.44025917,1.989186703,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 126,"Sonnewald et al, 2012",All Sites,55.41399885,2.044783941,point,Figure 1 - Sonnewald and Turkay 2011,Using google maps,NA,
+
 311,"Gallegos et al, 2010",All 7 stations,38.86397125,-76.49292237,point,Figure 1,Using google maps,NA,
+
 311,"Gallegos et al, 2010",All 7 stations,38.86630728,-76.51484018,point,Figure 1,Using google maps,NA,
+
 311,"Gallegos et al, 2010",All 7 stations,38.88463612,-76.52534247,point,Figure 1,Using google maps,NA,
+
 311,"Gallegos et al, 2010",All 7 stations,38.88391734,-76.53926941,point,Figure 1,Using google maps,NA,
+
 311,"Gallegos et al, 2010",All 7 stations,38.87996406,-76.54543379,point,Figure 1,Using google maps,NA,
+
 311,"Gallegos et al, 2010",All 7 stations,38.87780773,-76.55251142,point,Figure 1,Using google maps,NA,
+
 311,"Gallegos et al, 2010",All 7 stations,38.88499551,-76.55616438,point,Figure 1,Using google maps,"This most upstream sampling point ends looks like it's on land, but this should be okay if we use even a 500m buffer for HCI values. Though there may not even be values this far upstream anyway",
+
 319,Stefansdottir et al,All 264 stations,64.44827586,-28.72340426,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.37931034,-28.17021277,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.36206897,-27.74468085,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.43103448,-27.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.48275862,-27.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.5,-28.08510638,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.62068966,-27.91489362,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.62068966,-28.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.74137931,-28.12765957,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.68965517,-28.25531915,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.67241379,-28.08510638,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.77586207,-28.93617021,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.01724138,-28.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.0862069,-28.08510638,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.75862069,-26.5106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.24137931,-25.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.13793103,-24.38297872,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.32758621,-24,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.39655172,-23.19148936,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.15517241,-22.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.53448276,-22.17021277,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,68,-27.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.18965517,-28.59574468,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.12068966,-27.65957447,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.9137931,-28.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.65517241,-29.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.51724138,-28.80851064,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.37931034,-29.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.4137931,-28.76595745,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.25862069,-28.68085106,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.27586207,-28.5106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.34482759,-28.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.37931034,-28.34042553,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.36206897,-27.95744681,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.46551724,-28.04255319,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.5,-28.25531915,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.56896552,-27.82978723,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.63793103,-28,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.67241379,-28.25531915,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.72413793,-27.91489362,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.70689655,-27.78723404,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.70689655,-27.57446809,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.67241379,-27.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.62068966,-27.57446809,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.4137931,-26.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.89655172,-25.65957447,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.72413793,-25.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.79310345,-24.63829787,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.62068966,-24.38297872,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.43103448,-24.76595745,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.17241379,-25.19148936,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.10344828,-25.91489362,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.15517241,-26.12765957,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.86206897,-27.40425532,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.86206897,-27.27659574,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.86206897,-27.10638298,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.77586207,-27.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.24137931,-26.89361702,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64,-26.76595745,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.89655172,-26.38297872,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.87931034,-25.65957447,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64,-25.27659574,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.01724138,-25.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.18965517,-25.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.10344828,-24.80851064,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.22413793,-24.63829787,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.87931034,-24.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.94827586,-24.21276596,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.84482759,-23.74468085,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64,-23.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.18965517,-23.70212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.55172414,-24.68085106,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.62068966,-24.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.65517241,-25.87234043,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.43103448,-26.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.87931034,-25.70212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.9137931,-26.68085106,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.10344828,-26.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.13793103,-26,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.22413793,-25.95744681,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.37931034,-26.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.63793103,-26.59574468,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.36206897,-27.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.44827586,-27.36170213,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.18965517,-27.4893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.0862069,-25.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.18965517,-24.85106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.06896552,-23.87234043,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.93103448,-23.87234043,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.55172414,-24.85106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.67241379,-25.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.77586207,-25.82978723,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.74137931,-26.04255319,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66,-24.25531915,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.10344828,-24,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.27586207,-24.17021277,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.67241379,-23.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.39655172,-22.76595745,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.36206897,-23.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.31034483,-23.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.22413793,-23.65957447,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.01724138,-23.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.94827586,-23.82978723,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.87931034,-23.4893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.98275862,-23.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.68965517,-23.23404255,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.81034483,-22.59574468,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.89655172,-22.5106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.10344828,-22.04255319,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.51724138,-21.82978723,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.81034483,-21.74468085,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.79310345,-21.4893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.36206897,-21.82978723,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.27586207,-21.70212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.15517241,-21.61702128,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.03448276,-21.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.03448276,-21.19148936,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.84482759,-21.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.93103448,-20.68085106,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.03448276,-20.5106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.25862069,-20.72340426,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.05172414,-19.91489362,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.06896552,-19.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.43103448,-19.74468085,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.51724138,-20.5106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.5862069,-20.76595745,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.65517241,-20.34042553,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.77586207,-20.42553191,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.98275862,-20.72340426,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,68.0862069,-19.95744681,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.79310345,-19.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,68.0862069,-18.72340426,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.48275862,-19.14893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.46551724,-18.34042553,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.94827586,-18.80851064,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.12068966,-17.82978723,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.17241379,-18.34042553,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.36206897,-17.40425532,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.25862069,-17.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.17241379,-17.19148936,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.25862069,-16.85106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.34482759,-15.91489362,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.20689655,-16.25531915,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.10344828,-16.59574468,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.05172414,-16.85106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.03448276,-17.36170213,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.84482759,-17.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.68965517,-17.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.75862069,-16.59574468,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.67241379,-15.78723404,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.01724138,-15.78723404,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.22413793,-15.57446809,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.29310345,-15.23404255,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.43103448,-14.68085106,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.15517241,-14.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.98275862,-14.89361702,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.86206897,-15.19148936,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.77586207,-14.93617021,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,67.01724138,-14.04255319,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.89655172,-13.70212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.84482759,-13.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.62068966,-13.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.68965517,-12.80851064,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.53448276,-12.76595745,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.31034483,-13.14893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.20689655,-13.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.25862069,-12.5106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.20689655,-12.25531915,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.98275862,-12.12765957,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.53448276,-20.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.37931034,-20.80851064,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.01724138,-21.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.87931034,-21.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.15517241,-20.63829787,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.29310345,-19.78723404,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.62068966,-19.78723404,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.63793103,-19.23404255,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.31034483,-19.10638298,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.32758621,-18.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.36206897,-18.12765957,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.5,-18.59574468,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.5862069,-18.12765957,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.37931034,-17.40425532,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.17241379,-17.4893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.55172414,-21.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.46551724,-21.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.5,-21.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.44827586,-21.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.37931034,-21.14893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.37931034,-20.08510638,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.5862069,-17.19148936,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.46551724,-16.12765957,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.75862069,-16.42553191,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.81034483,-16.34042553,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.62068966,-15.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.68965517,-15.14893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.75862069,-14.72340426,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.15517241,-14.38297872,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.18965517,-14.08510638,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.27586207,-13.78723404,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.9137931,-13.74468085,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.79310345,-13.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.68965517,-13.36170213,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.31034483,-13.27659574,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.27586207,-12.9787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.39655172,-12.9787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.77586207,-12.68085106,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.84482759,-13.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.96551724,-13.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.96551724,-12.63829787,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.10344828,-12.55319149,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.29310345,-12.34042553,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.05172414,-13.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.15517241,-12.85106383,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.32758621,-12.93617021,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.5,-12.9787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.65517241,-12.89361702,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.62068966,-12.46808511,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.5,-12.29787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.51724138,-11.87234043,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.25862069,-11.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.17241379,-11.23404255,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.98275862,-11.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.98275862,-10.12765957,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.01724138,-9.829787234,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.01724138,-9.659574468,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.20689655,-9.574468085,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.51724138,-10.42553191,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.05172414,-9.617021277,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.77586207,-10.93617021,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.9137931,-11.10638298,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.81034483,-11.61702128,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.93103448,-11.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.0862069,-11.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.01724138,-12.34042553,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.22413793,-11.95744681,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.32758621,-11.14893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.37931034,-10.68085106,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.55172414,-10.17021277,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.44827586,-11.06382979,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.39655172,-11.36170213,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.75862069,-12.42553191,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.55172414,-13.0212766,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.55172414,-13.40425532,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.27586207,-13.14893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.75862069,-14.08510638,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,66.46551724,-14.76595745,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.56896552,-11.44680851,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.5862069,-11.61702128,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.72413793,-11.4893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.81034483,-11.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.74137931,-11.91489362,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.74137931,-12,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,65.15517241,-23.31914894,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,64.89655172,-23.14893617,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.94827586,-22.93617021,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.4137931,-18.72340426,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.77586207,-22.38297872,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 319,Stefansdottir et al,All 264 stations,63.72413793,-21.53191489,point,Figure 1 + webplot digitizer,Using google maps,I'm missing 5 stations but they overlap so much that it's too hard to tell where the points are. This is good enough for our purposes,
+
 329,Bui et al. 2010,Anticosti Island Coast,50.00702983,-65.65641601,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,50.11253355,-65.28649597,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,50.14872449,-64.77351566,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.72002703,-64.67779175,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,50.07901751,-64.33106358,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.67344621,-64.2996593,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,50.02300415,-63.78891277,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.58073508,-63.88555647,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.42383571,-63.72048693,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.29460515,-63.56987123,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.1371708,-62.99848422,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,48.99372102,-62.54837817,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,48.94229722,-61.99200345,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,48.97393614,-61.52176055,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,48.97753083,-60.75192874,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.28748146,-61.65943348,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.42544065,-61.4394393,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.6743003,-61.44834156,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.95080998,-61.45744092,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.89154919,-61.94887185,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.76310701,-62.39703978,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.76837235,-62.89605898,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,49.92985189,-63.03977625,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 329,Bui et al. 2010,Anticosti Island Coast,50.12375875,-63.31203424,point,Figure 6 May 2006 + webplotdigitizer,Using google maps,Slightly different from 2007 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.89352134,12.4948432,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.89513947,12.4258707,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.89839729,12.32367275,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.90730313,12.41287082,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.92610264,12.39463708,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.93990137,12.34075166,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.95430267,12.36856315,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.95430267,12.36856315,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.96258746,12.34542399,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.9703113,12.30952863,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,GLAC,78.97697642,12.3528086,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,78.90776699,12.26476537,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,78.91156573,12.14212995,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,78.91880721,12.22369972,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,78.94534135,12.18744414,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,78.94353367,11.94235341,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,78.99887964,11.97704095,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,79.01932655,11.93834855,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,TRANS,79.00277855,12.0203739,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,78.95570196,11.9370136,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,78.97278625,11.8268907,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,78.97606103,11.7527797,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,78.98262136,11.62243123,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,79.00089074,11.64250848,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,79.00084142,11.56080097,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,79.01902296,11.43533672,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,79.07440284,11.52619818,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,79.02278009,11.24376059,point,Figure 1 + webplot digitizer,Using google maps,Slightly different from 1997 sampling but still from same representative area,
+
 334,Kedra et al. 2010,CENTR,78.98661735,11.82662583,point,Figure 1 + webplot digitizer,Using google maps,"These were the 2006 points, they were a bit different from the 1997 year sampling locations. If we think these are close enough we could ignore these data",
+
 334,Kedra et al. 2010,CENTR,78.99716443,11.8851518,point,Figure 1 + webplot digitizer,Using google maps,"These were the 2006 points, they were a bit different from the 1997 year sampling locations. If we think these are close enough we could ignore these data",
+
 334,Kedra et al. 2010,CENTR,79.02313454,11.83103329,point,Figure 1 + webplot digitizer,Using google maps,"These were the 2006 points, they were a bit different from the 1997 year sampling locations. If we think these are close enough we could ignore these data",
+
 334,Kedra et al. 2010,CENTR,79.0446941,11.80253313,point,Figure 1 + webplot digitizer,Using google maps,"These were the 2006 points, they were a bit different from the 1997 year sampling locations. If we think these are close enough we could ignore these data",
+
 334,Kedra et al. 2010,CENTR,79.06124518,11.7256145,point,Figure 1 + webplot digitizer,Using google maps,"These were the 2006 points, they were a bit different from the 1997 year sampling locations. If we think these are close enough we could ignore these data",
+
 334,Kedra et al. 2010,CENTR,79.03020804,11.63428687,point,Figure 1 + webplot digitizer,Using google maps,"These were the 2006 points, they were a bit different from the 1997 year sampling locations. If we think these are close enough we could ignore these data",
+
 714,Hudson et al. 2007,restored,25.026809,-80.366392,point,methods + google maps,Using google maps,NA,
+
 714,Hudson et al. 2007,unrestored,25.026809,-80.366392,point,methods + google maps,Using google maps,NA,
+
 714,Hudson et al. 2007,reference,25.026809,-80.366392,point,methods + google maps,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.13446389,120.1871027,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.15984683,120.2481065,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.15547046,120.3281485,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.10645514,120.1747843,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.1012035,120.2482274,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.10032823,120.2911335,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.06794311,120.2326195,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.03818381,120.2326809,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,36.03118162,120.2855006,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 154,Song et al. 2012,bay,35.98391685,120.4233868,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.60728223,-1.157808446,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.60905923,-1.155995865,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61062718,-1.153099576,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61292683,-1.152189035,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61418118,-1.151281642,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61606272,-1.151095252,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61763066,-1.151271252,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61888502,-1.151809643,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62076655,-1.151984698,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62254355,-1.153244406,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62432056,-1.153419777,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.6258885,-1.153415054,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62735192,-1.152868477,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62944251,-1.154127241,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.63101045,-1.153038181,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.63101045,-1.155206855,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62944251,-1.156115192,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62787456,-1.156119915,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62599303,-1.155583414,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62390244,-1.155047542,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62243902,-1.15505195,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.62013937,-1.154335985,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61857143,-1.154159985,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61731707,-1.154163763,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61585366,-1.153987448,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61428571,-1.154534339,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.61250871,-1.154539692,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.6110453,-1.155628437,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.60968641,-1.157439759,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 663,Tapp et al. 1993,tees,54.608223,-1.159251396,point,Figure 2 + ggmap + webplot digitizer,Using google maps,NA,
+
 208,Hussin et al. 2012,high,52.02451246,1.924952223,point,Figure 1 + webplot digitizer +  Boyd et al 2004 Fig 1,Using google maps,NA,
+
 208,Hussin et al. 2012,low,52.02698261,1.928694423,point,Figure 1 + webplot digitizer +  Boyd et al 2004 Fig 1,Using google maps,NA,
+
 208,Hussin et al. 2012,reference,52.02652934,1.919565362,point,Figure 1 + webplot digitizer +  Boyd et al 2004 Fig 1,Using google maps,NA,
+
 208,Hussin et al. 2012,reference,52.01928783,1.924022632,point,Figure 1 + webplot digitizer +  Boyd et al 2004 Fig 1,Using google maps,NA,
+
 193,Burrows et al. 2012,monterey,36.91057086,-122.0835877,point,Figure 1 + webplot digitizer,,line1,
+
 193,Burrows et al. 2012,monterey,36.86443758,-121.870452,point,Figure 1 + webplot digitizer,,line1,
+
 193,Burrows et al. 2012,monterey,36.86038524,-122.0836812,point,Figure 1 + webplot digitizer,,line2,
+
 193,Burrows et al. 2012,monterey,36.80764518,-121.834245,point,Figure 1 + webplot digitizer,,line2,
+
 193,Burrows et al. 2012,monterey,36.81019963,-122.0837747,point,Figure 1 + webplot digitizer,,line3,
+
 193,Burrows et al. 2012,monterey,36.76030217,-121.8538862,point,Figure 1 + webplot digitizer,,line3,
+
 193,Burrows et al. 2012,monterey,36.76000883,-122.0820059,point,Figure 1 + webplot digitizer,,line4,
+
 193,Burrows et al. 2012,monterey,36.71197529,-121.8539762,point,Figure 1 + webplot digitizer,,line4,
+
 193,Burrows et al. 2012,monterey,36.71075777,-122.0839598,point,Figure 1 + webplot digitizer,,line5,
+
 193,Burrows et al. 2012,monterey,36.66367176,-121.862446,point,Figure 1 + webplot digitizer,,line5,
+
 193,Burrows et al. 2012,monterey,36.66150152,-122.0840516,point,Figure 1 + webplot digitizer,,line6,
+
 193,Burrows et al. 2012,monterey,36.63610239,-121.9742292,point,Figure 1 + webplot digitizer,,line6,
+
 193,Burrows et al. 2012,monterey,36.61131591,-122.084145,point,Figure 1 + webplot digitizer,,line7,
+
 193,Burrows et al. 2012,monterey,36.59153189,-121.9882787,point,Figure 1 + webplot digitizer,,line7,
+
 485,Henderson 2007,one site,51.23723611,-3.147141667,point,text,Using google maps,one site,
+
 355,Borja et al. 2008,110,43.37779904,-3.075862503,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 355,Borja et al. 2008,111,43.3677512,-3.090106082,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 355,Borja et al. 2008,106,43.35511962,-3.033700264,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 355,Borja et al. 2008,102,43.33760766,-3.022310501,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 355,Borja et al. 2008,101,43.319039,-3.00671,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 355,Borja et al. 2008,5,43.298168,-2.97561,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 355,Borja et al. 2008,6,43.272819,-2.965782,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 355,Borja et al. 2008,8,43.271005,-2.929766,point,Figure 1 + webplot digitizer,Using google maps,NA,
+
 506,Hoof et al 2006,NH05,44.65,-124.18,point,text,Using google earth,,
+
 581,Blanchard et al 2002,D73,61.09273414,-39.23526786,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 581,Blanchard et al 2002,D77,61.09437939,10.43107143,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 581,Blanchard et al 2002,D25,61.09056136,-146.3881014,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 581,Blanchard et al 2002,D33,61.09012662,-146.3848852,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 581,Blanchard et al 2002,Site 11,61.10288018,110.3419459,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 581,Blanchard et al 2002,Site 80,61.09131268,-146.4077476,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 581,Blanchard et al 2002,Site 82,61.09054871,-146.3734585,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 581,Blanchard et al 2002,Site 45,61.10322581,-83.76678306,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,constructed,32.65258485,-117.1066943,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,constructed,32.64818516,-117.1044082,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,constructed,32.64710422,-117.1047009,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,constructed,32.64718486,-117.1058864,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,natural,32.64552098,-117.1067698,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,natural,32.64352222,-117.1088373,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,natural,32.63803442,-117.1103007,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 621,Williams and Zedler 1999,natural,32.63181449,-117.1041567,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 307,Hernandez et al 2010,only,30.08887753,-87.21361502,point,Figure 1 + google earth,Using google earth,"Just one point, every sampling time",
+
 350,Cartes et al 2009,650-750m,,,,,,,
+
 350,Cartes et al 2009,750-950m,,,,,,,
+
 350,Cartes et al 2009,950-1100m,,,,,,,
+
 625,Lidstrom et al 1999,Crab,60.060145,-148.027,point,Figure 1 + google earth,Using google earth,,
+
 625,Lidstrom et al 1999,Eshamy,60.455035,-148.084208,point,Figure 1 + google earth,Using google earth,,
+
 625,Lidstrom et al 1999,Hogg,60.064022,-148.207967,point,Figure 1 + google earth,Using google earth,,
+
 625,Lidstrom et al 1999,Mussel,60.550568,-147.622804,point,Figure 1 + google earth,Using google earth,,
+
 625,Lidstrom et al 1999,Northwest,60.55586,-147.589341,point,Figure 1 + google earth,Using google earth,,
+
 625,Lidstrom et al 1999,Outside,60.63962,-147.462062,point,Figure 1 + google earth,Using google earth,,
+
 625,Lidstrom et al 1999,Snug,60.259664,-147.755616,point,Figure 1 + google earth,Using google earth,,
+
 420,Hily et al 2008,north bay,46.34186605,-4.422194883,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.3770462,-4.508870614,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.50235377,-4.532874512,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.66704217,-4.280683179,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.68648442,-4.459403933,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.83144631,-4.391392888,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.90209989,-4.190322639,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.96087334,-4.156211836,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.92181738,-4.017663019,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.83959951,-3.982469333,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.89076121,-3.666042004,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,46.94557312,-3.689504461,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.02012056,-3.517265962,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.02789476,-3.592210464,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.04351083,-3.655694459,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.09051244,-3.650295086,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.1179951,-3.564100636,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.05930286,-3.494525427,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.17693099,-3.322617809,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.18078876,-3.397532231,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.19639581,-3.472536893,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.22779489,-3.386372524,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.26312394,-3.282957232,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.16886351,-3.622095017,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.14139439,-3.691008465,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.14916407,-3.771713301,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.24715593,-3.66877929,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.25896386,-3.593985189,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.30977813,-3.721103578,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.3764837,-3.560325587,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.42330484,-3.785339574,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.21161482,-4.04293028,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.18009842,-4.278863334,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.21139824,-4.319426313,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.28213304,-4.014670052,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.28987565,-4.129936892,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.33693592,-4.049653177,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.39962129,-4.021332788,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.4192711,-3.935078178,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.46232922,-3.964210729,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.54866204,-3.745979798,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.44266588,-4.067746341,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.38780434,-4.107647558,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.46610577,-4.142811163,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.40337529,-4.228734892,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.49338539,-4.315831744,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.54416808,-4.483272471,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.55586772,-4.546726386,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.30530673,-4.429594581,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.39923777,-4.510961179,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.41093742,-4.574415093,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.49709426,-4.580837189,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.50878037,-4.661572105,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 420,Hily et al 2008,north bay,47.31291398,-4.717671441,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 435,Cabaitan et al 2008,Control,16.29280303,120.0162879,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 13,Truong et al 2014,Outside NPE,12.27474747,109.3259601,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 13,Truong et al 2014,Outer NPE,12.32525253,109.2751803,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 13,Truong et al 2014,Outer NPE,12.35,109.2510488,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 13,Truong et al 2014,Inner NPE,12.41010101,109.2058298,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 13,Truong et al 2014,Inner NPE,12.42676768,109.1836972,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 13,Truong et al 2014,Outer NPE,12.34040404,109.2913317,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 13,Truong et al 2014,Outer NPE,12.30757576,109.253986,point,Figure1 + webplot digitizer,Using google maps,NA,
+
 268,Auth et al (2011),Newport Hydrological line off the Central Oregon Coast,44.65,-124.17,point,text,Using google maps,NA,
+
 268,Auth et al (2011),Newport Hydrological line off the Central Oregon Coast,44.65,-124.29,point,text,Using google maps,NA,
