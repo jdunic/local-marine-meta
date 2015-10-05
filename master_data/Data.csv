@@ -1,8 +1,13 @@
 QC,Study ID,Reference,Collector,coral,plant,algae,fish,inverts,mobile inverts,sessile inverts,marine mammals,phytoplankton,zooplankton,mesh size,mesh size units,Descriptor of Taxa Sampled,Sys,Lat,Long,Loc,Event?,Event type,A priori?,Year of Event,Notes,Vis,Trwl,Line,Drdg,Trp,Source,Site,n1,n2,sub1,sub2,I1,I2,ind1_error,ind1_error_type,ind2_error,ind2_error_type,P1,P2,SiSz,SiSz (units),PltSz,PltSz (units),T1,T1m,T2,T2m,SppR1,SppR1 Error,SppR1 Error Type,SppR2,SppR2 Error,SppR2 Error Type,Shan1,Shan1 Error,Shan1 Error Type,Shan2,Shan2 Error,Shan2 Error Type,Simps1,Simps1 Error,Simps1 Error Type,Simps2,Simps2 Error,Simps2 Error Type,Even1,Even1 Error,Even1 Error Type,Even2,Even2 Error,Even2 Error Type
+
 ,88,"WehKamp, 2013",AH,0,0,0,1,0,0,0,0,0,0,,,demersal hardbottom fish,Subtidal,54.18,7.91,North Sea,Yes,Construction,No,,2009; 0 m; June,1,0,0,0,0,Figure 6,0 m,6,6,,,,,,,,,,,189,m^3,2,m^2,2009,June,2010,June,0.67,,,0.91,,,0.88,,,0.94,,,,,,,,,,,,,,
+
 ,88,"WehKamp, 2013",AH,0,0,0,1,0,0,0,0,0,0,,,demersal hardbottom fish,Subtidal,54.18,7.91,North Sea,Yes,Construction,No,,2009; 5 m; June,1,0,0,0,0,Figure 6,5 m,6,6,,,,,,,,,,,189,m^3,2,m^2,2009,June,2010,June,0.92,,,1.05,,,0.91,,,0.84,,,,,,,,,,,,,,
+
 ,88,"WehKamp, 2013",AH,0,0,0,1,0,0,0,0,0,0,,,demersal hardbottom fish,Subtidal,54.18,7.91,North Sea,Yes,Construction,No,,2009; 10 m; June,1,0,0,0,0,Figure 6,10 m,6,6,,,,,,,,,,,189,m^3,2,m^2,2009,June,2010,June,0.43,,,0.81,,,0.87,,,0.81,,,,,,,,,,,,,,
+
 ,88,"WehKamp, 2013",AH,0,0,0,1,0,0,0,0,0,0,,,demersal hardbottom fish,Subtidal,54.18,7.91,North Sea,Yes,Construction,No,,2009; 15 m; June,1,0,0,0,0,Figure 6,15 m,6,6,,,,,,,,,,,189,m^3,2,m^2,2009,June,2010,June,0.8,,,0.98,,,0.81,,,0.83,,,,,,,,,,,,,,
+
 ,88,"WehKamp, 2013",AH,0,0,0,1,0,0,0,0,0,0,,,demersal hardbottom fish,Subtidal,54.18,7.91,North Sea,Yes,Construction,No,,2009; 20 m; June,1,0,0,0,0,Figure 6,20 m,6,6,,,,,,,,,,,189,m^3,2,m^2,2009,June,2010,June,0.56,,,1.24,,,0.76,,,0.93,,,,,,,,,,,,,,
 
 ,88,"WehKamp, 2013",AH,0,0,0,1,0,0,0,0,0,0,,,demersal hardbottom fish,Subtidal,54.18,7.91,North Sea,Yes,Construction,No,,2010; 0 m; June,1,0,0,0,0,Figure 6,0 m,6,6,,,,,,,,,,,189,m^3,2,m^2,2010,June,2011,June,0.91,,,0.94,,,0.94,,,0.72,,,,,,,,,,,,,,
