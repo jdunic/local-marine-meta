@@ -22,6 +22,7 @@ library(metafor)
 library(reshape2)
 library(lubridate)
 library(dplyr)
+library(tidyr)
 library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query' is masked by dplyr. I'm not sure that datamart properly uses namespace
 # or calls specific functions using package::foo, but I know that dplyr does.
 library(readr)
@@ -36,14 +37,14 @@ setwd('Meta_analysis_ms')
 #v##########
 
 # Load the master data!!!!
-richData <- read.csv('master_data/Data.csv', stringsAsFactors = FALSE)
+richData <- read.csv('master_data/Data.csv', stringsAsFactors=FALSE)
 
 ###########
 # Coerce data to correct data types
 ###########
 # First we need to get a lookup table of what all the proper data types should 
 # 
-meta_data <- read.csv('master_data/Meta_data.csv')
+meta_data <- read.csv('master_data/Meta_data.csv', stringsAsFactors=FALSE)
 
 # Make meta_data$Column equal the colnames in the master datasheet.
 meta_data$Column <- 
@@ -68,6 +69,8 @@ convert.magic <- function(obj, types){
 }
 
 re_ordered <- meta_data[match(names(richData), meta_data[['Column']]), ]
+
+re_ordered %>% select(Column, DataType)
 
 richData <- convert.magic(richData, types = re_ordered$DataType)
 
