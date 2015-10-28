@@ -24,45 +24,26 @@ library(lubridate)
 library(dplyr)
 library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query' is masked by dplyr. I'm not sure that datamart properly uses namespace
 # or calls specific functions using package::foo, but I know that dplyr does.
-library(googlesheets)
+library(readr)
 library(googleVis)
 library(stringr)
 library(beepr)
 
+setwd('Meta_analysis_ms')
 
 ###########
 ## Data Loading and Cleaning
 #v##########
-# Load the data from Google Docs - best way to do this now is using jennybc's 
-# googlesheets
-# https://github.com/jennybc/googlesheets
-
-# googlesheets function to get worksheet names
-ws_names <- function(googlesheet) {
-  #id <- googlesheet$ws$ws_id
-  title <- googlesheet$ws$ws_title
-  #names <- data.frame('id' = id, 'title' = title)
-  return(title)
-}
-
-# View sheets in my google drive
-mysheets <- gs_ls()
-
-# Register the meta-analysis spreadsheet
-master_data <- register_ss('Marine diversity master data ')
-
-# See the names of the meta-analysis spreadsheet
-ws_names(master_data)
 
 # Load the master data!!!!
-richData <- get_via_csv(ss = master_data, ws = 'Data')
+richData <- read_csv('master_data/Data.csv')
 
 ###########
 # Coerce data to correct data types
 ###########
 # First we need to get a lookup table of what all the proper data types should 
 # 
-meta_data <- get_via_csv(ss = master_data, ws = 'Meta')
+meta_data <- read_csv('master_data/Meta_data.csv')
 
 # Make meta_data$Column equal the colnames in the master datasheet.
 meta_data$Column <- 
