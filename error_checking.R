@@ -99,3 +99,23 @@ map <- get_map(location = c(lon = 147.323644, lat = -43.048281), zoom = 13, mapt
 ggmap(map)
 
 ggsave(filename = '/Users/jillian/Desktop/Meta-analysis_papers/_PK Papers/Barrett et al. 2007/tinderbox_map.png')
+
+
+# Not totally sure what this is down here.
+# Publication bias analysis
+data <- read.csv("Data_outputs/full_data_with_impacts_velocity_invs_fert_pest20150921.csv")
+
+# No need for the different taxonomic 1/0 categories:
+data <- data[, setdiff(names(data), c('coral', 'plant', 'algae', 'fish', 
+                      'inverts', 'mobile.inverts', 'sessile.inverts', 
+                      'marine.mammals', 'phytoplankton', 'zooplankton'))]
+
+
+# More clean up... grrr - this should be removed by the time we're done
+# Remove study 47
+data <- data[-which(data$vi.SppR.ROM == 0), ]
+
+# Remove duplicate data
+data <- data[-which(duplicated(data$id)), ]
+
+event <- data[which(data$Event. == 'Yes'), ]
