@@ -36,14 +36,14 @@ setwd('Meta_analysis_ms')
 #v##########
 
 # Load the master data!!!!
-richData <- read_csv('master_data/Data.csv')
+richData <- read.csv('master_data/Data.csv')
 
 ###########
 # Coerce data to correct data types
 ###########
 # First we need to get a lookup table of what all the proper data types should 
 # 
-meta_data <- read_csv('master_data/Meta_data.csv')
+meta_data <- read.csv('master_data/Meta_data.csv')
 
 # Make meta_data$Column equal the colnames in the master datasheet.
 meta_data$Column <- 
@@ -88,10 +88,10 @@ eventData <- gs_read(ss = event_types)
 # Random cleanup... it's not 'No'! It's NA! There is no value!
 richData[which(richData$Event.type == 'No'), 'Event.type'] <- NA
 
-richData <- left_join(richData, eventData)
+richData <- left_join(richData, eventData, by = )
 
 # Check that the event data spreadsheet is up to date:
-extra_events <- setdiff(richData$Event.type, eventData$Event.type)
+extra_events <- setdiff(richData[, 'Event type'], eventData$Event.type)
 
 if (sum(!is.na(extra_events)) > 1) {
   stop('There are listed in the master data sheet that are unaccounted for in the Event Types spreadsheet. Please update this before running this script.')
