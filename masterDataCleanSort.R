@@ -370,11 +370,13 @@ for(j in varToCheck){
   cat("\n")
 }
 
+# Need to figure out why this is NA. It isn't in the data sheet....
+richData[which(richData$Study.ID == 446), 'Vis'] <- 0
 
 # Check that if the lat/long are missing from the master data sheet, that there 
 # is at least one lat long associated with the data in the SpatialData 
 # spreadsheet.
-spatial <- get_via_csv(ss = master_data, ws = 'SiteSpatialData')
+spatial <- read.csv('master_data/SiteSpatialData.csv', stringsAsFactors=FALSE)
 
 spatial_check <- 
   mutate(richData, spatial_data = ifelse(Study.ID %in% unique(spatial$Study.ID), 
@@ -437,7 +439,7 @@ make_date_col <- function(year, month) {
   dates <- structure(numeric(1), class="Date")
   for (i in seq_along(year)) {
     #browser()
-    if (is.na(month[i])) {
+    if (is.na(month[i]) | month[i] == '') {
       dates[i] <- as.Date(paste0(as.character(year[i]), '/01/01'), '%Y/%m/%d')
     } else {
       dates[i] <- as.Date(paste0(as.character(year[i]), '/', month[i], '/01'), '%Y/%m/%d')
