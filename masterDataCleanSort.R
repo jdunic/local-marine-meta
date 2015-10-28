@@ -36,7 +36,7 @@ setwd('Meta_analysis_ms')
 #v##########
 
 # Load the master data!!!!
-richData <- read.csv('master_data/Data.csv')
+richData <- read.csv('master_data/Data.csv', stringsAsFactors = FALSE)
 
 ###########
 # Coerce data to correct data types
@@ -268,6 +268,18 @@ richData <- tbl_df(bind_cols(richData, plot_size_conversion))
 types <- c("coral", "plant", "algae", 
            "fish", 'inverts', "mobile.inverts", "sessile.inverts", 
            "marine.mammals", "phytoplankton", "zooplankton")
+
+# must fix conversions :|
+richData$coral <- as.numeric(as.character(richData$coral))
+richData$plant <- as.numeric(as.character(richData$plant))
+richData$algae <- as.numeric(as.character(richData$algae))
+richData$fish <- as.numeric(as.character(richData$fish))
+richData$inverts <- as.numeric(as.character(richData$inverts))
+richData$mobile.inverts <- as.numeric(as.character(richData$mobile.inverts))
+richData$sessile.inverts <- as.numeric(as.character(richData$sessile.inverts))
+richData$marine.mammals <- as.numeric(as.character(richData$marine.mammals))
+richData$phytoplankton <- as.numeric(as.character(richData$phytoplankton))
+richData$zooplankton <- as.numeric(as.character(richData$zooplankton))
 
 typeSum <- rowSums(select(richData, one_of(types)), na.rm = T)
 
