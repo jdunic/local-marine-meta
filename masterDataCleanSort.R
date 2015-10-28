@@ -87,11 +87,13 @@ eventData <- gs_read(ss = event_types)
 
 # Random cleanup... it's not 'No'! It's NA! There is no value!
 richData[which(richData$Event.type == 'No'), 'Event.type'] <- NA
+richData[which(richData$Event.type == ''), 'Event.type'] <- NA
 
-richData <- left_join(richData, eventData, by = )
+richData <- left_join(richData, eventData)
 
 # Check that the event data spreadsheet is up to date:
-extra_events <- setdiff(richData[, 'Event type'], eventData$Event.type)
+extra_events <- setdiff(richData$Event.type, eventData$Event.type)
+extra_events
 
 if (sum(!is.na(extra_events)) > 1) {
   stop('There are listed in the master data sheet that are unaccounted for in the Event Types spreadsheet. Please update this before running this script.')
@@ -187,6 +189,10 @@ source("datamart_mashup_source.r")
 richData$SiSz..units. <- tolower(as.character(richData$SiSz..units.))
 richData$PltSz..units. <- tolower(as.character(richData$PltSz..units.))
 
+# Convert units to numeric (will eventually be done above)
+richData$SiSz <- as.numeric(as.character(richData$SiSz))
+richData$PltSz <- as.numeric(as.character(richData$PltSz))
+
 unique(richData$SiSz..units.)
 unique(richData$PltSz..units.)
 
@@ -230,6 +236,7 @@ convert_units <- function(value, unit) {
     return(convert_df)
 }
 
+# Broken!!!
 size_conversion <- 
   richData %>% 
     rowwise() %>%
@@ -238,6 +245,7 @@ size_conversion <-
 names(size_conversion) <- c('SiteSize', 'SiteSizeUnits')
 richData <- bind_cols(richData, size_conversion)
 
+# works!
 plot_size_conversion <- 
   richData %>% 
     rowwise() %>%
