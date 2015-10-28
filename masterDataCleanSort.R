@@ -81,8 +81,9 @@ richData <- convert.magic(richData, types = re_ordered$DataType)
 #richData <- richData[-which(richData$Study.ID==47),] #waiting on Pat's fix
 
 # Add additional event data
-event_types <- register_ss("Event Types")
-eventData <- get_via_csv(ss = event_types)
+library(googlesheets)
+event_types <- gs_title("Event Types")
+eventData <- gs_read(ss = event_types)
 
 # Random cleanup... it's not 'No'! It's NA! There is no value!
 richData[which(richData$Event.type == 'No'), 'Event.type'] <- NA
