@@ -130,7 +130,8 @@ uset.area <- function(...) {
     Rai=1600, # thailand
     Pyeong=400/121, # korea
     Tsubo=400/121, # japan
-    'nmi^2' = 3429904 # square nautical mile
+    'nmi^2' = 3429904, # square nautical mile
+    'km^2' = 1000000 # square kilometers
     )
     comment(ret) <- "m^2"
     ret
