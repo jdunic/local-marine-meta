@@ -132,17 +132,20 @@ get_imp_hex <- function(x) {
 # Select the first and last data points from the largest time difference 
 # (+/- one month)
 get_month_diff <- function(date1, date2) {
-    md <- (year(date2) - year(date1))*12  + abs(month(date2) - month(date1))
+    md <- (year(date2) - year(date1)) * 12  + abs(month(date2) - month(date1))
     return(md)
 }
 
 get_first_last <- function(adf) {
+  #browser()
   if (length(adf$date1) == 1) {
     date_ones <- adf$date1
     date_twos <- adf$date2
   } else {
-    date_ones <- as.Date(combn(adf$date1, 2)[1, ], origin = "1970-01-01")
-    date_twos <- as.Date(combn(adf$date2, 2)[2, ], origin = "1970-01-01")
+    all_dates <- unique(c(adf$date1, adf$date2))
+    all_date_combos <- combn(all_dates, 2)
+    date_ones <- as.Date(all_date_combos[1, ], origin = "1970-01-01")
+    date_twos <- as.Date(all_date_combos[2, ], origin = "1970-01-01")
   }
 
   month_diffs <- vector(length = length(date_ones))
@@ -177,8 +180,16 @@ get_first_last <- function(adf) {
       t_diff <- 'minus one month'
   }
 
-  first_id <- which(adf$date1 == first)
-  last_id  <- which(adf$date2 == last)
+  first_id <- which(adf$date1 == first)[1]
+  last_id  <- which(adf$date2 == last)[1]
+
+  if (is.na(first_id)) {
+    first_id <- which(adf$date2 == first)[1]
+  }
+
+  if (is.na(last_id)) {
+      last_id <- which(adf$date1 == last)[1]
+    }
 
   output <- cbind(adf[first_id, c(noYCols, y1Cols)], adf[last_id, y2Cols])
 
