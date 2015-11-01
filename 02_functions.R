@@ -136,9 +136,15 @@ get_month_diff <- function(date1, date2) {
     return(md)
 }
 
-get_max_time_diff <- function(adf)
-  date_ones <- as.Date(combn(adf$date1, 2)[1, ], origin = "1970-01-01")
-  date_twos <- as.Date(combn(adf$date2, 2)[2, ], origin = "1970-01-01")
+get_first_last <- function(adf) {
+  if (length(adf$date1) == 1) {
+    date_ones <- adf$date1
+    date_twos <- adf$date2
+  } else {
+    date_ones <- as.Date(combn(adf$date1, 2)[1, ], origin = "1970-01-01")
+    date_twos <- as.Date(combn(adf$date2, 2)[2, ], origin = "1970-01-01")
+  }
+  
   month_diffs <- vector(length = length(date_ones))
   modulus <- vector(length = (length(date_ones)))
 
