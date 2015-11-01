@@ -29,6 +29,7 @@ library(readr)
 library(googleVis)
 library(stringr)
 library(beepr)
+library(googlesheets)
 
 setwd('Meta_analysis_ms')
 
@@ -84,7 +85,6 @@ richData <- convert.magic(richData, types = re_ordered$DataType)
 #richData <- richData[-which(richData$Study.ID==47),] #waiting on Pat's fix
 
 # Add additional event data
-library(googlesheets)
 event_types <- gs_title("Event Types")
 eventData <- gs_read(ss = event_types)
 
@@ -462,10 +462,8 @@ firstSampleFilteredData <-
              Descriptor.of.Taxa.Sampled, Loc, Site) %>%
     do(get_first_last(.))
 
-
 # Add duration to the data frame
 firstSampleFilteredData$Duration <- with(firstSampleFilteredData, T2-T1)
-
 
 
 ############
@@ -502,8 +500,7 @@ for(j in measurements){
     var.names = paste(c("yi", "vi"), j, i, sep=".")
     richData <- escalc(i, m1i=v2, sd1i = v2sd, n1i = n2, 
                       m2i=v1, sd2i = v1sd, n2i = n1, data=richData,
-                      append=T, var.names=var.names)
-  
+                      append=T, var.names=var.names)  
  }
 }
 
@@ -514,6 +511,8 @@ for(j in measurements){
 # - shannon ROMs (with variance)
 # - richness SMD
 # - shannon SMD
+
+filter(firstSampleFilteredData, yi.SppR1.SD == 0 | SppR2.SD == 0)
 
 # Have no SMD calculated for them. I don't know why. I'm not sure what is different
 # in these three studies than all the others...
