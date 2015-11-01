@@ -124,3 +124,79 @@ get_imp_hex <- function(x) {
     }
     return(hex_df)
 }
+
+###########################################################################
+#                          Data Cleanup Functions                         #
+###########################################################################
+
+# Select the first and last data points from the largest time difference 
+# (+/- one month)
+get_month_diff <- function(date1, date2) {
+    md <- (year(date2) - year(date1))*12  + abs(month(date2) - month(date1))
+    return(md)
+}
+
+get_max_time_diff <- function(adf)
+  date_ones <- as.Date(combn(adf$date1, 2)[1, ], origin = "1970-01-01")
+  date_twos <- as.Date(combn(adf$date2, 2)[2, ], origin = "1970-01-01")
+  month_diffs <- vector(length = length(date_ones))
+  modulus <- vector(length = (length(date_ones)))
+
+  md_df <- 
+  data.frame(date1 = date_ones, date2 = date_twos, month_diff = month_diffs, 
+             modulus = modulus)
+
+  for (i in seq_along(date_ones)) {
+    md_df$month_diff[i] <- get_month_diff(date_ones[i], date_twos[i])
+    md_df$modulus[i] <- md_df$month_diff[i] %% 12
+  }
+
+  perfect_year <- filter(md_df, modulus == 0)
+  max_diff_id <- which.max(perfect_year$month_diff)
+  first <- perfect_year$date1[max_diff_id]
+  last  <- perfect_year$date2[max_diff_id]
+  t_diff  <- 'perfect year'
+
+  if (length(max_diff_id) == 0) {
+      plus_month <- filter(md_df, modulus == 1) 
+      max_diff_id <- which.max(plus_month$month_diff)
+      first <- plus_month$date1[max_diff_id]
+      last  <- plus_month$date2[max_diff_id]
+      t_diff <- 'plus one month'
+  } else if (length(max_diff_id) == 0) {
+      minus_month <- filter(md_df, modulus == 11)
+      max_diff_id <- which.max(minus_month$month_diff)
+      first <- minus_month$date1[max_diff_id]
+      last  <- minus_month$date2[max_diff_id]
+      t_diff <- 'minus one month'
+  }
+
+  first_id <- which(adf$date1 == first)
+  last_id  <- which(adf$date2 == last)
+
+  output <- cbind(adf[first_id, c(noYCols, y1Cols)], adf[last_id, y2Cols])
+
+# print notifications of what kinds of dates are being pulled for each of the 
+# studies.
+  if (t_diff == 'perfect year') {
+    message <- 
+      paste0('Study: ', output$Study.ID[1], ' Site: ', output$Site, 
+            ' Perfect year difference found - first date: ', first, 
+            ' last date: ', last) 
+    print(message)
+  } else if (t_diff == 'plus one month') {
+      message <- 
+        paste0('Study: ', output$Study.ID[1], ' Site: ', output$Site, 
+              ' Plus one month difference found - first date: ', first, 
+              ' last date: ', last) 
+      print(message)
+  } else if (t_diff == 'minus one month') {
+      message <- 
+        paste0('Study: ', output$Study.ID[1], ' Site: ', output$Site, 
+              ' Minus one month difference found - first date: ', first, 
+              ' last date: ', last) 
+      print(message)
+  }
+
+  return(output)
+}
