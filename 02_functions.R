@@ -144,7 +144,7 @@ get_first_last <- function(adf) {
     date_ones <- as.Date(combn(adf$date1, 2)[1, ], origin = "1970-01-01")
     date_twos <- as.Date(combn(adf$date2, 2)[2, ], origin = "1970-01-01")
   }
-  
+
   month_diffs <- vector(length = length(date_ones))
   modulus <- vector(length = (length(date_ones)))
 
@@ -186,22 +186,28 @@ get_first_last <- function(adf) {
 # studies.
   if (t_diff == 'perfect year') {
     message <- 
-      paste0('Study: ', output$Study.ID[1], ' Site: ', output$Site, 
-            ' Perfect year difference found - first date: ', first, 
-            ' last date: ', last) 
-    print(message)
+      cat(paste0('Study: ', output$Study.ID[1], '   Site: ', output$Site, 
+                 '   Taxa: ', output$taxa, '\n',
+                 ' Perfect year diff -', 
+                 ' first date: ', first, ' last date: ', last), 
+                 '\n', '', '\n')
+    message
   } else if (t_diff == 'plus one month') {
       message <- 
-        paste0('Study: ', output$Study.ID[1], ' Site: ', output$Site, 
-              ' Plus one month difference found - first date: ', first, 
-              ' last date: ', last) 
-      print(message)
+        cat(paste0('Study: ', output$Study.ID[1], '   Site: ', output$Site, 
+                   '   Taxa: ', output$taxa, '\n',
+                   ' Plus one month diff -',
+                   ' first date: ', first, ' last date: ', last), 
+                   '\n', '', '\n') 
+      message
   } else if (t_diff == 'minus one month') {
       message <- 
-        paste0('Study: ', output$Study.ID[1], ' Site: ', output$Site, 
-              ' Minus one month difference found - first date: ', first, 
-              ' last date: ', last) 
-      print(message)
+        cat(paste0('Study: ', output$Study.ID[1], '   Site: ', output$Site, 
+                   '   Taxa: ', output$taxa, '\n',
+                   ' Minus one month diff -', 
+                   ' first date: ', first, ' last date: ', last), 
+                   '\n', '', '\n')
+      message
   }
 
   return(output)
