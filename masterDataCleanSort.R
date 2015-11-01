@@ -448,8 +448,19 @@ make_date_col <- function(year, month) {
   return(dates)
 }
 
+richData[which(richData$Study.ID == 453), 'T1m'] <- NA
+richData[which(richData$Study.ID == 453), 'T2m'] <- NA
+
 richData$date1 <- make_date_col(year = richData$T1, month = richData$T1m)
 richData$date2 <- make_date_col(year = richData$T2, month = richData$T2m)
+
+
+# Using the new date functions in 02_functions.R
+firstSampleFilteredData <- 
+  richData %>% 
+    group_by(Study.ID, Reference, Sys, taxa, Vis, Trwl, Line, Drdg, Trp, 
+             Descriptor.of.Taxa.Sampled, Loc, Site) %>%
+    do(get_first_last(.))
 
 # First last workflow:
 # Pool all dates from T1 and T2 and sort them, for each unique site. 
@@ -488,27 +499,13 @@ sampleFL <- function(adf) {
     last_id <- which(adf$date2 == max_end_date)
     if (length(last_id) > 1) {
       print(paste0('study: ', adf$Study.ID[1], '; site: ', adf$Site[1]))
-      print(paste('last id > 1, dates:', adf$date1[last_id], adf$date2[last_id], sep = ' '))
+      print(paste('study:', adf$Study.ID[1], ' last id > 1, dates:', adf$date1[last_id], adf$date2[last_id], sep = ' '))
       last_id <- last_id[1]
-      print(paste0('first: ', adf$date1[first_id], ' last: ', adf$date2[last_id]))
+      print(paste0('study: ', adf$Study.ID[1], ' first: ', adf$date1[first_id], ' last: ', adf$date2[last_id]))
     }
     output <- cbind(adf[first_id, c(noYCols, y1Cols)], adf[last_id, y2Cols])
     return(output)
   }
-
-firstSampleFilteredData <- 
-  richData[1:2547, ] %>% 
-    group_by(Study.ID, Reference, Sys, taxa, Vis, Trwl, Line, Drdg, Trp, 
-             Descriptor.of.Taxa.Sampled, Loc, Site) %>%
-    do(sampleFL(.))
-
-firstSampleFilteredData2 <- 
-  richData[2548:2601, ] %>% 
-    group_by(Study.ID, Reference, Sys, taxa, Vis, Trwl, Line, Drdg, Trp, 
-             Descriptor.of.Taxa.Sampled, Loc, Site) %>%
-    do(sampleFL(.))
-
-firstSampleFilteredData <- rbind(firstSampleFilteredData, firstSampleFilteredData2)
 
 #firstSampleFilteredData <- ddply(
 #  richData, 
