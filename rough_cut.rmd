@@ -48,6 +48,7 @@ rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
                      vi.SppR.ROM > 0),
        random = ~ 1 | Study.ID, 
        mods = ~ Duration)
+mod1
 
 filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
 ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
@@ -64,6 +65,7 @@ ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID)
 # Unweighted analysis
 lme1 <- 
 lmer(yi.SppR.ROM ~ Duration + (1 | Study.ID), data = data)
+summary(lme1)
 
 filter(data, !is.na(yi.SppR.ROM)) %>%
 ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
@@ -87,6 +89,7 @@ local <-
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
        mods = ~ Duration + factor(Expected.Change.Direction) + 1)
+local
 
 ```
 
