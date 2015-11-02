@@ -8,7 +8,7 @@ library(googlesheets)
 library(googleVis)
 
 # Load data
-fl_combined <- read.csv('Data/fullData_v0.4-20150603.csv')
+fl_combined <- read.csv('Data_outputs/firstLastData_v0.4-20151101.csv')
 
 fl_combined$id <- as.factor(1:length(fl_combined$Study.ID))
 
@@ -24,19 +24,14 @@ imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif')
 
 # Get spatial data (accurate lat longs for every site and where possible plots 
 # contained within a site)
-mysheets <- gs_ls()
-
-master_data <- register_ss('Marine diversity master data ')
-spatialData <- get_via_csv(ss = master_data, ws = 'SiteSpatialData')
-
-
-spatialData <- unique(spatialData)
+spatial_data <- read_csv('master_data/SiteSpatialData.csv')
+spatial_data$'[EMPTY]' <- NULL
 
 # Create the spatial dataframe with specific site data
 fl_combined$location_key <- paste(fl_combined$Study.ID, fl_combined$Site, sep = '_')
-spatialData$location_key <- paste(spatialData$Study.ID, spatialData$Site, sep = '_')
+spatial_data$location_key <- paste(spatial_data$Study.ID, spatial_data$Site, sep = '_')
 
-fl_combined <- merge(fl_combined, spatialData, by = 'location_key', all.x = TRUE)
+fl_combined <- merge(fl_combined, spatial_data, by = 'location_key', all.x = TRUE)
 
 # Clean up x's in colnames after the merge
 names(fl_combined) <- sub("\\.x$", '', names(fl_combined))
@@ -47,7 +42,7 @@ fl_combined$Lat.y[is.na(fl_combined$Lat.y)] <- fl_combined$Lat[is.na(fl_combined
 fl_combined$Long.y[is.na(fl_combined$Long.y)] <- fl_combined$Long[is.na(fl_combined$Long.y)]
 
 # Get studies that don't have matching location_key.
-setdiff(spatialData$location_key, fl_combined$location_key)
+setdiff(spatial_data$location_key, fl_combined$location_key)
 
 
 # Ignore rows that do not have an associated lat-long for now
@@ -60,7 +55,7 @@ fl_combined <- filter(fl_combined, !is.na(Lat.y) | !is.na(Long.y))
 ######
 
 # Temporary fix because it looks like some studies still don't have lat longs
-fl_combined_sp <- filter(fl_combined, !is.na(Lat.y) | !is.na(Long.y))
+fl_combined_sp <- fl_combined
 coordinates(fl_combined_sp) <- c('Long.y', 'Lat.y')
 projection(fl_combined_sp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
