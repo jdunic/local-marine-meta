@@ -10,7 +10,7 @@ library(raster)
 
 #source('02_functions.R')
 
-data <- read.csv("Data/full_data_with_impacts_velocity_invs_fert_pest20150921.csv")
+data <- read.csv("Data_outputs/full_data_with_impacts_velocity_invs_fert_pest20151102.csv")
 # No need for the different taxonomic 1/0 categories:
 data <- data[, setdiff(names(data), c('coral', 'plant', 'algae', 'fish', 
                       'inverts', 'mobile.inverts', 'sessile.inverts', 
@@ -223,7 +223,7 @@ pesticides <- raster(paste0(extra_impact_dir, '/plumes_pesticide_raw/plumes_pest
 yr_min <- min(data$T1)
 yr_max <- max(data$T2)
 
-hadrast <- loadHadSST1('Data/', hadsstFilename = "HadISST_sst.nc")
+hadrast <- loadHadSST1('master_data/', hadsstFilename = "HadISST_sst.nc")
 all_rasters <- getAllRasters(hadrast, years = yr_min:yr_max)
 #velocity <- getVelocityMag_raster(hadsst_raster, years = yr_min:yr_max)
 #linear <- getSSTLinChangeRaster(hadsst_raster, years = yr_min:yr_max)
