@@ -211,6 +211,7 @@ richData$PltSz..units. <- gsub('liters', 'l', richData$PltSz..units.)
 
 # Replace with NA where appropriate
 richData$SiSz..units.[which(richData$SiSz..units. == 'n/a')] <- NA
+richData$SiSz..units.[which(richData$SiSz..units. == '')] <- NA
 richData$PltSz..units.[which(richData$PltSz..units. == 'unspecified')] <- NA
 
 convert_units <- function(value, unit) {
@@ -235,14 +236,13 @@ convert_units <- function(value, unit) {
     return(convert_df)
 }
 
-# Broken!!!
-size_conversion <- 
+#unique(richData$SiSz..units.)
+site_size_conversion <- 
   richData %>% 
     rowwise() %>%
         do(convert_units(value = .$SiSz, unit = .$SiSz..units.))
-
-names(size_conversion) <- c('SiteSize', 'SiteSizeUnits')
-richData <- bind_cols(richData, size_conversion)
+names(site_size_conversion) <- c('SiteSize', 'SiteSizeUnits')
+richData <- bind_cols(richData, site_size_conversion)
 
 # works!
 plot_size_conversion <- 
