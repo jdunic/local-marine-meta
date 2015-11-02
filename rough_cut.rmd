@@ -141,14 +141,16 @@ filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
           data = ., 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (raster_vel + raster_lin + mean_invs + mean_pest))
+          mods = ~ Duration * (scale(raster_vel) + scale(raster_lin) + scale(mean_invs) + scale(mean_pest) + scale(mean_fert))
+)
+global2
 
 # Wait, what do you do about high VIFs when working with interaction effects? 
 
 global2_lme <- 
 filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-    lmer(yi.SppR.ROM ~ Duration * (raster_vel + raster_lin + mean_invs + mean_pest + mean_fert) + (1 | Study.ID), data = .)
+    lmer(yi.SppR.ROM ~ Duration * (scale(raster_vel) + scale(raster_lin) + scale(mean_invs) + scale(mean_pest) + scale(mean_fert)) + (1 | Study.ID), data = .)
 summary(global2_lme)
 # scaling?
 
