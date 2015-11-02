@@ -30,8 +30,8 @@ data$Study.ID <- as.factor(data$Study.ID)
 
 event <- filter(data, Event. == 'Yes')
 
-# Need to add a few event classifications - make sure fixed after next master 
-# cleaning script gets run
+# Study 516 doesn't have a type of event associated with it....
+event <- filter(event, !is.na(Expected.Change.Direction))
 
 event[c(40, 41, 56, 59, 60), 'Expected.Change.Direction'] <- c('Uncertain', 'Uncertain', 'Uncertain', 'Positive', 'Positive')
 
