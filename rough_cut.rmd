@@ -127,6 +127,34 @@ filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
   count(.)
 
+global1
+
+
+global_summ_df <- 
+  mk_summary_df(fl_combined, rma_object = global1, moderators = FALSE, 
+                mods = c('mean_imps', 'Duration'))
+row.names(global_summ_df) <- c('Intercept', 'Duration', 'Human Impact', 
+                                'Duration*Human Impact')
+global_summ_df$predictors <- factor(row.names(global_summ_df), levels = c('Intercept', 'Duration', 'Human Impact', 'Duration*Human Impact'))
+
+ggplot(data = global_summ_df) +
+  geom_point(aes(x = mean_estimate, y = predictors), 
+             size = 4, colour = 'white') +
+  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
+                    y = predictors, height = 0), colour = 'white', 
+                    size = 1) + 
+  theme_wb() + 
+  xlab('Mean Effect Size\n') +
+  ylab('\nPredictor') + 
+  theme(axis.title.x = element_text(vjust = -0.5, size = 16), 
+        axis.text.x = element_text(size = 14), 
+        axis.text.y = element_text(size = 14), 
+        axis.title.y = element_text(vjust = 1.5, size = 16), 
+        panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_vline(y = 0, linetype = "dashed", colour = 'yellow')
+  #xlim(c(-8, 8))
+
 
 global_lme <- 
 filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
@@ -144,6 +172,46 @@ filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
           mods = ~ Duration * (scale(raster_vel) + scale(raster_lin) + scale(mean_invs) + scale(mean_pest) + scale(mean_fert))
 )
 global2
+
+global_summ_df <- 
+  mk_summary_df(data, rma_object = global2, moderators = FALSE)
+
+row.names(global_summ_df) <- c('Intercept', 'Duration', 'Climate Velocity', 
+                               'Linear Temp Change', 'Invasive Potential', 
+                               'Pesticides', 'Fertilizers', 
+                                'Duration*Climate Velocity', 
+                                'Duration*Linear Temp Change', 
+                                'Duration*Invasive Potential', 
+                                'Duration*Pesticides', 
+                                'Duration*Fertilizers')
+global_summ_df$predictors <- factor(row.names(global_summ_df), levels = c(
+                               'Intercept', 'Duration', 'Climate Velocity', 
+                               'Linear Temp Change', 'Invasive Potential', 
+                               'Pesticides', 'Fertilizers', 
+                                'Duration*Climate Velocity', 
+                                'Duration*Linear Temp Change', 
+                                'Duration*Invasive Potential', 
+                                'Duration*Pesticides', 
+                                'Duration*Fertilizers'))
+
+
+ggplot(data = global_summ_df[-c(6, 7), ]) +
+  geom_point(aes(x = mean_estimate, y = predictors), 
+             size = 4, colour = 'white') +
+  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
+                    y = predictors, height = 0), colour = 'white', 
+                    size = 1) + 
+  theme_wb() + 
+  xlab('Mean Effect Size\n') +
+  ylab('\nPredictor') + 
+  theme(axis.title.x = element_text(vjust = -0.5, size = 16), 
+        axis.text.x = element_text(size = 14), 
+        axis.text.y = element_text(size = 14), 
+        axis.title.y = element_text(vjust = 1.5, size = 16), 
+        panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_vline(y = 0, linetype = "dashed", colour = 'yellow')
+  #xlim(c(-8, 8))
 
 # Wait, what do you do about high VIFs when working with interaction effects? 
 
