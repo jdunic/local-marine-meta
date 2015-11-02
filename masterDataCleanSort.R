@@ -456,9 +456,16 @@ firstSampleFilteredData <-
              Descriptor.of.Taxa.Sampled, Loc, Site) %>%
     do(get_first_last(.))
 
+str(firstSampleFilteredData)
+
+# Remove attributes that were magically added in the do. 
+attributes(firstSampleFilteredData)[c('vars', 'drop', 'indices', 'group_sizes', 'biggest_group_size', 'labels', 'vars')] <- NULL
+
+
 # Add duration to the data frame
 firstSampleFilteredData$Duration <- with(firstSampleFilteredData, T2-T1)
 
+firstSampleFilteredData2 <- firstSampleFilteredData
 
 ############
 #calculate a lot of effect sizes
@@ -468,35 +475,69 @@ effects <- c("MD", "SMD", "ROM", "SMDH")
 
 for(j in measurements){
   for(i in effects){
-    cat(paste(i,j,sep=","))
+    cat(paste(i, j, sep=","))
     cat("\n")
-    v1 = firstSampleFilteredData[[paste0(j,1)]]
-    v2 = firstSampleFilteredData[[paste0(j,2)]]
-    v1sd = firstSampleFilteredData[[paste(paste0(j,1),"SD",sep=".")]]
-    v2sd = firstSampleFilteredData[[paste(paste0(j,2),"SD",sep=".")]]
+    v1 = firstSampleFilteredData[[paste0(j, 1)]]
+    v2 = firstSampleFilteredData[[paste0(j, 2)]]
+    v1sd = firstSampleFilteredData[[paste(paste0(j, 1), "SD", sep=".")]]
+    v2sd = firstSampleFilteredData[[paste(paste0(j, 2), "SD", sep=".")]]
     var.names = paste(c("yi", "vi"), j, i, sep=".")
     firstSampleFilteredData <- escalc(i, m1i=v2, sd1i = v2sd, n1i = n2, 
                       m2i=v1, sd2i = v1sd, n2i = n1, data=firstSampleFilteredData,
-                      append=T, var.names=var.names)
-  
- }
-}
-
-# Do the same for the full dataset
-for(j in measurements){
-  for(i in effects){
-    cat(paste(i,j,sep=","))
-    cat("\n")
-    v1 = richData[[paste0(j,1)]]
-    v2 = richData[[paste0(j,2)]]
-    v1sd = richData[[paste(paste0(j,1),"SD",sep=".")]]
-    v2sd = richData[[paste(paste0(j,2),"SD",sep=".")]]
-    var.names = paste(c("yi", "vi"), j, i, sep=".")
-    richData <- escalc(i, m1i=v2, sd1i = v2sd, n1i = n2, 
-                      m2i=v1, sd2i = v1sd, n2i = n1, data=richData,
                       append=T, var.names=var.names)  
  }
 }
+
+# Remove more attributes that were magically added when doing the escalc
+attributes(firstSampleFilteredData)[c('digits', 'yi.names', 'vi.names')] <- NULL
+
+# Check that there are no notes
+str(firstSampleFilteredData, list.len = 119)
+
+attributes(firstSampleFilteredData$yi.SppR.MD)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.SppR.SMD)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.SppR.ROM)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.SppR.SMDH)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Shan.MD)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Shan.SMD)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Shan.ROM)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Shan.SMDH)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Even.MD)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Even.SMD)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Even.ROM)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$yi.Even.SMDH)[c('measure', 'ni')] <- NULL
+attributes(firstSampleFilteredData$vi.Even.SMDH)[c('measure', 'ni')] <- NULL
+
+str(firstSampleFilteredData, list.len = 119)
+
+
+# Do the same for the full dataset
+#for(j in measurements){
+#  for(i in effects){
+#    cat(paste(i,j,sep=","))
+#    cat("\n")
+#    v1 = richData[[paste0(j,1)]]
+#    v2 = richData[[paste0(j,2)]]
+#    v1sd = richData[[paste(paste0(j,1),"SD",sep=".")]]
+#    v2sd = richData[[paste(paste0(j,2),"SD",sep=".")]]
+#    var.names = paste(c("yi", "vi"), j, i, sep=".")
+#    richData <- escalc(i, m1i=v2, sd1i = v2sd, n1i = n2, 
+#                      m2i=v1, sd2i = v1sd, n2i = n1, data=richData,
+#                      append=T, var.names=var.names)  
+# }
+#}
+
+# What to do with zero values for first and last?
+filter(firstSampleFilteredData, SppR1 == 0 | SppR2 == 0) %>% 
+  select(Study.ID, Site, SppR1, SppR2)
+
+# Have no SMD calculated for them. I don't know why. I'm not sure what is different
+# in these three studies than all the others...
+#no_SMD <- firstSampleFilteredData[which(firstSampleFilteredData$Study.ID %in% c(47, 150, 363)), ]
+
+#gvt <- gvisTable(firstSampleFilteredData[which(firstSampleFilteredData$Study.ID %in% c(47, 150, 363)), c('n1', 'n2', 'SppR1', 'SppR2', 'SppR1.SD', 'SppR2.SD', 'vi.SppR.ROM', 'vi.SppR.SMD') ])
+#plot(gvt)
+
 
 # To make life easier when counting studies, create boolean field that flags:
 # - richness ROMs (with and without variance)
@@ -505,15 +546,6 @@ for(j in measurements){
 # - shannon ROMs (with variance)
 # - richness SMD
 # - shannon SMD
-
-filter(firstSampleFilteredData, yi.SppR1.SD == 0 | SppR2.SD == 0)
-
-# Have no SMD calculated for them. I don't know why. I'm not sure what is different
-# in these three studies than all the others...
-no_SMD <- firstSampleFilteredData[which(firstSampleFilteredData$Study.ID %in% c(47, 150, 363)), ]
-
-gvt <- gvisTable(firstSampleFilteredData[which(firstSampleFilteredData$Study.ID %in% c(47, 150, 363)), c('n1', 'n2', 'SppR1', 'SppR2', 'SppR1.SD', 'SppR2.SD', 'vi.SppR.ROM', 'vi.SppR.SMD') ])
-plot(gvt)
 
 firstSampleFilteredData$rich_ROM_uw <- as.numeric(!is.na(firstSampleFilteredData$yi.SppR.ROM))
 firstSampleFilteredData$rich_ROM_w <- as.numeric(!is.na(firstSampleFilteredData$vi.SppR.ROM))
@@ -533,7 +565,6 @@ firstSampleFilteredData$shan_SMD_w <- as.numeric(!is.na(firstSampleFilteredData$
 rich_zero_samples <- 
 firstSampleFilteredData[which(firstSampleFilteredData$SppR1 == 0 | 
                               firstSampleFilteredData$SppR2 == 0), ]
-beep()
 
 #####################
 # Reformat for timeseries analysis
@@ -616,7 +647,7 @@ timeData <- timeData[,-(agrep("Simps", names(timeData)))]
 #0.5 - All data entered
 #0.9 - All data quality controlled
 #1.0 - Final data for the paper
-firstSampleFilteredData$Event. <- as.character(firstSampleFilteredData$Event.)
+
 firstSampleFilteredData$Event. <- gsub("protection", "Yes", firstSampleFilteredData$Event.) #garumph
 eventIDX <- which(firstSampleFilteredData$Event. == "Yes")
 timeEventIDX <- which(timeData$Event. == "Yes")
@@ -625,13 +656,14 @@ timeEventIDX <- which(timeData$Event. == "Yes")
 ver <- 0.4
 outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
 trailer <- paste0("_v",ver,"-",outdate,".csv")
-write.csv(firstSampleFilteredData, paste0('Data/firstLastData', trailer), row.names = F)
-write.csv(firstSampleFilteredData[-eventIDX,], paste0("Data/firstLastData_noevent",trailer), row.names=F)
-write.csv(firstSampleFilteredData[eventIDX,], paste0("Data/firstLastData_event",trailer), row.names=F)
-write.csv(timeData[-timeEventIDX,], paste0("Data/timeseriesData_noevent",trailer), row.names=F)
-write.csv(timeData[timeEventIDX,], paste0("Data/timeseriesData_event",trailer), row.names=F)
+write.csv(firstSampleFilteredData, paste0('Data_outputs/firstLastData', trailer), row.names = F)
 
-write.csv(firstSampleFilteredData, paste0("Data/fullData",trailer), row.names=F)
+#write.csv(firstSampleFilteredData[-eventIDX,], paste0("Data/firstLastData_noevent",trailer), row.names=F)
+#write.csv(firstSampleFilteredData[eventIDX,], paste0("Data/firstLastData_event",trailer), row.names=F)
+#write.csv(timeData[-timeEventIDX,], paste0("Data/timeseriesData_noevent",trailer), row.names=F)
+#write.csv(timeData[timeEventIDX,], paste0("Data/timeseriesData_event",trailer), row.names=F)
+
+#write.csv(firstSampleFilteredData, paste0("Data/fullData",trailer), row.names=F)
 
 
 
