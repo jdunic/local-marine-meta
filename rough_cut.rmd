@@ -131,7 +131,7 @@ filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
 global_lme <- 
 filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-  lmer(yi.SppR.ROM ~ Duration*mean_imps + (1 | Study.ID), data = .)
+  lmer(yi.SppR.ROM ~ Duration * scale(mean_imps) + (1 | Study.ID), data = .)
 summary(global_lme)
 
 
