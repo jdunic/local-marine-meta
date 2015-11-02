@@ -128,7 +128,7 @@ yr_max <- max(fl_combined$T2)
 print(c(yr_min, yr_max))
 
 
-hadrast <- loadHadSST1('Data/', hadsstFilename = "HadISST_sst.nc")
+hadrast <- loadHadSST1('master_data/', hadsstFilename = "HadISST_sst.nc")
 all_rasters <- getAllRasters(hadrast, years = yr_min:yr_max)
 #velocity <- getVelocityMag_raster(hadsst_raster, years = yr_min:yr_max)
 #linear <- getSSTLinChangeRaster(hadsst_raster, years = yr_min:yr_max)
@@ -224,7 +224,7 @@ fl_combined$mean_pest <- unlist(mean_pest)
 ################################################################################
 outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
 trailer <- paste0(outdate,".csv")
-write.csv(fl_combined, paste0("Data/full_data_with_impacts_velocity_invs_fert_pest",trailer), row.names=F)
+write.csv(fl_combined, paste0("Data_outputs/full_data_with_impacts_velocity_invs_fert_pest",trailer), row.names=F)
 
 
 ################################################################################
