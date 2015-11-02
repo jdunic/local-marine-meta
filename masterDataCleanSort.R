@@ -370,9 +370,6 @@ for(j in varToCheck){
   cat("\n")
 }
 
-# Need to figure out why this is NA. It isn't in the data sheet....
-richData[which(richData$Study.ID == 446), 'Vis'] <- 0
-
 # Check that if the lat/long are missing from the master data sheet, that there 
 # is at least one lat long associated with the data in the SpatialData 
 # spreadsheet.
@@ -418,12 +415,12 @@ richData$T2m <- fixMonths(richData$T2m)
 ## Downsample the data to T1 and T2 - first/last
 ###########
 
-# What is going on here?
+# What is going on here? - I don't even know what this is/was about
 # Where did these studies go? They are marked as being completed but they are 
 # not found in the master dataset.
-xdf <- subset(richData, richData$Study.ID %in% c(691, 693, 3, 19, 741, 59, 134, 89, 705, 51))
-xdf$Site <- factor(xdf$Site)
-adf <- subset(xdf, xdf$Site==xdf$Site[1])
+#xdf <- subset(richData, richData$Study.ID %in% c(3, 741, 134, 89))
+#xdf$Site <- factor(xdf$Site)
+#adf <- subset(xdf, xdf$Site==xdf$Site[1])
 
 # Get columns for all the first time points and all the second time points
 y1Cols <- grep("1", names(richData))
