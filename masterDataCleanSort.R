@@ -445,9 +445,6 @@ make_date_col <- function(year, month) {
   return(dates)
 }
 
-richData[which(richData$Study.ID == 453), 'T1m'] <- NA
-richData[which(richData$Study.ID == 453), 'T2m'] <- NA
-
 richData$date1 <- make_date_col(year = richData$T1, month = richData$T1m)
 richData$date2 <- make_date_col(year = richData$T2, month = richData$T2m)
 
