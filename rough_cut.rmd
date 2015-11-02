@@ -22,10 +22,7 @@ data <- data[, setdiff(names(data), c('coral', 'plant', 'algae', 'fish',
 data <- filter(data, vi.SppR.ROM != 0)
 
 # Remove duplicate data
-data <- filter(distinct(data))
-
-# Remove data with duration == -1 :| wth.
-data <- filter(data, Duration != -1)
+data <- filter(distinct(data, Study.ID, Site, taxa))
 
 # Make Study.ID a factor
 data$Study.ID <- as.factor(data$Study.ID)
