@@ -310,7 +310,7 @@ par(mfrow = c(1, 2))
 plot(crop_vel)
 plot(crop_lin)
 
-
+beep()
 
 # Create raster layers for different durations 
 time_map1 <- !is.na(crop_vel)
@@ -349,7 +349,7 @@ plot(predict1, col = heat.colors(100), colNA = 'black')
 
 plot(predict1_percent, col = heat.colors(100), colNA = 'black')
 
-plot(predict1_percent, col = rainbow(255))
+plot(predict1_percent, col = rainbow(100))
 
 
 
