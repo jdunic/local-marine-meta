@@ -91,6 +91,41 @@ rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        mods = ~ Duration + factor(Expected.Change.Direction) + 1)
 local
 
+
+#### THIS CHUNK IS QUITE BROKEN: L. 95 - 127
+event_dir_summ_df <- 
+  mk_summary_df(event, rma_object = local, moderators = FALSE, 
+                mods = 'Expected.Change.Direction')
+row.names(event_dir_summ_df) <- c(' Duration*Negative', ' Duration', ' Duration*Positive', ' Duration*Uncertain')
+
+num_sites <- 
+  dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+  dplyr::count(., Expected.Change.Direction)
+num_studies <- 
+  dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
+  dplyr::distinct(Study.ID, Expected.Change.Direction) %>%
+  dplyr::count(., Expected.Change.Direction)
+
+ggplot(data = event_dir_summ_df) +
+  geom_point(aes(y = row.names(event_dir_summ_df), x = mean_estimate), size = 4, 
+             colour = 'white') +
+  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
+                    y = row.names(event_dir_summ_df), height = 0), colour = 'white', 
+                    size = 1) +
+  theme_wb() + 
+  xlab('Change in log ratio/year\n') +
+  ylab('\nEvent Type\n') + 
+  theme(axis.text.x = element_text(size = 18), 
+        axis.text.y = element_text(size = 18, hjust = 0), 
+        axis.title.y = element_text(vjust = 1.6, size = 20),
+        axis.title.x = element_text(vjust = -0.5, size = 20), 
+        panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_vline(y = 0, linetype = "dashed", colour = 'yellow') +
+  xlim(c(-0.75, 0.75)) +
+  scale_y_discrete(labels = paste(row.names(event_dir_summ_df), "\n studies = ", as.character(num_studies$n), "\n sites = ", as.character(num_sites$n)))
+
+
 ```
 
 What kind of power do we have for this local even dataset? The weighted analysis is done using 8 negative events, 22 positive events, and 7 uncertain events.
