@@ -121,7 +121,7 @@ global1 <-
          data = filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)), 
          random = ~ 1 | Study.ID, 
-         mods = ~ Duration * mean_imps)
+         mods = ~ Duration * scale(mean_imps))
 
 filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
