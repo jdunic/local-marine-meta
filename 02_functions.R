@@ -8,40 +8,32 @@
 # mods = "string of mods column name"
 # Need to fix when certain mods are dropped because the number of points is too
 # small, write better num_studies and num_sites calculation)
-mk_summary_df <- function(original_df, mods, rma_object, moderators = FALSE) {
+mk_rma_summary_df <- function(original_df, rma_object) {
+  #browser()
     factors <- dimnames(rma_object$b)[[1]]
-    mean_estimate <- as.data.frame(rma_object$b)
+    mean_estimate <- as.vector(rma_object$b[, 1])
     lower_ci <- rma_object$ci.lb
     upper_ci <- rma_object$ci.ub
     # sigma2 in metafor is the between study variation
     tau2 <- rma_object$sigma2
     # tau2 in an rma object is the within study variation
     sigma2 <- rma_object$tau2
+    pval <-rma_object$pval 
     rho <- rma_object$rho
     if(is.null(rho) == TRUE) {rho <- NA}
-    if (moderators == FALSE) {
-        num_studies <- length(unique(original_df$Study.ID))
-        num_sites <- length(unique(original_df$Site))
-        df <- data.frame(mean_estimate = mean_estimate, lower_ci = lower_ci,
-                         upper_ci, sigma2 = sigma2, rho = rho, 
-                         studies_per_mod = num_studies, 
-                         sites_per_mod = num_sites)
-        colnames(df) <- c("mean_estimate", "lower_ci", "upper_ci", 
-                          "sigma2", "rho", "studies_per_mod", "sites_per_mod")
-    } else {
-        num_studies <- ddply(original_df, mods, summarise, 
-                             studies = length(unique(Study.ID))
-                             )
-        num_sites <- ddply(original_df, mods, summarise, 
-                           studies = length(unique(Site))
-                           )
-        df <- data.frame(moderator = factors, mean_estimate = mean_estimate, 
-                         lower_ci = lower_ci, upper_ci, sigma2 = sigma2, rho = rho, 
-                         studies_per_mod = num_studies[, 2], sites_per_mod = num_sites[, 2])
-        colnames(df) <- c("moderator", "mean_estimate", "lower_ci", "upper_ci", 
-                          "sigma2", "rho", "studies_per_mod", "sites_per_mod")
-    }
-    return(df)
+    num_sites <- 
+      dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+        dplyr::count(., Expected.Change.Direction)
+    num_studies <- 
+      dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
+        dplyr::distinct(Study.ID, Expected.Change.Direction) %>%
+        dplyr::count(., Expected.Change.Direction)
+    adf <- data.frame(moderator = factors, mean_estimate = mean_estimate, 
+                     lower_ci = lower_ci, upper_ci, pval = pval, 
+                     sigma2 = sigma2, rho = rho, 
+                     studies_per_mod = num_studies$n, 
+                     sites_per_mod = num_sites$n)
+    return(adf)
 }
 
 mk_lme_summary_df <- function(unweighted_df, mods, lme_object) {
@@ -222,4 +214,5 @@ get_first_last <- function(adf) {
   }
 
   return(output)
+
 }
