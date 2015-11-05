@@ -22,17 +22,19 @@ mk_rma_summary_df <- function(original_df, rma_object) {
     rho <- rma_object$rho
     if(is.null(rho) == TRUE) {rho <- NA}
     num_sites <- 
-      dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+      dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
         dplyr::count(., Expected.Change.Direction)
     num_studies <- 
-      dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
+      dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
         dplyr::distinct(Study.ID, Expected.Change.Direction) %>%
         dplyr::count(., Expected.Change.Direction)
+    percent_change <- (exp(mean_estimate) - 1) * 100
     adf <- data.frame(moderator = factors, mean_estimate = mean_estimate, 
                      lower_ci = lower_ci, upper_ci, pval = pval, 
                      sigma2 = sigma2, rho = rho, 
                      studies_per_mod = num_studies$n, 
-                     sites_per_mod = num_sites$n)
+                     sites_per_mod = num_sites$n, 
+                     percent_change = percent_change)
     return(adf)
 }
 
