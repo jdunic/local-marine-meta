@@ -8,34 +8,39 @@ library(lme4)
 library(car)
 library(raster)
 
-#source('02_functions.R')
+setwd('Meta_analysis_ms')
+source('02_functions.R')
 
-data <- read.csv("Data_outputs/full_data_with_impacts_velocity_invs_fert_pest20151102.csv")
+
+# For now use this one
+fl_combined <- read.csv("Data_outputs/nov_5_fl_combined_for_wsn.csv")
+
+#fl_combined <- read.csv("Data_outputs/full_data_with_impacts_velocity_invs_fert_pest20151102.csv")
 # No need for the different taxonomic 1/0 categories:
-data <- data[, setdiff(names(data), c('coral', 'plant', 'algae', 'fish', 
+fl_combined <- fl_combined[, setdiff(names(fl_combined), c('coral', 'plant', 'algae', 'fish', 
                       'inverts', 'mobile.inverts', 'sessile.inverts', 
                       'marine.mammals', 'phytoplankton', 'zooplankton'))]
 
 
-# More clean up... grrr - this should be removed by the time we're done
-# Remove study 47
-data <- filter(data, vi.SppR.ROM != 0)
+# More clean up... grrr - there can't be a species richness error = 0. This 
+# just needs to be removed for study 47. 
+fl_combined$vi.SppR.ROM[which(fl_combined$vi.SppR.ROM == 0)] <- NA
 
 # Remove duplicate data
-data <- filter(distinct(data, Study.ID, Site, taxa))
+fl_combined <- filter(distinct(fl_combined, Study.ID, Site, taxa))
 
 # Make Study.ID a factor
-data$Study.ID <- as.factor(data$Study.ID)
+fl_combined$Study.ID <- as.factor(fl_combined$Study.ID)
 
 
-event <- filter(data, Event. == 'Yes')
+event <- filter(fl_combined, Event. == 'Yes')
 
 # Study 516 doesn't have a type of event associated with it....
 event <- filter(event, !is.na(Expected.Change.Direction))
 
 #event[c(40, 41, 56, 59, 60), 'Expected.Change.Direction'] <- c('Uncertain', 'Uncertain', 'Uncertain', 'Positive', 'Positive')
 
-no_event <- filter(data, Event. != 'Yes')
+no_event <- filter(fl_combined, Event. != 'Yes')
 
 ```
 
@@ -44,13 +49,13 @@ no_event <- filter(data, Event. != 'Yes')
 # Weighted analysis - and naive model plot
 mod1 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
-       data = filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+       data = filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0),
        random = ~ 1 | Study.ID, 
        mods = ~ Duration)
 mod1
 
-filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
 ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
   geom_point(size = 3) + 
   ylab('Log Ratio') +
@@ -64,10 +69,10 @@ ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID)
 
 # Unweighted analysis
 lme1 <- 
-lmer(yi.SppR.ROM ~ Duration + (1 | Study.ID), data = data)
+lmer(yi.SppR.ROM ~ Duration + (1 | Study.ID), data = fl_combined)
 summary(lme1)
 
-filter(data, !is.na(yi.SppR.ROM)) %>%
+filter(fl_combined, !is.na(yi.SppR.ROM)) %>%
 ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
   geom_point(size = 3) + 
   ylab('Log Ratio') +
@@ -85,45 +90,76 @@ Both the weighted and unweighted naive models, where duration is the only predic
 When we examine the change in species richness as may be affected by direct/local scale events, there is no significant effect of the even directions. However, there does seem to be a negative affect of duration. The log ratio is -0.01 in the weighted analysis.
 
 ```{r}
-local <- 
+
+ggplot(data = event, aes(x = Duration, y = yi.SppR.ROM)) + 
+  geom_point(aes(colour = Expected.Change.Direction)) + 
+  ylim(c(-2, 2))
+
+
+localmod <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration + factor(Expected.Change.Direction) + 1)
-local
+       mods = ~ Duration*Expected.Change.Direction)
+localmod
+
+local2 <- 
+rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+       random = ~ 1 | factor(Study.ID),
+       mods = ~ Duration:Expected.Change.Direction + 
+              Expected.Change.Direction + 0)
+local2
+
+local2U <- lmer(yi.SppR.ROM ~ Duration:Expected.Change.Direction + 
+                Expected.Change.Direction + 0 + (1|Study.ID), data=event)
+summary(local2U)
 
 
-#### THIS CHUNK IS QUITE BROKEN: L. 95 - 127
 event_dir_summ_df <- 
-  mk_summary_df(event, rma_object = local, moderators = FALSE, 
-                mods = 'Expected.Change.Direction')
-row.names(event_dir_summ_df) <- c(' Duration*Negative', ' Duration', ' Duration*Positive', ' Duration*Uncertain')
+  mk_rma_summary_df(original_df = event, rma_object = local2, categorical = TRUE)
 
-num_sites <- 
-  dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
-  dplyr::count(., Expected.Change.Direction)
-num_studies <- 
-  dplyr::filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
-  dplyr::distinct(Study.ID, Expected.Change.Direction) %>%
-  dplyr::count(., Expected.Change.Direction)
+row.names(event_dir_summ_df) <- c(' Negative', ' Positive', ' Uncertain', 
+                                  ' D*Negative', ' D*Positive', 
+                                  ' D*Uncertain')
 
-ggplot(data = event_dir_summ_df) +
-  geom_point(aes(y = row.names(event_dir_summ_df), x = mean_estimate), size = 4, 
+# The short term effect of events
+ggplot(data = event_dir_summ_df[1:3, ]) +
+  geom_point(aes(x = row.names(event_dir_summ_df[1:3, ]), y = mean_estimate), size = 4, 
              colour = 'white') +
-  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
-                    y = row.names(event_dir_summ_df), height = 0), colour = 'white', 
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, 
+                    x = row.names(event_dir_summ_df[1:3, ]), width = 0), colour = 'white', 
                     size = 1) +
   theme_wb() + 
-  xlab('Change in log ratio/year\n') +
-  ylab('\nEvent Type\n') + 
-  theme(axis.text.x = element_text(size = 18), 
-        axis.text.y = element_text(size = 18, hjust = 0), 
-        axis.title.y = element_text(vjust = 1.6, size = 20),
-        axis.title.x = element_text(vjust = -0.5, size = 20), 
+  ylab('Change in log ratio / year\n') +
+  xlab('\nEvent Type\n') + 
+  theme(axis.text.y = element_text(size = 18), 
+        axis.text.x = element_text(size = 18, hjust = 0.5), 
+        axis.title.x = element_text(vjust = 1.6, size = 20),
+        axis.title.y = element_text(vjust = -0.5, size = 20), 
         panel.grid.major  = element_blank(),
         panel.grid.minor  = element_blank()) +
-  geom_vline(y = 0, linetype = "dashed", colour = 'yellow') +
-  xlim(c(-0.75, 0.75)) +
-  scale_y_discrete(labels = paste(row.names(event_dir_summ_df), "\n studies = ", as.character(num_studies$n), "\n sites = ", as.character(num_sites$n)))
+  geom_hline(x = 0, linetype = "dashed", colour = 'yellow') +
+  ylim(c(-0.75, 0.75)) +
+  scale_x_discrete(labels = paste(row.names(event_dir_summ_df[1:3, ]), "\n k = ", as.character(event_dir_summ_df[1:3, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[1:3, ]$sites_per_mod)))
+
+# The long term effect of events:
+ggplot(data = event_dir_summ_df[4:6, ]) +
+  geom_point(aes(x = row.names(event_dir_summ_df[4:6, ]), y = mean_estimate), size = 4, 
+             colour = 'white') +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, 
+                    x = row.names(event_dir_summ_df[4:6, ]), width = 0), colour = 'white', 
+                    size = 1) +
+  theme_wb() + 
+  ylab('Change in log ratio / year\n') +
+  xlab('\nEvent Type\n') + 
+  theme(axis.text.y = element_text(size = 18), 
+        axis.text.x = element_text(size = 18, hjust = 0.5), 
+        axis.title.x = element_text(vjust = 1.6, size = 20),
+        axis.title.y = element_text(vjust = -0.5, size = 20), 
+        panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_hline(x = 0, linetype = "dashed", colour = 'yellow') +
+  ylim(c(-0.03, 0.03)) +
+  scale_x_discrete(labels = paste(row.names(event_dir_summ_df[4:6, ]), "\n k = ", as.character(event_dir_summ_df[4:6, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[4:6, ]$sites_per_mod)))
 
 
 ```
@@ -153,21 +189,21 @@ Run the global models on no_event, and then all data out of interest
 
 global1 <- 
   rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
-         data = filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)), 
+         data = no_event,
+         #data = filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+          #           vi.SppR.ROM > 0 & !is.na(mean_imps)), 
          random = ~ 1 | Study.ID, 
-         mods = ~ Duration * scale(mean_imps))
-
-filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-  count(.)
-
+         mods = ~ Duration * mean_imps)
 global1
 
-
 global_summ_df <- 
-  mk_summary_df(fl_combined, rma_object = global1, moderators = FALSE, 
-                mods = c('mean_imps', 'Duration'))
+  mk_rma_summary_df(no_event, rma_object = global1)
+
+filter(no_event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+  distinct(Site) %>%
+  count(.)
+
 row.names(global_summ_df) <- c('Intercept', 'Duration', 'Human Impact', 
                                 'Duration*Human Impact')
 global_summ_df$predictors <- factor(row.names(global_summ_df), levels = c('Intercept', 'Duration', 'Human Impact', 'Duration*Human Impact'))
@@ -192,24 +228,26 @@ ggplot(data = global_summ_df) +
 
 
 global_lme <- 
-filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
   lmer(yi.SppR.ROM ~ Duration * scale(mean_imps) + (1 | Study.ID), data = .)
 summary(global_lme)
 
 
 global2 <- 
-filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
           data = ., 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (scale(raster_vel) + scale(raster_lin) + scale(mean_invs) + scale(mean_pest) + scale(mean_fert))
+          mods = ~ Duration * (lin_change_specific + mean_invs +  mean_fert)
 )
 global2
 
 global_summ_df <- 
-  mk_summary_df(data, rma_object = global2, moderators = FALSE)
+  mk_rma_summary_df(fl_combined, rma_object = global2)
+
+does it matter that for short term studies the linear change is essentially the absolute change?
 
 row.names(global_summ_df) <- c('Intercept', 'Duration', 'Climate Velocity', 
                                'Linear Temp Change', 'Invasive Potential', 
@@ -251,9 +289,7 @@ ggplot(data = global_summ_df[-c(6, 7), ]) +
 # Wait, what do you do about high VIFs when working with interaction effects? 
 
 global2_lme <- 
-filter(data, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-    lmer(yi.SppR.ROM ~ Duration * (scale(raster_vel) + scale(raster_lin) + scale(mean_invs) + scale(mean_pest) + scale(mean_fert)) + (1 | Study.ID), data = .)
+lmer(yi.SppR.ROM ~ Duration * (scale(raster_vel) + scale(raster_lin) + scale(mean_invs)  + scale(mean_fert)) + (1 | Study.ID), data = fl_combined)
 summary(global2_lme)
 # scaling?
 
@@ -325,8 +361,8 @@ fertilizers <- raster(paste0(extra_impact_dir, '/plumes_fertilizer_raw/plumes_fe
 pesticides <- raster(paste0(extra_impact_dir, '/plumes_pesticide_raw/plumes_pest.tif'))
 
 
-yr_min <- min(data$T1)
-yr_max <- max(data$T2)
+yr_min <- min(fl_combined$T1)
+yr_max <- max(fl_combined$T2)
 
 hadrast <- loadHadSST1('master_data/', hadsstFilename = "HadISST_sst.nc")
 all_rasters <- getAllRasters(hadrast, years = yr_min:yr_max)
@@ -467,7 +503,9 @@ beep()
 
 predict1_percent <- (exp(predict1) - 1) * 100
 
-plot(predict1, col = rainbow(255))
+plot(predict1, col = rainbow(100))
+
+plot(predict1, col = topo.colors(100))
 
 plot(predict1_percent, col = heat.colors(3))
 
