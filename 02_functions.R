@@ -130,6 +130,19 @@ get_imp_hex <- function(x) {
 ###########################################################################
 #                          Data Cleanup Functions                         #
 ###########################################################################
+# Revised function to get first-last values that have consistent sampling months
+make_date_col <- function(year, month) {
+  dates <- structure(numeric(1), class="Date")
+  for (i in seq_along(year)) {
+    #browser()
+    if (is.na(month[i]) | month[i] == '') {
+      dates[i] <- as.Date(paste0(as.character(year[i]), '/01/01'), '%Y/%m/%d')
+    } else {
+      dates[i] <- as.Date(paste0(as.character(year[i]), '/', month[i], '/01'), '%Y/%m/%d')
+    }
+  }
+  return(dates)
+}
 
 # Select the first and last data points from the largest time difference 
 # (+/- one month)
