@@ -8,7 +8,7 @@
 # mods = "string of mods column name"
 # Need to fix when certain mods are dropped because the number of points is too
 # small, write better num_studies and num_sites calculation)
-mk_rma_summary_df <- function(original_df, rma_object) {
+mk_rma_summary_df <- function(original_df, rma_object, categorical = FALSE) {
   #browser()
     factors <- dimnames(rma_object$b)[[1]]
     mean_estimate <- as.vector(rma_object$b[, 1])
@@ -21,21 +21,29 @@ mk_rma_summary_df <- function(original_df, rma_object) {
     pval <-rma_object$pval 
     rho <- rma_object$rho
     if(is.null(rho) == TRUE) {rho <- NA}
-    num_sites <- 
-      dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
-        dplyr::count(., Expected.Change.Direction)
-    num_studies <- 
-      dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
-        dplyr::distinct(Study.ID, Expected.Change.Direction) %>%
-        dplyr::count(., Expected.Change.Direction)
     percent_change <- (exp(mean_estimate) - 1) * 100
-    adf <- data.frame(moderator = factors, mean_estimate = mean_estimate, 
-                     lower_ci = lower_ci, upper_ci, pval = pval, 
-                     sigma2 = sigma2, rho = rho, 
-                     studies_per_mod = num_studies$n, 
-                     sites_per_mod = num_sites$n, 
-                     percent_change = percent_change)
-    return(adf)
+
+    if (categorical == TRUE) {
+      num_sites <- 
+        dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+          dplyr::count(., Expected.Change.Direction)
+      num_studies <- 
+        dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
+          dplyr::distinct(Study.ID, Expected.Change.Direction) %>%
+          dplyr::count(., Expected.Change.Direction)
+      adf <- data.frame(moderator = factors, mean_estimate = mean_estimate, 
+                        lower_ci = lower_ci, upper_ci, pval = pval, 
+                        sigma2 = sigma2, rho = rho, 
+                        studies_per_mod = num_studies$n, 
+                        sites_per_mod = num_sites$n, 
+                        percent_change = percent_change)
+    } else {
+      adf <- data.frame(moderator = factors, mean_estimate = mean_estimate, 
+                        lower_ci = lower_ci, upper_ci, pval = pval, 
+                        sigma2 = sigma2, rho = rho, 
+                        percent_change = percent_change)
+      return(adf)
+  }
 }
 
 mk_lme_summary_df <- function(unweighted_df, mods, lme_object) {
