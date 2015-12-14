@@ -7,6 +7,8 @@ library(beepr)
 library(googlesheets)
 library(googleVis)
 
+setwd('Meta_analysis_ms')
+
 # Load data
 fl_combined <- read.csv('Data_outputs/firstLastData_v0.4-20151101.csv')
 
@@ -24,7 +26,7 @@ imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif')
 
 # Get spatial data (accurate lat longs for every site and where possible plots 
 # contained within a site)
-spatial_data <- read_csv('master_data/SiteSpatialData.csv')
+spatial_data <- read.csv('master_data/SiteSpatialData.csv')
 spatial_data$'[EMPTY]' <- NULL
 
 # Create the spatial dataframe with specific site data
@@ -193,6 +195,26 @@ projection(fl_combined_sp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 
 
 # Invasive potential #
 # -----------------------------------------------------------------------
+x <- as.array(invasives)
+
+switch_NA_zero <- function(cell) {
+  cell <- cell
+  if (is.na(cell)) {
+    cell <- 0
+  } else if (cell == 0) {
+    cell <- NA
+  }
+  return(cell)
+} 
+
+y <- apply(x, MARGIN = c(1, 2), FUN = switch_NA_zero)
+beep()
+
+z <- raster(x = y)
+
+writeRaster((z, 'invs_zero_na_switched.tif', format = "GTiff"))
+
+
 invs <- extract(invasives, fl_combined_sp, buffer = 1000, small = T)
 beep()
 mean_invs <- lapply(invs, FUN = mean, na.rm = TRUE)
@@ -215,6 +237,8 @@ mean_pest <- lapply(pest, FUN = mean, na.rm = TRUE)
 # Raw data layer values for invaisves, fertilizers, and pesticides back into 
 # master data.frame
 
+
+
 fl_combined$mean_invs <- unlist(mean_invs)
 fl_combined$mean_fert <- unlist(mean_fert)
 fl_combined$mean_pest <- unlist(mean_pest)
@@ -231,3 +255,6 @@ write.csv(fl_combined, paste0("Data_outputs/full_data_with_impacts_velocity_invs
 # Additional study length climate velocity 
 ################################################################################
 # Does it make sense for these to be averages?
+
+
+fl_combined 
