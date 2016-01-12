@@ -1764,41 +1764,41 @@ JD,150,Hernandez-Miranda et al. 2012,TI,0,0,0,1,1,1,1,0,0,0,5,mm,"demersal fishe
 JD,150,Hernandez-Miranda et al. 2012,TI,0,0,0,1,1,1,1,0,0,0,5,mm,"demersal fishes, bivalves, cnidarians, other epibenthic macrofauna",subtidal mudflat,-36.756944,-73.1975,"Coliumo Bay, Chile",Yes,hypoxic disturbance,No,2008,"Volume of water sampled = 378 * 0.3*1 (tow length, * net opening height * width)",0,1,0,0,0,Fig 2,"Coliumo Bay, Chile",3,3,0,0,6954.003586,9847.878183,47.5024183,95% CI,47.5024183,95% CI,NA,NA,NA,NA,113.4,m^3,2009,January,2009,April,17.01941285,0.275928182,95% CI,15.99453675,0.275928182,95% CI,0.584205967,0.01572291,95% CI,0.769736302,0.028301237,95% CI,,,,,,,,,,,,
 JD,150,Hernandez-Miranda et al. 2012,TI,0,0,0,1,1,1,1,0,0,0,5,mm,"demersal fishes, bivalves, cnidarians, other epibenthic macrofauna",subtidal mudflat,-36.756944,-73.1975,"Coliumo Bay, Chile",Yes,hypoxic disturbance,No,2008,"Volume of water sampled = 378 * 0.3*1 (tow length, * net opening height * width)",0,1,0,0,0,Fig 2,"Coliumo Bay, Chile",3,3,0,0,9847.878183,5022.40525,47.5024183,95% CI,71.27635589,95% CI,NA,NA,NA,NA,113.4,m^3,2009,April,2009,July,15.99453675,0.275928182,95% CI,21.07949896,0.315346494,95% CI,0.769736302,0.028301237,95% CI,0.42697687,0.037734983,95% CI,,,,,,,,,,,,
 JD,150,Hernandez-Miranda et al. 2012,TI,0,0,0,1,1,1,1,0,0,0,5,mm,"demersal fishes, bivalves, cnidarians, other epibenthic macrofauna",subtidal mudflat,-36.756944,-73.1975,"Coliumo Bay, Chile",Yes,hypoxic disturbance,No,2008,"Volume of water sampled = 378 * 0.3*1 (tow length, * net opening height * width)",0,1,0,0,0,Fig 2,"Coliumo Bay, Chile",3,3,0,0,5022.40525,13758.73637,71.27635589,95% CI,71.25362746,95% CI,NA,NA,NA,NA,113.4,m^3,2009,July,2009,October,21.07949896,0.315346494,95% CI,18.08370727,0.275928182,95% CI,0.42697687,0.037734983,95% CI,0.54018182,0.018867492,95% CI,,,,,,,,,,,,
-JD,150,Hernandez-Miranda et al. 2012,TI,0,0,0,1,1,1,1,0,0,0,5,mm,"demersal fishes, bivalves, cnidarians, other epibenthic macrofauna",subtidal mudflat,-36.756944,-73.1975,"Coliumo Bay, Chile",Yes,hypoxic disturbance,No,2008,"Volume of water sampled = 378 * 0.3*1 (tow length, * net opening height * width)",0,1,0,0,0,Fig 2,"Coliumo Bay, Chile",3,3,0,0,13758.73637,11688.2446,71.25362746,95% CI,47.5024183,95% CI,NA,NA,NA,NA,113.4,m^3,2009,October,2010,January,18.08370727,0.275928182,95% CI,18.08370727,0.197091559,95% CI,0.54018182,0.018867492,95% CI,0.722567573,0.031445819,95% CI,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+JD,150,Hernandez-Miranda et al. 2012,TI,0,0,0,1,1,1,1,0,0,,5,mm,"demersal fishes, bivalves, cnidarians, other epibenthic macrofauna",subtidal mudflat,-36.756944,-73.1975,"Coliumo Bay, Chile",Yes,hypoxic disturbance,No,2008,"Volume of water sampled = 378 * 0.3*1 (tow length, * net opening height * width)",0,1,0,0,0,Fig 2,"Coliumo Bay, Chile",3,3,0,0,13758.73637,11688.2446,71.25362746,95% CI,47.5024183,95% CI,NA,NA,NA,NA,113.4,m^3,2009,October,2010,January,18.08370727,0.275928182,95% CI,18.08370727,0.197091559,95% CI,0.54018182,0.018867492,95% CI,0.722567573,0.031445819,95% CI,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1997,Jan,1998,Jan,11.04651788,,,11.15676257,,,,,,,,,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1997,Jan,1998,Jan,11.04651788,,,11.15676257,,,,,,,,,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1996,Jun,1997,Jun,11.08362463,,,13.23958053,,,,,,,,,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1996,Jun,1997,Jun,11.08362463,,,13.23958053,,,,,,,,,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1996,Jul,1997,Jul,13.80263512,,,12.71524603,,,,,,,,,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1996,Jul,1997,Jul,13.80263512,,,12.71524603,,,,,,,,,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1996,aug,1997,Aug,12.39096531,,,12.67168594,,,,,,,,,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1996,aug,1997,Aug,12.39096531,,,12.67168594,,,,,,,,,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1996,sept,1997,Sep,12.3248185,,,12.41140091,,,,,,,,,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1996,sept,1997,Sep,12.3248185,,,12.41140091,,,,,,,,,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1996,Oct,1997,Oct,9.077709062,,,13.92901318,,,,,,,,,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1996,Oct,1997,Oct,9.077709062,,,13.92901318,,,,,,,,,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1996,Nov ,1997,Nov ,11.86394192,,,11.47028771,,,,,,,,,,,,,,,,,,,,
-,604,"Hidalgo and Escribano 2001
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1996,Nov ,1997,Nov ,11.86394192,,,11.47028771,,,,,,,,,,,,,,,,,,,,
+JD,604,"Hidalgo and Escribano 2001
 
-",TI,0,0,0,0,1,1,0,0,0,0,200,mu m,pelagic copepods,coastal shelf,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,,"they used a  Nansen net equipped with a 200-斯m mesh and
-0.5 m",0,0,0,0,1,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,450,m2,1996,Dec,1997,Dec,10.16079591,,,8.943802097,,,,,,,,,,,,,,,,,,,,
-,363,Svensson et al. 2009,TI,0,0,0,1,0,0,0,0,0,0,NA,NA,fish greater than 15 cms in length,coral reef,12.655,109.396389,"Whale island resort, Vietnam",protection,Hotel managed marine reserve in 2001 (WIB) and another site in 2005 (WIBP),Yes,,protection in WIB was not successful for the 1st 2 years.  plot size is length* depth,1,0,0,0,0,fig 3,Control1 50 *9 m transects,1,1,,,,,,,,,,,,,450,m2,2005,Oct,2006,Oct,4.124179707,0.888440182,SE,10.43917214,1.781928319,SE,,,,,,,,,,,,,,,,,,
-,363,Svensson et al. 2009,TI,0,0,0,1,0,0,0,0,0,0,NA,NA,fish greater than 15 cms in length,coral reef,12.655,109.396389,"Whale island resort, Vietnam",protection,Hotel managed marine reserve in 2001 (WIB) and another site in 2005 (WIBP),Yes,,protection in WIB was not successful for the 1st 2 years.  plot size is length* depth,1,0,0,0,0,fig 3,Control1 50 *9 m transects,1,1,,,,,,,,,,,,,450,m2,2006,Apr,2007,Apr,5.007571933,0.550227158,SE,8.662291772,1.22160525,SE,,,,,,,,,,,,,,,,,,
+",TI,0,0,0,0,0,0,0,0,0,1,200,mu m,pelagic copepods,pelagic,-23.35,-70.65,Northern Chile,Yes,Post and pre El Nino,Yes,1997,"they used a  Nansen net equipped with a 200-micrometre mesh and
+0.5 m. Volume filtered = 0.25*0.25*3.14*90",0,1,0,0,0,Fig 3,Mejillones Chile,1,1,,,,,,,,,,,,,17.6625,m^3,1996,Dec,1997,Dec,10.16079591,,,8.943802097,,,,,,,,,,,,,,,,,,,,
+,363,Svensson et al. 2009,TI,0,0,0,1,0,0,0,0,0,0,NA,NA,fish greater than 15 cms in length,coral reef,12.655,109.396389,"Whale island resort, Vietnam",protection,Hotel managed marine reserve in 2001 (WIB) and another site in 2005 (WIBP),Yes,,protection in WIB was not successful for the 1st 2 years.  plot size is length* depth,1,0,0,0,0,fig 3,Control1 50 *9 m transects,1,1,,,,,,,,,,,,,17.6625,m^3,2005,Oct,2006,Oct,4.124179707,0.888440182,SE,10.43917214,1.781928319,SE,,,,,,,,,,,,,,,,,,
+,363,Svensson et al. 2009,TI,0,0,0,1,0,0,0,0,0,0,NA,NA,fish greater than 15 cms in length,coral reef,12.655,109.396389,"Whale island resort, Vietnam",protection,Hotel managed marine reserve in 2001 (WIB) and another site in 2005 (WIBP),Yes,,protection in WIB was not successful for the 1st 2 years.  plot size is length* depth,1,0,0,0,0,fig 3,Control1 50 *9 m transects,1,1,,,,,,,,,,,,,17.6625,m^3,2006,Apr,2007,Apr,5.007571933,0.550227158,SE,8.662291772,1.22160525,SE,,,,,,,,,,,,,,,,,,
 ,363,Svensson et al. 2009,TI,0,0,0,1,0,0,0,0,0,0,NA,NA,fish greater than 15 cms in length,coral reef,12.655,109.396389,"Whale island resort, Vietnam",protection,Hotel managed marine reserve in 2001 (WIB) and another site in 2005 (WIBP),Yes,,protection in WIB was not successful for the 1st 2 years.  plot size is length* depth,1,0,0,0,0,fig 3,Control1 50 *3 m transects,1,1,,,,,,,,,,,,,150,m2,2005,Oct,2006,Oct,18.75820293,2.332155477,SE,21.40333165,3.669863705,SE,,,,,,,,,,,,,,,,,,
 ,363,Svensson et al. 2009,TI,0,0,0,1,0,0,0,0,0,0,NA,NA,fish greater than 15 cms in length,coral reef,12.655,109.396389,"Whale island resort, Vietnam",protection,Hotel managed marine reserve in 2001 (WIB) and another site in 2005 (WIBP),Yes,,protection in WIB was not successful for the 1st 2 years.  plot size is length* depth,1,0,0,0,0,fig 3,Control1 50 *3 m transects,1,1,,,,,,,,,,,,,150,m2,2006,Apr,2007,Apr,27.52650177,1.549722362,SE,27.40030288,1.887935386,SE,,,,,,,,,,,,,,,,,,
 ,363,Svensson et al. 2009,TI,0,0,0,1,0,0,0,0,0,0,NA,NA,fish greater than 15 cms in length,coral reef,12.655,109.396389,"Whale island resort, Vietnam",protection,Hotel managed marine reserve in 2001 (WIB) and another site in 2005 (WIBP),Yes,,protection in WIB was not successful for the 1st 2 years.  plot size is length* depth,1,0,0,0,0,fig 3,Control2 50*9m transects,1,1,,,,,,,,,,,,,450,m2,2005,Oct,2006,Oct,2.468450278,0,SE,4.008076729,0.777385159,SE,,,,,,,,,,,,,,,,,,
