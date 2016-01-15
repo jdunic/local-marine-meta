@@ -18,18 +18,13 @@
 # libraries for Accessing Data from the web
 # and meta-analysis
 library(metafor)
-#library(plyr)
-library(reshape2)
 library(lubridate)
 library(dplyr)
 library(tidyr)
 library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query' is masked by dplyr. I'm not sure that datamart properly uses namespace
 # or calls specific functions using package::foo, but I know that dplyr does.
-library(readr)
-library(googleVis)
 library(stringr)
 library(beepr)
-library(googlesheets)
 
 setwd('Meta_analysis_ms')
 
