@@ -75,10 +75,6 @@ richData <- convert.magic(richData, types = re_ordered$DataType)
 # Add event type categorisation.
 ###########
 
-# Removing this for now to try and figure out what the fix that we're waiting 
-# for actually is...
-#richData <- richData[-which(richData$Study.ID==47),] #waiting on Pat's fix
-
 # Add additional event data
 event_types <- gs_title("Event Types")
 eventData <- gs_read(ss = event_types)
