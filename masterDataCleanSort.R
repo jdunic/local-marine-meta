@@ -493,13 +493,6 @@ str(firstSampleFilteredData, list.len = 119)
 filter(firstSampleFilteredData, SppR1 == 0 | SppR2 == 0) %>% 
   select(Study.ID, Site, SppR1, SppR2)
 
-# Have no SMD calculated for them. I don't know why. I'm not sure what is different
-# in these three studies than all the others...
-#no_SMD <- firstSampleFilteredData[which(firstSampleFilteredData$Study.ID %in% c(47, 150, 363)), ]
-
-#gvt <- gvisTable(firstSampleFilteredData[which(firstSampleFilteredData$Study.ID %in% c(47, 150, 363)), c('n1', 'n2', 'SppR1', 'SppR2', 'SppR1.SD', 'SppR2.SD', 'vi.SppR.ROM', 'vi.SppR.SMD') ])
-#plot(gvt)
-
 
 # To make life easier when counting studies, create boolean field that flags:
 # - richness ROMs (with and without variance)
