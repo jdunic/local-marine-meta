@@ -39,6 +39,9 @@ richData <- read.csv('master_data/Data.csv', stringsAsFactors=FALSE,
 # Event types should NOT be 'No'
 richData$Event.type[which(richData$Event.type == 'No')] <- NA
 
+# Remove unnecessary columns to make my life easier later
+richData <- select(richData, -Lat, -Long, -SiSz, -SiSz..units.)
+
 ###########
 # Coerce data to correct data types
 ###########
@@ -225,14 +228,6 @@ convert_units <- function(value, unit) {
     #browser()
     return(convert_df)
 }
-
-#unique(richData$SiSz..units.)
-site_size_conversion <- 
-  richData %>% 
-    rowwise() %>%
-        do(convert_units(value = .$SiSz, unit = .$SiSz..units.))
-names(site_size_conversion) <- c('SiteSize', 'SiteSizeUnits')
-richData <- bind_cols(richData, site_size_conversion)
 
 # works!
 plot_size_conversion <- 
