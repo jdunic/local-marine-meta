@@ -26,6 +26,8 @@ library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query
 library(stringr)
 library(beepr)
 
+source('02_functions.R')
+
 setwd('Meta_analysis_ms')
 
 ###########
@@ -414,7 +416,7 @@ richData$date2 <- make_date_col(year = richData$T2, month = richData$T2m)
 # Using the new date functions in 02_functions.R
 firstSampleFilteredData <- 
   richData %>% 
-    group_by(Study.ID, Reference, Sys, taxa, Vis, Trwl, Line, Drdg, Trp, 
+    group_by(Study.ID, Reference, Sys, taxa, samp_method, 
              Descriptor.of.Taxa.Sampled, Loc, Site) %>%
     do(get_first_last(.))
 
@@ -426,8 +428,6 @@ attributes(firstSampleFilteredData)[c('vars', 'drop', 'indices', 'group_sizes', 
 
 # Add duration to the data frame
 firstSampleFilteredData$Duration <- with(firstSampleFilteredData, T2-T1)
-
-firstSampleFilteredData2 <- firstSampleFilteredData
 
 ############
 #calculate a lot of effect sizes
