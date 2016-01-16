@@ -265,9 +265,11 @@ sampleSum <- rowSums(select(richData, one_of(sampling)), na.rm=T)
 noSample <- richData[which(sampleSum == 0), ]
 noSample
 
-missing <- select(noSample, Study.ID, Reference, Collector)
-if (is.data.frame(missing)) {
-  missing$Note <- 'This sample is missing a sampling method'
+if (dim(noSample)[1] != 0) {
+  missing <- select(noSample, Study.ID, Reference, Collector)
+  if (is.data.frame(missing)) {
+    missing$Note <- 'This sample is missing a sampling method'
+  }
 }
 
 missing_data_df <- rbind(missing_data_df, missing)
@@ -314,6 +316,11 @@ richData$taxa <- taxa_values$taxa
 if (nrow(taxa_values) != nrow(richData)) {
   print('Something went wrong converting taxonomic data to single taxa column')
 }
+
+# remove the now redundant taxa columns
+richData <- select(richData, -coral, -plant, -algae, -fish, -inverts, 
+                   -mobile.inverts, -sessile.inverts, -marine.mammals, 
+                   -phytoplankton, -zooplankton)
 
 ###########
 ## Error checking
