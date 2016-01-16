@@ -317,10 +317,34 @@ if (nrow(taxa_values) != nrow(richData)) {
   print('Something went wrong converting taxonomic data to single taxa column')
 }
 
-# remove the now redundant taxa columns
-richData <- select(richData, -coral, -plant, -algae, -fish, -inverts, 
-                   -mobile.inverts, -sessile.inverts, -marine.mammals, 
-                   -phytoplankton, -zooplankton)
+# Get nice sampling method column
+getSampMethod <- function(samp_method_list) {
+  #browser()
+  samp_method_list <- as.character(samp_method_list)
+  if (length(samp_method_list) == 1) {
+    samp_method = samp_method_list
+  }
+  if (length(samp_method_list) > 1) {
+    samp_method <- 'Multiple'
+  }
+  return(as.data.frame(samp_method))
+}
+
+samp_methods <- 
+  richData %>% 
+  select(id, Study.ID, Site, Sys, T1, T1m, T2, T2m, Vis:Trp) %>%
+  group_by(id) %>%
+  #group_by(Study.ID, Site, Sys, T1, T1m, T2, T2m) %>%
+  gather(key, value, -id, -Study.ID, -Site, -Sys, -T1, -T1m, -T2, -T2m) %>%
+  filter(value == 1) %>%
+  group_by(id) %>%
+  do(getSampMethod(samp_method_list = .$key)) %>%
+  arrange(id)
+
+richData$samp_method <- samp_methods$samp_method
+
+# remove the now redundant sampling columns
+richData <- select(richData, -Vis, -Trwl, -Line, -Drdg, -Trp)
 
 ###########
 ## Error checking
