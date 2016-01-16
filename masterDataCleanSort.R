@@ -36,7 +36,7 @@ setwd('Meta_analysis_ms')
 
 # Load the master data!!!!
 richData <- read.csv('master_data/Data.csv', stringsAsFactors=FALSE, 
-                     na.strings = c('', 'NA', 'N/A'))
+                     na.strings = c('', 'NA', 'N/A', 'Na', 'na', 'M', ' '))
 
 # Event types should NOT be 'No'
 richData$Event.type[which(richData$Event.type == 'No')] <- NA
