@@ -34,7 +34,7 @@ setwd('Meta_analysis_ms')
 
 # Load the master data!!!!
 richData <- read.csv('master_data/Data.csv', stringsAsFactors=FALSE, 
-                     na.strings = c('', 'NA', 'n/a'))
+                     na.strings = c('', 'NA', 'N/A'))
 
 # Event types should NOT be 'No'
 richData$Event.type[which(richData$Event.type == 'No')] <- NA
@@ -203,10 +203,6 @@ richData$PltSz..units. <- gsub('^nm[^i]', 'nmi', richData$PltSz..units.)
 richData$SiSz..units. <- gsub('liters', 'l', richData$SiSz..units.)
 richData$PltSz..units. <- gsub('liters', 'l', richData$PltSz..units.)
 
-# Replace with NA where appropriate
-richData$SiSz..units.[which(richData$SiSz..units. == 'n/a')] <- NA
-richData$SiSz..units.[which(richData$SiSz..units. == '')] <- NA
-richData$PltSz..units.[which(richData$PltSz..units. == 'unspecified')] <- NA
 
 convert_units <- function(value, unit) {
   if (is.na(unit)) {
