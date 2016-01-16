@@ -33,7 +33,11 @@ setwd('Meta_analysis_ms')
 #v##########
 
 # Load the master data!!!!
-richData <- read.csv('master_data/Data.csv', stringsAsFactors=FALSE)
+richData <- read.csv('master_data/Data.csv', stringsAsFactors=FALSE, 
+                     na.strings = c('', 'NA'))
+
+# Event types should NOT be 'No'
+richData$Event.type[which(richData$Event.type == 'No')] <- NA
 
 ###########
 # Coerce data to correct data types
@@ -75,17 +79,17 @@ richData <- convert.magic(richData, types = re_ordered$DataType)
 # Add event type categorisation.
 ###########
 
+# Write a list of the unique event types so that they can be classified
+#event_list <- unique(richData$Event.type)
+#write.csv(event_list[order(event_list)], 'master_data/event_list.csv')
+
 # Add additional event data
-event_data <- read.csv("master_data/Event_types.csv")
+event_data <- read.csv("master_data/Event_types.csv", stringsAsFactors = FALSE)
 
-# Random cleanup... it's not 'No'! It's NA! There is no value!
-richData[which(richData$Event.type == 'No'), 'Event.type'] <- NA
-richData[which(richData$Event.type == ''), 'Event.type'] <- NA
-
-richData <- left_join(richData, eventData)
+richData <- left_join(richData, event_data, by = c('Event.type' = 'event_desc'))
 
 # Check that the event data spreadsheet is up to date:
-extra_events <- setdiff(richData$Event.type, eventData$Event.type)
+extra_events <- setdiff(richData$Event.type, event_data$event_desc)
 extra_events
 
 if (sum(!is.na(extra_events)) > 1) {
