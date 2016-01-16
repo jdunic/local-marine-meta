@@ -238,16 +238,6 @@ plot_size_conversion <-
 names(plot_size_conversion) <- c('PlotSize', 'PlotSizeUnits')
 richData <- tbl_df(bind_cols(richData, plot_size_conversion))
 
-
-#colnames(richData)[colnames(richData)=="new_val"] <- "SiteSize"
-#colnames(richData)[colnames(richData)=="new_unit"] <- "SiteSizeUnits"
-
-#richData <- adply(richData, 1, function(x) convert_units(x$PltSz, x$PltSz..units.))
-#colnames(richData)[colnames(richData)=="new_val"] <- "PlotSize"
-#colnames(richData)[colnames(richData)=="new_unit"] <- "PlotSizeUnits"
-
-#unique(richData[, c('SiteSizeUnits', 'PlotSizeUnits')], na.rm = TRUE)
-
 #Is there a taxonomic type?
 types <- c("coral", "plant", "algae", 
            "fish", 'inverts', "mobile.inverts", "sessile.inverts", 
