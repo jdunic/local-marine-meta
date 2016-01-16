@@ -346,35 +346,6 @@ richData$samp_method <- samp_methods$samp_method
 # remove the now redundant sampling columns
 richData <- select(richData, -Vis, -Trwl, -Line, -Drdg, -Trp)
 
-###########
-## Error checking
-###########
-
-varToCheck <- c("n1", "n2", "T1", "T2", "PltSz", "Sys", 
-                "Descriptor.of.Taxa.Sampled", 
-                #"Event.", 
-                #"A.priori.", 
-                "Loc", "Site", 
-                "Vis", "Trwl", "Line", "Drdg", "Trp",
-                "coral", "plant", "algae", 
-           "fish", "inverts", "mobile.inverts", "sessile.inverts", "marine.mammals", 
-           "phytoplankton", "zooplankton")
-
-# Catch missing values
-for(j in varToCheck){
-  badidx <- which(is.na(richData[[j]]))
-  print(j)
-  if(length(badidx) > 0){
-    print(
-    richData[badidx, ] %>%
-      select(one_of('Study.ID', 'Reference', 'Collector', j))
-      )
-    #print(ddply(richData[badidx, ], .(Study.ID, Reference, Collector, j), summarise, entries = length(n1)))
-  } else {
-      print("Clear!")
-  }
-  cat("\n")
-}
 
 # Check that if the lat/long are missing from the master data sheet, that there 
 # is at least one lat long associated with the data in the SpatialData 
