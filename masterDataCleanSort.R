@@ -603,12 +603,8 @@ timeData <- timeData[,-(agrep("Simps", names(timeData)))]
 #0.9 - All data quality controlled
 #1.0 - Final data for the paper
 
-firstSampleFilteredData$Event. <- gsub("protection", "Yes", firstSampleFilteredData$Event.) #garumph
-eventIDX <- which(firstSampleFilteredData$Event. == "Yes")
-timeEventIDX <- which(timeData$Event. == "Yes")
 
-
-ver <- 0.4
+ver <- 0.9
 outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
 trailer <- paste0("_v",ver,"-",outdate,".csv")
 write.csv(firstSampleFilteredData, paste0('Data_outputs/firstLastData', trailer), row.names = F)
