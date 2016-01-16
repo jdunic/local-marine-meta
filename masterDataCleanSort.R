@@ -347,21 +347,6 @@ richData$samp_method <- samp_methods$samp_method
 richData <- select(richData, -Vis, -Trwl, -Line, -Drdg, -Trp)
 
 
-# Check that if the lat/long are missing from the master data sheet, that there 
-# is at least one lat long associated with the data in the SpatialData 
-# spreadsheet.
-spatial <- read.csv('master_data/SiteSpatialData.csv', stringsAsFactors=FALSE)
-
-spatial_check <- 
-  mutate(richData, spatial_data = ifelse(Study.ID %in% unique(spatial$Study.ID), 
-                                         'yes', 'no'))
-
-spatial_check %>%
-    filter(spatial_data == 'no') %>%
-      group_by(Study.ID) %>% 
-      select(Study.ID, Collector, Site)
-
-
 ###########
 ## Make Months Consistent
 ###########
