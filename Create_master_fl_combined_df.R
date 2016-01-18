@@ -76,7 +76,7 @@ combined_data <- rbind(sp_data_points2, sp_data_lines2)
 # Save the data so I don't have to run all of this again + waste more time
 outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
 trailer <- paste0(outdate,".csv")
-write.csv(combined_data, 'Data_outputs/full_data_with_drivers.csv')
+write.csv(combined_data, 'Data_outputs/spatial_data_with_cumulative_impacts.csv')
 
 # Load data
 fl_combined <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
