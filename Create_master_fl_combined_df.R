@@ -1,16 +1,85 @@
 #library(RCurl)
 library(raster)
 library(dplyr)
+library(purrr)
 #library(hadsstR)
 library(beepr)
 
-library(googlesheets)
-library(googleVis)
-
 setwd('Meta_analysis_ms')
 
+# Get spatial data (accurate lat longs for every site and where possible plots 
+# contained within a site)
+spatial_data <- read.csv('master_data/SiteSpatialData.csv', stringsAsFactors = FALSE)
+
+# Add rows so that I can create the spatial lines dataframe
+spatial_data$row <- seq_along(spatial_data$Study.ID)
+
+sp_data_points <- filter(spatial_data, Shape == 'point')
+sp_data_lines <- filter(spatial_data, Shape == 'line')
+
+# site_id can be used to join the spatial data with the 
+spatial_data$site_id <- paste(spatial_data$Study.ID, spatial_data$Site, sep = "_")
+
+# ------------------------------------------------------------------------------
+# Get cumulative human impact values for all spatial data points
+# ------------------------------------------------------------------------------
+# Load human impacts map
+impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data/CI_2013_OneTimePeriod'
+imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif'))
+
+
+# Get data from sites with line transects
+# ------------------------------------------------------------------------------
+# Create a list of the points that make up each line (just a start and end 
+# point in this case)
+lines_list <- 
+  sp_data_lines %>% 
+    split(.$row) %>%
+    map(function(x) {
+      start <- x[, c('Study.ID', 'Reference', 'Site', 'Start_Lat', 'Start_Long')]
+      end <- x[, c('Study.ID', 'Reference', 'Site', 'End_Lat', 'End_Long')]
+      names(start) <- names(end) <- c('Study.ID', 'Reference', 'Site', 'Lat', 'Lon')
+      out <- rbind(start, end)
+      coordinates(out) <- ~Lon + Lat
+      projection(out) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+      out <- Line(out)
+      out <- Lines(out, ID = x$row)
+      return(out)
+      })
+
+spatial_lines_obj <- SpatialLines(lines_list)
+
+line_imps <- extract(imp_map, spatial_lines_obj, along = TRUE)
+
+# Get data from sites with points
+# ------------------------------------------------------------------------------
+coordinates(sp_data_points) <- ~Start_Long + Start_Lat
+projection(sp_data_points) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+
+point_imps <- extract(imp_map, sp_data_points, buffer = 1000)
+
+# Clean up the list of lists of impact values for both point imps and line imps
+# get_mean_imp replaces zero values with NA because zero is land.
+mean_point_imps <- unlist(lapply(point_imps, FUN = get_mean_imp))
+
+mean_line_imps <- unlist(lapply(line_imps, FUN = get_mean_imp))
+
+
+sp_data_points2 <- filter(spatial_data, Shape == 'point')
+sp_data_lines2  <- filter(spatial_data, Shape == 'line')
+
+sp_data_points2$mean_imps <- mean_point_imps
+sp_data_lines2$mean_imps  <- mean_line_imps
+
+combined_data <- rbind(sp_data_points2, sp_data_lines2)
+
+# Save the data so I don't have to run all of this again + waste more time
+outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
+trailer <- paste0(outdate,".csv")
+write.csv(combined_data, 'Data_outputs/full_data_with_drivers.csv')
+
 # Load data
-fl_combined <- read.csv('Data_outputs/firstLastData_v0.4-20151101.csv')
+fl_combined <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
 
 fl_combined$id <- as.factor(1:length(fl_combined$Study.ID))
 
@@ -24,10 +93,7 @@ imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif')
 
 #plot(imp_map)
 
-# Get spatial data (accurate lat longs for every site and where possible plots 
-# contained within a site)
-spatial_data <- read.csv('master_data/SiteSpatialData.csv')
-spatial_data$'[EMPTY]' <- NULL
+
 
 # Create the spatial dataframe with specific site data
 fl_combined$location_key <- paste(fl_combined$Study.ID, fl_combined$Site, sep = '_')
