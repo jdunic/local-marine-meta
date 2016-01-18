@@ -11,25 +11,23 @@ setwd('Meta_analysis_ms')
 # contained within a site)
 spatial_data <- read.csv('master_data/SiteSpatialData.csv', stringsAsFactors = FALSE)
 
+# site_id can be used to join the spatial data with the 
+spatial_data$site_id <- paste(spatial_data$Study.ID, spatial_data$Site, sep = "_")
+
 # Add rows so that I can create the spatial lines dataframe
 spatial_data$row <- seq_along(spatial_data$Study.ID)
 
 sp_data_points <- filter(spatial_data, Shape == 'point')
 sp_data_lines <- filter(spatial_data, Shape == 'line')
 
-# site_id can be used to join the spatial data with the 
-spatial_data$site_id <- paste(spatial_data$Study.ID, spatial_data$Site, sep = "_")
 
+# Create spatial objects
 # ------------------------------------------------------------------------------
-# Get cumulative human impact values for all spatial data points
-# ------------------------------------------------------------------------------
-# Load human impacts map
-impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data/CI_2013_OneTimePeriod'
-imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif'))
+# Coerce points to spatial points object with explicit projection
+coordinates(sp_data_points) <- ~Start_Long + Start_Lat
+projection(sp_data_points) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 
-
-# Get data from sites with line transects
-# ------------------------------------------------------------------------------
+# Create spatial lines object for extract
 # Create a list of the points that make up each line (just a start and end 
 # point in this case)
 lines_list <- 
@@ -47,21 +45,24 @@ lines_list <-
       return(out)
       })
 
+# Required for extract function input
 spatial_lines_obj <- SpatialLines(lines_list)
 
-line_imps <- extract(imp_map, spatial_lines_obj, along = TRUE)
-
-# Get data from sites with points
 # ------------------------------------------------------------------------------
-coordinates(sp_data_points) <- ~Start_Long + Start_Lat
-projection(sp_data_points) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+# Get cumulative human impact values for all spatial data points
+# ------------------------------------------------------------------------------
+# Load human impacts map
+impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data/CI_2013_OneTimePeriod'
+imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif'))
+
 
 point_imps <- extract(imp_map, sp_data_points, buffer = 1000)
-
 # Clean up the list of lists of impact values for both point imps and line imps
 # get_mean_imp replaces zero values with NA because zero is land.
 mean_point_imps <- unlist(lapply(point_imps, FUN = get_mean_imp))
 
+
+line_imps <- extract(imp_map, spatial_lines_obj, along = TRUE)
 mean_line_imps <- unlist(lapply(line_imps, FUN = get_mean_imp))
 
 
@@ -82,6 +83,86 @@ write.csv(combined_data, 'Data_outputs/spatial_data_with_cumulative_impacts.csv'
 fl_combined <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
 
 fl_combined$id <- as.factor(1:length(fl_combined$Study.ID))
+
+# ------------------------------------------------------------------------------
+# Get addtional impact values 
+# ------------------------------------------------------------------------------
+# Set human impacts data directory
+extra_impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data'
+
+invasives <- raster(paste0(extra_impact_dir, '/invasives_raw/invasives.tif'))
+fertilizers <- raster(paste0(extra_impact_dir, '/plumes_fertilizer_raw/plumes_fert.tif'))
+#pesticides <- raster(paste0(extra_impact_dir, '/plumes_pesticide_raw/plumes_pest.tif'))
+
+# Invasive potential #
+# -----------------------------------------------------------------------
+x <- as.array(invasives)
+
+switch_NA_zero <- function(cell) {
+  cell <- cell
+  if (is.na(cell)) {
+    cell <- 0
+  } else if (cell == 0) {
+    cell <- NA
+  }
+  return(cell)
+} 
+
+y <- apply(x, MARGIN = c(1, 2), FUN = switch_NA_zero)
+beep()
+
+z <- raster(x = y)
+
+writeRaster((z, 'invs_zero_na_switched.tif', format = "GTiff"))
+
+invasives <- raster('invs_zero_na_switched.tif')
+
+
+point_invs <- extract(invasives, sp_data_points, buffer = 1000)
+# Clean up the list of lists of impact values for both point imps and line imps
+# get_mean_imp replaces zero values with NA because zero is land.
+mean_point_invs <- lapply(point_invs, FUN = mean, na.rm = TRUE)
+
+line_invs <- extract(invasives, spatial_lines_obj, along = TRUE)
+mean_line_imps <- lapply(line_invs, FUN = mean, na.rm = TRUE)
+
+sp_data_points2 <- filter(spatial_data, Shape == 'point')
+sp_data_lines2  <- filter(spatial_data, Shape == 'line')
+
+sp_data_points2$mean_imps <- mean_point_imps
+sp_data_lines2$mean_imps  <- mean_line_imps
+
+invs_combined_data <- rbind(sp_data_points2, sp_data_lines2)
+
+# Save the data so I don't have to run all of this again + waste more time
+outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
+trailer <- paste0(outdate,".csv")
+write.csv(invs_combined_data, 'Data_outputs/spatial_data_with_invasives.csv')
+
+
+
+# Fertilizer layer # 
+# -----------------------------------------------------------------------
+fert <- extract(fertilizers, fl_combined_sp, buffer = 1000, small = T)
+beep()
+mean_fert <- lapply(fert, FUN = mean, na.rm = TRUE)
+
+
+# Pesticide layer # 
+# -----------------------------------------------------------------------
+#pest <- extract(pesticides, fl_combined_sp, buffer = 1000, small = T)
+#beep()
+#mean_pest <- lapply(pest, FUN = mean, na.rm = TRUE)
+
+
+# Raw data layer values for invaisves, fertilizers, and pesticides back into 
+# master data.frame
+
+
+
+fl_combined$mean_invs <- unlist(mean_invs)
+fl_combined$mean_fert <- unlist(mean_fert)
+fl_combined$mean_pest <- unlist(mean_pest)
 
 
 ################################################################################
