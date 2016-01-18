@@ -83,66 +83,6 @@ fl_combined <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
 
 fl_combined$id <- as.factor(1:length(fl_combined$Study.ID))
 
-################################################################################
-#               Add cumulative human impact values to full data                #
-################################################################################
-
-# Load human impacts map
-impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data/CI_2013_OneTimePeriod'
-imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif'))
-
-#plot(imp_map)
-
-
-
-# Create the spatial dataframe with specific site data
-fl_combined$location_key <- paste(fl_combined$Study.ID, fl_combined$Site, sep = '_')
-spatial_data$location_key <- paste(spatial_data$Study.ID, spatial_data$Site, sep = '_')
-
-fl_combined <- merge(fl_combined, spatial_data, by = 'location_key', all.x = TRUE)
-
-# Clean up x's in colnames after the merge
-names(fl_combined) <- sub("\\.x$", '', names(fl_combined))
-
-
-# Work around for dirty lat longs while we're still missing that data
-fl_combined$Lat.y[is.na(fl_combined$Lat.y)] <- fl_combined$Lat[is.na(fl_combined$Lat.y)]
-fl_combined$Long.y[is.na(fl_combined$Long.y)] <- fl_combined$Long[is.na(fl_combined$Long.y)]
-
-# Get studies that don't have matching location_key.
-setdiff(spatial_data$location_key, fl_combined$location_key)
-
-
-# Ignore rows that do not have an associated lat-long for now
-# These need to be fixed.
-fl_combined <- filter(fl_combined, !is.na(Lat.y) | !is.na(Long.y))
-
-
-######
-# Finally go on to get the cumulative impact values
-######
-
-# Temporary fix because it looks like some studies still don't have lat longs
-fl_combined_sp <- fl_combined
-coordinates(fl_combined_sp) <- c('Long.y', 'Lat.y')
-projection(fl_combined_sp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-
-# Get mean impact value for each site (set 0.0 to NA - these points are land)
-# FYI - this takes a long time :(
-imps <- extract(imp_map, fl_combined_sp, buffer = 1000, small = T)
-beep()
-
-# get_mean_imp replaces zero values with NA because zero is land.
-mean_imps <- lapply(imps, FUN = get_mean_imp)
-fl_combined$mean_imps <- unlist(mean_imps)
-
-
-# Let's save this data object just in case something happens
-#outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
-#trailer <- paste0(outdate,".csv")
-#write.csv(fl_combined2, paste0("Data/full_data_with_impacts",trailer), row.names=F)
-
-#fl_combined2 <- read.csv('Data/full_data_with_impacts20150330.csv')
 
 ################################################################################
 #                     Add temperature change to full data                      #
