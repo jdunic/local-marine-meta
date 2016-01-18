@@ -91,25 +91,28 @@ fl_combined$id <- as.factor(1:length(fl_combined$Study.ID))
 extra_impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data'
 
 invasives <- raster(paste0(extra_impact_dir, '/invasives_raw/invasives.tif'))
-fertilizers <- raster(paste0(extra_impact_dir, '/plumes_fertilizer_raw/plumes_fert.tif'))
-#pesticides <- raster(paste0(extra_impact_dir, '/plumes_pesticide_raw/plumes_pest.tif'))
 
 # Invasive potential #
 # -----------------------------------------------------------------------
-x <- as.array(invasives)
+# Only need to run this once. 
+# Switch NA and zero values (need to go to an array because raster is too smart 
+# and knows that you are trying to change NA values...) to be consistent with 
+# the other data layers and to allow NA values to be omitted.
 
-switch_NA_zero <- function(cell) {
-  cell <- cell
-  if (is.na(cell)) {
-    cell <- 0
-  } else if (cell == 0) {
-    cell <- NA
-  }
-  return(cell)
-} 
+#x <- as.array(invasives)
 
-y <- apply(x, MARGIN = c(1, 2), FUN = switch_NA_zero)
-beep()
+#switch_NA_zero <- function(cell) {
+#  cell <- cell
+#  if (is.na(cell)) {
+#    cell <- 0
+#  } else if (cell == 0) {
+#    cell <- NA
+#  }
+#  return(cell)
+#} 
+
+#y <- apply(x, MARGIN = c(1, 2), FUN = switch_NA_zero)
+#beep()
 
 z <- raster(x = y)
 
@@ -119,18 +122,16 @@ invasives <- raster('invs_zero_na_switched.tif')
 
 
 point_invs <- extract(invasives, sp_data_points, buffer = 1000)
-# Clean up the list of lists of impact values for both point imps and line imps
-# get_mean_imp replaces zero values with NA because zero is land.
 mean_point_invs <- lapply(point_invs, FUN = mean, na.rm = TRUE)
 
 line_invs <- extract(invasives, spatial_lines_obj, along = TRUE)
-mean_line_imps <- lapply(line_invs, FUN = mean, na.rm = TRUE)
+mean_line_invs <- lapply(line_invs, FUN = mean, na.rm = TRUE)
 
 sp_data_points2 <- filter(spatial_data, Shape == 'point')
 sp_data_lines2  <- filter(spatial_data, Shape == 'line')
 
-sp_data_points2$mean_imps <- mean_point_imps
-sp_data_lines2$mean_imps  <- mean_line_imps
+sp_data_points2$mean_invs <- unlist(mean_point_invs)
+sp_data_lines2$mean_invs  <- unlist(mean_line_invs)
 
 invs_combined_data <- rbind(sp_data_points2, sp_data_lines2)
 
@@ -141,29 +142,58 @@ write.csv(invs_combined_data, 'Data_outputs/spatial_data_with_invasives.csv')
 
 
 
-# Fertilizer layer # 
+# Nutrients/Fertilizer layer # 
 # -----------------------------------------------------------------------
-fert <- extract(fertilizers, fl_combined_sp, buffer = 1000, small = T)
+fertilizers <- raster(paste0(extra_impact_dir, '/plumes_fertilizer_raw/plumes_fert.tif'))
+
+nuts <- extract(fertilizers, fl_combined_sp, buffer = 1000, small = T)
 beep()
-mean_fert <- lapply(fert, FUN = mean, na.rm = TRUE)
+
+point_nuts <- extract(nuts, sp_data_points, buffer = 1000)
+mean_point_nuts <- lapply(point_nuts, FUN = mean, na.rm = TRUE)
+
+line_nuts <- extract(nuts, spatial_lines_obj, along = TRUE)
+mean_line_nuts <- lapply(line_nuts, FUN = mean, na.rm = TRUE)
+
+sp_data_points2 <- filter(spatial_data, Shape == 'point')
+sp_data_lines2  <- filter(spatial_data, Shape == 'line')
+
+sp_data_points2$mean_nuts <- unlist(mean_point_nuts)
+sp_data_lines2$mean_nuts  <- unlist(mean_line_nuts)
+
+nuts_combined_data <- rbind(sp_data_points2, sp_data_lines2)
+
+# Save the data so I don't have to run all of this again + waste more time
+outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
+trailer <- paste0(outdate,".csv")
+write.csv(nuts_combined_data, 'Data_outputs/spatial_data_with_nutrients.csv')
 
 
 # Pesticide layer # 
 # -----------------------------------------------------------------------
-#pest <- extract(pesticides, fl_combined_sp, buffer = 1000, small = T)
-#beep()
-#mean_pest <- lapply(pest, FUN = mean, na.rm = TRUE)
+pesticides <- raster(paste0(extra_impact_dir, '/plumes_pesticide_raw/plumes_pest.tif'))
 
+pest <- extract(pesticides, fl_combined_sp, buffer = 1000, small = T)
+beep()
 
-# Raw data layer values for invaisves, fertilizers, and pesticides back into 
-# master data.frame
+point_pest <- extract(pest, sp_data_points, buffer = 1000)
+mean_point_pest <- lapply(point_pest, FUN = mean, na.rm = TRUE)
 
+line_pest <- extract(pest, spatial_lines_obj, along = TRUE)
+mean_line_pest <- lapply(line_pest, FUN = mean, na.rm = TRUE)
 
+sp_data_points2 <- filter(spatial_data, Shape == 'point')
+sp_data_lines2  <- filter(spatial_data, Shape == 'line')
 
-fl_combined$mean_invs <- unlist(mean_invs)
-fl_combined$mean_fert <- unlist(mean_fert)
-fl_combined$mean_pest <- unlist(mean_pest)
+sp_data_points2$mean_pest <- unlist(mean_point_pest)
+sp_data_lines2$mean_pest  <- unlist(mean_line_pest)
 
+pest_combined_data <- rbind(sp_data_points2, sp_data_lines2)
+
+# Save the data so I don't have to run all of this again + waste more time
+outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
+trailer <- paste0(outdate,".csv")
+write.csv(pest_combined_data, 'Data_outputs/spatial_data_with_pesticides.csv')
 
 ################################################################################
 #                     Add temperature change to full data                      #
