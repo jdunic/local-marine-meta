@@ -130,14 +130,10 @@ write.csv(invs_combined_data, 'Data_outputs/spatial_data_with_invasives.csv')
 
 # Nutrients/Fertilizer layer # 
 # -----------------------------------------------------------------------
-fertilizers <- raster(paste0(extra_impact_dir, '/plumes_fertilizer_raw/plumes_fert.tif'))
-
-nuts <- extract(fertilizers, fl_combined_sp, buffer = 1000, small = T)
-beep()
+nuts <- raster(paste0(extra_impact_dir, '/plumes_fertilizer_raw/plumes_fert.tif'))
 
 point_nuts <- extract(nuts, sp_data_points, buffer = 1000)
 mean_point_nuts <- lapply(point_nuts, FUN = mean, na.rm = TRUE)
-
 line_nuts <- extract(nuts, spatial_lines_obj, along = TRUE)
 mean_line_nuts <- lapply(line_nuts, FUN = mean, na.rm = TRUE)
 
@@ -159,20 +155,16 @@ write.csv(nuts_combined_data, 'Data_outputs/spatial_data_with_nutrients.csv')
 # -----------------------------------------------------------------------
 pesticides <- raster(paste0(extra_impact_dir, '/plumes_pesticide_raw/plumes_pest.tif'))
 
-pest <- extract(pesticides, fl_combined_sp, buffer = 1000, small = T)
-beep()
-
-point_pest <- extract(pest, sp_data_points, buffer = 1000)
-mean_point_pest <- lapply(point_pest, FUN = mean, na.rm = TRUE)
-
-line_pest <- extract(pest, spatial_lines_obj, along = TRUE)
-mean_line_pest <- lapply(line_pest, FUN = mean, na.rm = TRUE)
+point_pests <- extract(pesticides, sp_data_points, buffer = 1000)
+mean_point_pests <- lapply(point_pests, FUN = mean, na.rm = TRUE)
+line_pests <- extract(pesticides, spatial_lines_obj, along = TRUE)
+mean_line_pests <- lapply(line_pests, FUN = mean, na.rm = TRUE)
 
 sp_data_points2 <- filter(spatial_data, Shape == 'point')
 sp_data_lines2  <- filter(spatial_data, Shape == 'line')
 
-sp_data_points2$mean_pest <- unlist(mean_point_pest)
-sp_data_lines2$mean_pest  <- unlist(mean_line_pest)
+sp_data_points2$mean_pests <- unlist(mean_point_pests)
+sp_data_lines2$mean_pests  <- unlist(mean_line_pests)
 
 pest_combined_data <- rbind(sp_data_points2, sp_data_lines2)
 
