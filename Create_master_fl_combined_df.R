@@ -110,8 +110,8 @@ line_invs <- extract(invasives, spatial_lines_obj, along = TRUE)
 point_invs_NA_switched <- lapply(point_invs, FUN = switch_NA_zero)
 line_invs_NA_switched <- lapply(line_invs, FUN = switch_NA_zero)
 
-#mean_point_invs <- lapply(point_invs, FUN = switch_NA_zero)
-#mean_line_invs  <- lapply(line_invs, FUN = switch_NA_zero)
+mean_point_invs <- lapply(point_invs, FUN = mean, na.rm = TRUE)
+mean_line_invs  <- lapply(line_invs, FUN = mean, na.rm = TRUE)
 
 sp_data_points2 <- filter(spatial_data, Shape == 'point')
 sp_data_lines2  <- filter(spatial_data, Shape == 'line')
