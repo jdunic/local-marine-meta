@@ -93,39 +93,25 @@ extra_impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data'
 invasives <- raster(paste0(extra_impact_dir, '/invasives_raw/invasives.tif'))
 
 # Invasive potential #
-# -----------------------------------------------------------------------
-# Only need to run this once. 
-# Switch NA and zero values (need to go to an array because raster is too smart 
-# and knows that you are trying to change NA values...) to be consistent with 
-# the other data layers and to allow NA values to be omitted.
+# ----------------------------------------------------------------------- 
+# Switch NA and zero values to be consistent with the other data layers and to 
+# allow NA values to be omitted.
 
-#x <- as.array(invasives)
-
-#switch_NA_zero <- function(cell) {
-#  cell <- cell
-#  if (is.na(cell)) {
-#    cell <- 0
-#  } else if (cell == 0) {
-#    cell <- NA
-#  }
-#  return(cell)
-#} 
-
-#y <- apply(x, MARGIN = c(1, 2), FUN = switch_NA_zero)
-#beep()
-
-z <- raster(x = y)
-
-writeRaster((z, 'invs_zero_na_switched.tif', format = "GTiff"))
-
-invasives <- raster('invs_zero_na_switched.tif')
-
+switch_NA_zero <- function(x) {
+  x[is.na(x)] <- -99999
+  x[x == 0] <- NA
+  x[x == -99999] <- 0
+  return(x)
+}
 
 point_invs <- extract(invasives, sp_data_points, buffer = 1000)
-mean_point_invs <- lapply(point_invs, FUN = mean, na.rm = TRUE)
-
 line_invs <- extract(invasives, spatial_lines_obj, along = TRUE)
-mean_line_invs <- lapply(line_invs, FUN = mean, na.rm = TRUE)
+
+point_invs_NA_switched <- lapply(point_invs, FUN = switch_NA_zero)
+line_invs_NA_switched <- lapply(line_invs, FUN = switch_NA_zero)
+
+#mean_point_invs <- lapply(point_invs, FUN = switch_NA_zero)
+#mean_line_invs  <- lapply(line_invs, FUN = switch_NA_zero)
 
 sp_data_points2 <- filter(spatial_data, Shape == 'point')
 sp_data_lines2  <- filter(spatial_data, Shape == 'line')
