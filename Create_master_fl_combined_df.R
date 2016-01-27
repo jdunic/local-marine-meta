@@ -218,20 +218,21 @@ write.csv(pest_combined_data, 'Data_outputs/spatial_data_with_pesticides.csv')
 ################################################################################
 #              Add raster velocity and linear change to full data              #
 ################################################################################
-source('../new_hadsstr/vocc_raster_functions.R')
+devtools::install_github("jdunic/hadsstr")
+library(hadsstr)
 
-yr_min <- min(fl_combined$T1)
-yr_max <- max(fl_combined$T2)
+fl <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
+
+yr_min <- min(fl$T1)
+yr_max <- max(fl$T2)
 print(c(yr_min, yr_max))
 
+hadrast <- load_hadsst(file = 'master_data/HadISST_sst.nc')
 
-hadrast <- loadHadSST1('master_data/', hadsstFilename = "HadISST_sst.nc")
-all_rasters <- getAllRasters(hadrast, years = yr_min:yr_max)
-#velocity <- getVelocityMag_raster(hadsst_raster, years = yr_min:yr_max)
-#linear <- getSSTLinChangeRaster(hadsst_raster, years = yr_min:yr_max)
+all_rasters <- get_all_rasters(hadrast, years = yr_min:yr_max)
 
-velocity <- selectRaster(all_rasters, 'Velocity')
-linear <- selectRaster(all_rasters, 'LinearChange')
+velocity <- select_raster(all_rasters, 'velocity_magnitude')
+linear <- select_raster(all_rasters, 'linear_change')
 
 beep()
 
