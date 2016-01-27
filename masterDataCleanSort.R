@@ -104,6 +104,13 @@ richData <- convert.magic(richData, types = re_ordered$DataType)
 # Add additional event data
 event_data <- read.csv("master_data/Event_types.csv", stringsAsFactors = FALSE)
 
+event_data <- 
+  event_data %>% 
+  mutate(event_category = trimws(.$event_category), 
+         event_desc = trimws(.$event_desc), 
+         expected_change = trimws(.$expected_change), 
+         event_notes = trimws(.$event_notes))
+
 richData <- left_join(richData, event_data, by = c('Event.type' = 'event_desc'))
 
 # Check that the event data spreadsheet is up to date:
