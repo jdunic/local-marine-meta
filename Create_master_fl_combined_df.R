@@ -223,6 +223,8 @@ library(hadsstr)
 
 fl <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
 
+# Get single velocity and linear temp change raster for the total duration of 
+# all of the studies together
 yr_min <- min(fl$T1)
 yr_max <- max(fl$T2)
 print(c(yr_min, yr_max))
@@ -236,6 +238,23 @@ linear <- select_raster(all_rasters, 'linear_change')
 
 beep()
 
+# Get a velocity and linear temp change raster for each unique duration in the 
+# dataset
+
+durations <- unique(fl[, c('T1', 'T2')])
+duration_text <- paste(durations$T1, durations$T2, sep = '_')
+
+rast_set <- list()
+for (i in seq_along(durations)) {
+    all_rasters <- get_all_rasters(hadrast, years = durations[i, 1]:durations[i, 2])
+    rast_stack <- stack(all_rasters)
+    duration_text <- paste(durations$T1[i], durations$T2[i], sep = '_')
+    # Remember that there are 5 data layers in each hadsst raster brick
+    rast_set[[i]] <- setZ(rast_stack, rep(duration_text, each = 5), name = 'duration')
+    print(i)
+}
+
+which(chron::years(hadsst_raster@z$Date) == x)
 
 
 ################################################################################
