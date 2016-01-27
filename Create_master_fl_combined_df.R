@@ -236,31 +236,7 @@ linear <- select_raster(all_rasters, 'linear_change')
 
 beep()
 
-######
-# Extract velocity magnitudes
-######
-# Create spatial object
-fl_combined_sp <- fl_combined
-coordinates(fl_combined_sp) <- c('Long.y', 'Lat.y')
-projection(fl_combined_sp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
-# Get velocities and linear changes at each lat/lon
-velocities <- extract(velocity, fl_combined_sp, small = T)
-linears <- extract(linear, fl_combined_sp, small = T)
-
-fl_combined_sp$raster_vel <- velocities
-fl_combined_sp$raster_lin <- linears
-
-fl_combined <- as.data.frame(fl_combined_sp)
-
-# Retaining lat/lon values from spatial data.frame
-# See SO answer here: http://gis.stackexchange.com/questions/142156/r-how-to-get-latitudes-and-longitudes-from-a-rasterlayer
-
-fl_combined <- data.frame(fl_combined_sp@data, long = coordinates(fl_combined_sp))
-
-# Clean up lat long column names
-
-fl_combined <- rename(fl_combined, Long.y = long.Long.y, Lat.y = long.Lat.y)
 
 ################################################################################
 # Saving data object with human impacts and climate velocity.
