@@ -44,6 +44,19 @@ richData$Event.type[which(richData$Event.type == 'No')] <- NA
 # Remove unnecessary columns to make my life easier later
 richData <- select(richData, -Lat, -Long, -SiSz, -SiSz..units.)
 
+# Strip trailing whitespace from columns where I think it is going to cause me 
+# future pain
+richData <- 
+  richData %>% 
+  mutate(Reference = trimws(.$Reference), 
+         Collector = trimws(.$Collector), 
+         Descriptor.of.Taxa.Sampled = trimws(.$Descriptor.of.Taxa.Sampled), 
+         Sys = trimws(.$Sys), 
+         Event.type = trimws(.$Event.type), 
+         Year.of.Event = trimws(.$Year.of.Event), 
+         Site = trimws(.$Site)) %>% 
+  as_data_frame(.)
+
 ###########
 # Coerce data to correct data types
 ###########
