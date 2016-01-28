@@ -2,8 +2,9 @@
 library(raster)
 library(dplyr)
 library(purrr)
-#library(hadsstR)
 library(beepr)
+devtools::install_github("jdunic/hadsstr")
+library(hadsstr)
 
 setwd('Meta_analysis_ms')
 
@@ -11,14 +12,40 @@ setwd('Meta_analysis_ms')
 # contained within a site)
 spatial_data <- read.csv('master_data/SiteSpatialData.csv', stringsAsFactors = FALSE)
 
-# site_id can be used to join the spatial data with the 
-spatial_data$site_id <- paste(spatial_data$Study.ID, spatial_data$Site, sep = "_")
+spatial_data <- 
+  spatial_data %>% 
+  mutate(Reference = trimws(.$Reference), 
+         Site = trimws(.$Site), 
+         Shape = trimws(.$Shape)) %>% 
+  mutate(site_id = paste(.$Study.ID, .$Site, sep = "_"))
 
 # Add rows so that I can create the spatial lines dataframe
 spatial_data$row <- seq_along(spatial_data$Study.ID)
 
 sp_data_points <- filter(spatial_data, Shape == 'point')
 sp_data_lines <- filter(spatial_data, Shape == 'line')
+
+
+# Load and add site_id column to first last data to be able to combine the 
+# spatial data with the master first last sheet. Also used for doing the 
+# year-specific linear temperature change and climate velocity extractions.
+fl <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv', stringsAsFactors = FALSE)
+fl <- 
+  mutate(fl, Site = replace(Site, Site == 'Fishery' & Study.ID == 524, 'Fished')) %>%
+  mutate(Site = replace(Site, Site == 'Nothern' & Study.ID == 441, 'Northern')) %>%
+  mutate(Reference = trimws(.$Reference), 
+         Collector = trimws(.$Collector), 
+         Descriptor.of.Taxa.Sampled = trimws(.$Descriptor.of.Taxa.Sampled), 
+         Sys = trimws(.$Sys), 
+         Event.type = trimws(.$Event.type), 
+         Year.of.Event = trimws(.$Year.of.Event), 
+         Site = trimws(.$Site)) %>% 
+  mutate(site_id = paste(.$Study.ID, .$Site, sep = "_")) %>% 
+  as_data_frame(.)
+
+
+# For now, fix study 425 Study.ID. This has been changed in the raw data, but 
+# requires the master cleaning script to be run again
 
 
 # Create spatial objects
@@ -78,11 +105,6 @@ combined_data <- rbind(sp_data_points2, sp_data_lines2)
 outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
 trailer <- paste0(outdate,".csv")
 write.csv(combined_data, 'Data_outputs/spatial_data_with_cumulative_impacts.csv')
-
-# Load data
-fl_combined <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
-
-fl_combined$id <- as.factor(1:length(fl_combined$Study.ID))
 
 # ------------------------------------------------------------------------------
 # Get addtional impact values 
@@ -174,54 +196,8 @@ trailer <- paste0(outdate,".csv")
 write.csv(pest_combined_data, 'Data_outputs/spatial_data_with_pesticides.csv')
 
 ################################################################################
-#                     Add temperature change to full data                      #
-################################################################################
-#sstData <- loadHadSST(directory="Data/", hadsstFilename="HadISST_sst.nc"); beep()
-
-# Get climate change arrays for the period spanning our studies
-#yr_min <- min(fl_combined$T1)
-#yr_max <- max(fl_combined$T2)
-#print(c(yr_min, yr_max))
-
-#start <- Sys.time()
-#cMats <- getClimateChange(sstData, years = yr_min:yr_max)
-#total <- Sys.time() - start
-#total
-#beep()
-
-# Get climate velocities at per decade rate.
-#vel <- numeric(length(fl_combined2$id))
-#for (i in seq_along(fl_combined2$id)) {
-#    vel[i] <- getClimateLatLon(cMats, 
-#                               lat = fl_combined2$Lat.y[i], 
-#                               lon = fl_combined2$Long.y[i], 
-#                               measure="velocity")
-#}
-
-#fl_combined2$vel_decade <- vel
-#beep()
-
-
-# Get average temperature change (per decade rate)
-#lin_change <- numeric(length(fl_combined2$id))
-#for (i in seq_along(fl_combined2$id)) {
-#    lin_change[i] <- getClimateLatLon(cMats, 
-#                                      lat = fl_combined2$Lat.y[i], 
-#                                      lon = fl_combined2$Long.y[i], 
-#                                      measure="linearChange")
-#}
-
-#fl_combined2$lin_change <- lin_change
-#beep()
-
-
-################################################################################
 #              Add raster velocity and linear change to full data              #
 ################################################################################
-devtools::install_github("jdunic/hadsstr")
-library(hadsstr)
-
-fl <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv')
 
 # Get single velocity and linear temp change raster for the total duration of 
 # all of the studies together
@@ -244,22 +220,119 @@ beep()
 durations <- unique(fl[, c('T1', 'T2')])
 duration_text <- paste(durations$T1, durations$T2, sep = '_')
 
+# Create a list of raster stacks that have the time spans as the z values so 
+# that I can link them back up to the studies in the first last data
 rast_set <- list()
-for (i in seq_along(durations)) {
+for (i in seq_along(durations[[1]])) {
     all_rasters <- get_all_rasters(hadrast, years = durations[i, 1]:durations[i, 2])
     rast_stack <- stack(all_rasters)
     duration_text <- paste(durations$T1[i], durations$T2[i], sep = '_')
     # Remember that there are 5 data layers in each hadsst raster brick
     rast_set[[i]] <- setZ(rast_stack, rep(duration_text, each = 5), name = 'duration')
+    names(rast_set[i]) <- duration_text
+    # A counter so that I can have some idea of how far along things are
     print(i)
 }
 
-which(chron::years(hadsst_raster@z$Date) == x)
+# Do the spatial points lookups and extraction for linear temperature change and 
+# climate velocities. 
+
+# Get a simplified data frame that has the necessary data needed to lookup 
+# across tables. 
+sp_data_points_lookup <- filter(spatial_data, Shape == 'point') %>% 
+  select(site_id, Start_Lat, Start_Long, row) %>% 
+  left_join(x = ., y = fl, by = c('site_id' = 'site_id')) %>% 
+  mutate(timespans = paste(.$T1, .$T2, sep = "_")) %>%
+  select(site_id, Study.ID, Site, Start_Lat, Start_Long, row, timespans) %>%
+  distinct(row) %>%
+  as_data_frame(.)
+
+# Split this into a list so that I can work on it piece by piece to do the 
+# cross referencing and select the correct raster dates
+sp_data_points_list <- split(sp_data_points_lookup, seq(nrow(sp_data_points_lookup)))
+
+linear_change_point_vals <- list()
+vocc_point_vals <- list()
+
+for (i in seq_along(sp_data_points_list)) {
+    #browser()
+#for (i in seq_along(sp_data_points_list)) {
+  # raster::coordinates gets mad when you pass a tbl_df object
+  sp_data_points_list[[i]] <- as.data.frame(sp_data_points_list[[i]], stringsAsFactors = FALSE)
+#
+  time_span_lookup <- sp_data_points_list[[i]]$timespans
+#
+  lin_change_rast <- raster::subset(rast_set[[time_span_lookup]], 'linear_change')
+  vocc_rast <- raster::subset(rast_set[[time_span_lookup]], 'velocity_magnitude')
+#
+  coordinates(sp_data_points_list[[i]]) <- ~Start_Long + Start_Lat
+  projection(sp_data_points_list[[i]]) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+#
+  linear_change_point_vals[[i]] <- extract(lin_change_rast, sp_data_points_list[[i]], buffer = 1000)
+  vocc_point_vals[[i]] <- extract(vocc_rast, sp_data_points_list[[i]], buffer = 1000)
+  names(linear_change_point_vals[[i]]) <- sp_data_points_list[[i]]$row
+  names(vocc_point_vals[[i]]) <- sp_data_points_list[[i]]$row
+}
+
+beep()
+
+# Create a simplified lookup for the spatial line data that joins the spatial 
+# data and first last data so that I can get the right raster dates.
+sp_data_lines <- 
+  fl %>% 
+    mutate(timespans = paste(.$T1, .$T2, sep = "_")) %>%
+    select(site_id, timespans) %>% 
+    left_join(x = ., y = filter(spatial_data, Shape == 'line'), by = c('site_id' = 'site_id')) %>% 
+    as_data_frame(.)
+
+linear_change_line_vals <- list()
+vocc_line_vals <- list()
+
+# Fortunately the spatial lines object is already in list format and I named 
+# each element as the row in the spatial data sheet so that we can lookup using 
+# the row number and follow the relationship to the time span through 
+# sp_data_lines.
+for (i in seq_along(spatial_lines_obj)) {
+  time_span_lookup <- 
+  filter(sp_data_lines, row == names(spatial_lines_obj[i])) %>% 
+  select(timespans) %>% 
+  .[[1]]
+#  
+  lin_change_rast <- raster::subset(rast_set[[time_span_lookup]], 'linear_change')
+  vocc_rast <- raster::subset(rast_set[[time_span_lookup]], 'velocity_magnitude')
+#
+  linear_change_line_vals[[i]] <- extract(lin_change_rast, spatial_lines_obj[i], along = TRUE)
+  vocc_line_vals[[i]] <- extract(vocc_rast, spatial_lines_obj[i], along = TRUE)
+  names(linear_change_line_vals[[i]]) <- names(spatial_lines_obj[i])
+  names(vocc_line_vals[[i]]) <- names(spatial_lines_obj[i])
+}
 
 
-################################################################################
-# Saving data object with human impacts and climate velocity.
-################################################################################
+mean_lin_change <-
+  lapply(c(linear_change_point_vals, linear_change_line_vals), function(x) {
+    mean_lin <- mean(x[[1]], na.rm = TRUE)
+    names(mean_lin) <- names(x)
+    return(mean_lin)
+})
+
+mean_vocc <-
+  lapply(c(vocc_point_vals, vocc_line_vals), function(x) {
+    mean_vocc <- mean(x[[1]], na.rm = TRUE)
+    names(mean_vocc) <- names(x)
+    return(mean_vocc)
+})
+
+# The row orders are the same for linear change and vocc
+# all.equal(lapply(mean_lin_change, names), lapply(mean_lin_change, names))
+temp_data <- 
+  data_frame(row = as.numeric(unlist(lapply(mean_lin_change, names))), 
+             mean_lin_change = as.vector(unlist(mean_lin_change)), 
+             mean_vocc = as.vector(unlist(mean_vocc)))
+
+temp_data_combined <- 
+  left_join(x = spatial_data, y = temp_data, by = c('row' = 'row'))
+
+# Save the data so I don't have to run all of this again + waste more time
 outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
 trailer <- paste0(outdate,".csv")
-write.csv(fl_combined_sp, paste0("Data/full_data_with_impacts_and_velocity",trailer), row.names=F)
+write.csv(temp_data_combined, paste0("Data/spatial_data_with_temp_data.csv", trailer), row.names = FALSE)
