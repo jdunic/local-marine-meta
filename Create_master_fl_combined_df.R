@@ -333,6 +333,7 @@ temp_data_combined <-
   left_join(x = spatial_data, y = temp_data, by = c('row' = 'row'))
 
 # Save the data so I don't have to run all of this again + waste more time
-outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
-trailer <- paste0(outdate,".csv")
-write.csv(temp_data_combined, paste0("Data/spatial_data_with_temp_data.csv", trailer), row.names = FALSE)
+write.csv(temp_data_combined, "Data_outputs/spatial_data_with_temp_data.csv", row.names = FALSE)
+
+# ------------------------------------------------------------------------------
+
