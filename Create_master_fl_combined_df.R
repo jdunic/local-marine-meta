@@ -341,4 +341,29 @@ temp_data_combined <-
 write.csv(temp_data_combined, "Data_outputs/spatial_data_with_temp_data.csv", row.names = FALSE)
 
 # ------------------------------------------------------------------------------
+# Combine the extracted spatial data 
+# ------------------------------------------------------------------------------
 
+imps <- readr::read_csv('Data_outputs/spatial_data_with_cumulative_impacts.csv')
+invs <- readr::read_csv('Data_outputs/spatial_data_with_invasives.csv')
+nuts <- readr::read_csv('Data_outputs/spatial_data_with_nutrients.csv')
+pest <- readr::read_csv('Data_outputs/spatial_data_with_pesticides.csv')
+temp <- readr::read_csv('Data_outputs/spatial_data_with_temp_data.csv')
+
+
+imps <- select(imps, row, mean_imps)
+invs <- select(invs, row, mean_invs)
+nuts <- select(nuts, row, mean_nuts)
+pest <- select(pest, row, mean_pests)
+temp <- select(temp, row, mean_lin_change, mean_vocc)
+
+
+fl_combined <- 
+left_join(spatial_data, imps, by = c('row' = 'row')) %>% 
+  left_join(., invs, by = c('row' = 'row')) %>% 
+  left_join(., nuts, by = c('row' = 'row')) %>% 
+  left_join(., pest, by = c('row' = 'row')) %>% 
+  left_join(., temp, by = c('row' = 'row')) %>% 
+  as_data_frame(.)
+
+write.csv(fl_combined, 'Data_outputs/fl_combined.csv', row.names = FALSE)
