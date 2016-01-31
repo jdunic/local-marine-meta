@@ -6,7 +6,9 @@ library(beepr)
 devtools::install_github("jdunic/hadsstr")
 library(hadsstr)
 
-setwd('Meta_analysis_ms')
+source('02_functions.R')
+
+if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
 
 # Get spatial data (accurate lat longs for every site and where possible plots 
 # contained within a site)
@@ -224,7 +226,7 @@ duration_text <- paste(durations$T1, durations$T2, sep = '_')
 # that I can link them back up to the studies in the first last data
 rast_set <- list()
 for (i in seq_along(durations[[1]])) {
-    all_rasters <- get_all_rasters(hadrast, years = durations[i, 1]:durations[i, 2])
+    all_rasters <- get_all_rasters(hadrast, years = durations$T1[i]:durations$T2[i])
     rast_stack <- stack(all_rasters)
     duration_text <- paste(durations$T1[i], durations$T2[i], sep = '_')
     # Remember that there are 5 data layers in each hadsst raster brick
@@ -233,6 +235,9 @@ for (i in seq_along(durations[[1]])) {
     # A counter so that I can have some idea of how far along things are
     print(i)
 }
+
+duration_text <- paste(durations$T1, durations$T2, sep = '_')
+names(rast_set) <- duration_text
 
 # Do the spatial points lookups and extraction for linear temperature change and 
 # climate velocities. 
@@ -279,10 +284,10 @@ beep()
 # Create a simplified lookup for the spatial line data that joins the spatial 
 # data and first last data so that I can get the right raster dates.
 sp_data_lines <- 
-  fl %>% 
-    mutate(timespans = paste(.$T1, .$T2, sep = "_")) %>%
-    select(site_id, timespans) %>% 
-    left_join(x = ., y = filter(spatial_data, Shape == 'line'), by = c('site_id' = 'site_id')) %>% 
+  filter(spatial_data, Shape == 'line') %>% 
+  select(-Study.ID, -Site) %>% 
+  left_join(x = ., y = mutate(fl, timespans = paste(T1, T2, sep = "_")), by = c('site_id' = 'site_id')) %>%
+  select(site_id, Study.ID, Site, Start_Lat, Start_Long, End_Lat, End_Long, row, timespans) %>%
     as_data_frame(.)
 
 linear_change_line_vals <- list()
