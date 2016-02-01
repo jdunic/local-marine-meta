@@ -374,7 +374,7 @@ left_join(spatial_data, imps, by = c('row' = 'row')) %>%
   left_join(., temp, by = c('row' = 'row')) %>% 
   as_data_frame(.)
 
-fl_combined <- 
+summarised_spatial <- 
   full_join(all_spatial_data, fl, by = c('site_id' = 'site_id')) %>%
   group_by(id) %>% 
   summarise(mean_imps = mean(mean_imps, na.rm = TRUE), 
@@ -383,5 +383,8 @@ fl_combined <-
             mean_pests = mean(mean_pests, na.rm = TRUE), 
             mean_lin_change = mean(mean_lin_change, na.rm = TRUE), 
             mean_vocc = mean(mean_vocc, na.rm = TRUE))
+
+fl_combined <- 
+  left_join(fl, summarised_spatial, by = c('id' = 'id'))
 
 write.csv(fl_combined, 'Data_outputs/fl_combined.csv', row.names = FALSE)
