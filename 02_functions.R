@@ -1,8 +1,12 @@
 #Meta-analysis functions
 
 # Back calculate log ratio into the percent change in species richness
-get_percent_change <- function(log_ratio) {
-  exp(log_ratio) - 1
+get_percent_change <- function(log_ratio, as_percent = TRUE) {
+  change = exp(log_ratio) - 1
+  if (as_percent == TRUE) {
+    change = change * 100
+  }
+  return(change)
 }
 
 
