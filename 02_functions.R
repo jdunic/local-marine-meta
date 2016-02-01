@@ -1,5 +1,11 @@
 #Meta-analysis functions
 
+# Back calculate log ratio into the percent change in species richness
+get_percent_change <- function(log_ratio) {
+  exp(log_ratio) - 1
+}
+
+
 ###########################################################################
 #                        Make summary data frames                         #
 ###########################################################################
@@ -26,11 +32,11 @@ mk_rma_summary_df <- function(original_df, rma_object, categorical = FALSE) {
     if (categorical == TRUE) {
       num_sites <- 
         dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
-          dplyr::count(., Expected.Change.Direction)
+          dplyr::count(., expected_change)
       num_studies <- 
         dplyr::filter(original_df, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>% 
-          dplyr::distinct(Study.ID, Expected.Change.Direction) %>%
-          dplyr::count(., Expected.Change.Direction)
+          dplyr::distinct(Study.ID, expected_change) %>%
+          dplyr::count(., expected_change)
       adf <- data.frame(moderator = factors, mean_estimate = mean_estimate, 
                         lower_ci = lower_ci, upper_ci, pval = pval, 
                         sigma2 = sigma2, rho = rho, 
