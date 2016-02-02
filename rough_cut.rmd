@@ -18,6 +18,27 @@ no_event <- filter(fl_combined, Event. != 'Yes')
 
 ```
 
+The log ratio is the natural logarithm of the proportion of change in species richness (ln(final richness / initial richness)). We calculate the percent change in species richness as exp(log ratio) = final richness / initial richness. 
+
+```{r, echo = FALSE, eval = FALSE}
+# Log ratio reference for me
+# When there is no change in richness, final / initial = 1
+log(1) = 0
+
+# Example: 50% increase in richness between time points
+# When richness increases over time, final / initial > 1
+log(150 / 100)
+0.4054651
+# Percent change = exp(log ratio) - 1
+exp(0.4054651) - 1
+
+# Example: 50% decrease in richness between time points
+# When richness decreases over time, final / initial < 1
+log(50 / 100)
+[1] -0.6931472
+# Percent change = exp(log ratio) - 1
+exp(-0.6931472) - 1
+```
 
 # More clean up... grrr - there can't be a species richness error = 0. This 
 # just needs to be removed for study 47. 
