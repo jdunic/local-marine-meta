@@ -284,7 +284,7 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
           data = ., 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (lin_change_specific + mean_invs +  mean_fert)
+          mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
 )
 global2
 
@@ -295,21 +295,21 @@ does it matter that for short term studies the linear change is essentially the 
 
 row.names(global_summ_df) <- c('Intercept', 'Duration', 'Climate Velocity', 
                                'Linear Temp Change', 'Invasive Potential', 
-                               'Pesticides', 'Fertilizers', 
+                               'Pesticides', 'Nutrients', 
                                 'Duration*Climate Velocity', 
                                 'Duration*Linear Temp Change', 
                                 'Duration*Invasive Potential', 
                                 'Duration*Pesticides', 
-                                'Duration*Fertilizers')
+                                'Duration*Nutrients')
 global_summ_df$predictors <- factor(row.names(global_summ_df), levels = c(
                                'Intercept', 'Duration', 'Climate Velocity', 
                                'Linear Temp Change', 'Invasive Potential', 
-                               'Pesticides', 'Fertilizers', 
+                               'Pesticides', 'Nutrients', 
                                 'Duration*Climate Velocity', 
                                 'Duration*Linear Temp Change', 
                                 'Duration*Invasive Potential', 
                                 'Duration*Pesticides', 
-                                'Duration*Fertilizers'))
+                                'Duration*Nutrients'))
 
 
 ggplot(data = global_summ_df[-c(6, 7), ]) +
@@ -327,13 +327,13 @@ ggplot(data = global_summ_df[-c(6, 7), ]) +
         axis.title.y = element_text(vjust = 1.5, size = 16), 
         panel.grid.major  = element_blank(),
         panel.grid.minor  = element_blank()) +
-  geom_vline(y = 0, linetype = "dashed", colour = 'yellow')
+  geom_vline(xintercept = 0, linetype = "dashed", colour = 'yellow')
   #xlim(c(-8, 8))
 
 # Wait, what do you do about high VIFs when working with interaction effects? 
 
 global2_lme <- 
-lmer(yi.SppR.ROM ~ Duration * (scale(raster_vel) + scale(raster_lin) + scale(mean_invs)  + scale(mean_fert)) + (1 | Study.ID), data = fl_combined)
+lmer(yi.SppR.ROM ~ Duration * (scale(mean_vocc) + scale(mean_lin_change) + scale(mean_invs)  + scale(mean_nuts)) + (1 | Study.ID), data = fl_combined)
 summary(global2_lme)
 # scaling?
 
@@ -514,7 +514,7 @@ time_map50 <- time_map1 * 50
 
 names(global2_lme@frame)
 
-names(crop_vel) <- 'raster_vel'
+names(crop_vel) <- 'mean_vocc'
 names(crop_lin) <- 'raster_lin'
 names(crop_inv2) <- 'mean_invs'
 names(crop_fert) <- 'mean_fert'
@@ -630,17 +630,17 @@ rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
 global2 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration + raster_vel + 1)
+       mods   = ~ Duration + mean_vocc + 1)
 
 global3 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration + mean_imps + raster_vel + 1)
+       mods   = ~ Duration + mean_imps + mean_vocc + 1)
 
 global4 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration:mean_imps + Duration:raster_vel + 1)
+       mods   = ~ Duration:mean_imps + Duration:mean_vocc + 1)
 
 global5 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
@@ -655,7 +655,7 @@ rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
 global7 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration + mean_invs + raster_vel + 1)
+       mods   = ~ Duration + mean_invs + mean_vocc + 1)
 
 
 
@@ -668,17 +668,17 @@ rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
 global9 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration + raster_vel + 1)
+       mods   = ~ Duration + mean_vocc + 1)
 
 global10 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration + mean_imps + raster_vel + 1)
+       mods   = ~ Duration + mean_imps + mean_vocc + 1)
 
 global11 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration:mean_imps + Duration:raster_vel + 1)
+       mods   = ~ Duration:mean_imps + Duration:mean_vocc + 1)
 
 global12 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
@@ -693,7 +693,7 @@ rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
 global14 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
        random = ~ 1 | factor(Study.ID),
-       mods   = ~ Duration + Duration*mean_invs + raster_vel + 1)
+       mods   = ~ Duration + Duration*mean_invs + mean_vocc + 1)
 
 
 # Unweighted
@@ -868,18 +868,18 @@ summary(event.lme)
 global_model <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ mean_imps + Duration:mean_imps + Duration + SppR1 + Duration:raster_vel + 1)
+       mods = ~ mean_imps + Duration:mean_imps + Duration + SppR1 + Duration:mean_vocc + 1)
 
 global_model <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ mean_imps + Duration + SppR1 + raster_vel + 1)
+       mods = ~ mean_imps + Duration + SppR1 + mean_vocc + 1)
 
 
 global_model <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = data,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ scale(mean_imps) + scale(Duration):scale(mean_imps) + scale(Duration) + scale(SppR1) + scale(Duration):scale(raster_vel) + 1)
+       mods = ~ scale(mean_imps) + scale(Duration):scale(mean_imps) + scale(Duration) + scale(SppR1) + scale(Duration):scale(mean_vocc) + 1)
 
 
 global_model <- 
