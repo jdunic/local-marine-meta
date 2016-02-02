@@ -6,7 +6,7 @@ library(raster)
 library(dplyr)
 library(ggplot2)
 library(metafor)
-library(lme4)
+library(nlme)
 library(gridExtra)
 library(broom)
 
@@ -49,10 +49,7 @@ exp(-0.6931472) - 1
 
 To test whether local marine species richness has changed over time, we have performed a meta-regression on the relationship between the log ratio of species richness between the final and initial time points and study duration. The weighted analysis included 213 sites and 50 studies while the unweighted analysis included 505 sites and 122 studies.  
 
-In the weighted analysis, species richness did not change on average (mod1, mod2), nor was there a relationship between change in species richness and duration (mod1).
-
-In the intercept: this is the average propotion of change in species richness, over time (intrinsically built into the metric final / initial). In the unweighted analysis, the intercept maybe be significant; the intercept estimate it double the standard error of the intercept. These results suggest that on average, regardless of duration, species richness has increased by one percent in the studies examined. These findings are similar to those found by Vellend et al 2014.
-
+In the both the weighted and unweighted analyses, species richness did not change on average (mod1, mod2), nor was there a relationship between change in species richness and duration (mod1).
 
 ```{r}
 # Weighted analysis - and naive model plot
@@ -73,17 +70,9 @@ mod2
 
 # Unweighted analysis that includes all of the log ratios that do not have 
 # variance associated with them. 
-lme1 <- lmer(yi.SppR.ROM ~ Duration + (1 | Study.ID), data = fl_combined, REML = F)
-#lme1 <- lmer(yi.SppR.ROM ~ (1 | Study.ID), data = fl_combined)
+lme1 <- lme(yi.SppR.ROM ~ Duration, random = ~ 1 | Study.ID, data = fl_combined, 
+            na.action = na.omit)
 summary(lme1)
-
-# Leave out duration (not significant)
-lme2 <- lmer(yi.SppR.ROM ~ (1 | Study.ID), data = fl_combined, REML = F)
-summary(lme2)
-
-# I'm kind of surprised that the more simple model doesn't fit better... why?
-anova(lme1, lme2)
-
 ```
 
 Looking at the caterpillar plot for each of the studies, it is probably best to keep Study.ID as a random 
