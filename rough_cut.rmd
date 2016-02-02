@@ -40,15 +40,11 @@ log(50 / 100)
 exp(-0.6931472) - 1
 ```
 
-# More clean up... grrr - there can't be a species richness error = 0. This 
-# just needs to be removed for study 47. 
-fl_combined$vi.SppR.ROM[which(fl_combined$vi.SppR.ROM == 0)] <- NA
+To test whether local marine species richness has changed over time, we have performed a meta-regression on the relationship between the log ratio of species richness between the final and initial time points and study duration. The weighted analysis included 213 sites and 50 studies while the unweighted analysis included 505 sites and 122 studies.  
 
-# Remove duplicate data
-fl_combined <- filter(distinct(fl_combined, Study.ID, Site, taxa))
+In the weighted analysis, species richness did not change on average (mod1, mod2), nor was there a relationship between change in species richness and duration (mod1).
 
-# Make Study.ID a factor
-fl_combined$Study.ID <- as.factor(fl_combined$Study.ID)
+In the intercept: this is the average propotion of change in species richness, over time (intrinsically built into the metric final / initial). In the unweighted analysis, the intercept maybe be significant; the intercept estimate it double the standard error of the intercept. These results suggest that on average, regardless of duration, species richness has increased by one percent in the studies examined. These findings are similar to those found by Vellend et al 2014.
 
 
 event <- filter(fl_combined, Event. == 'Yes')
