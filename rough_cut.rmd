@@ -130,25 +130,31 @@ When we examine the change in species richness as may be affected by direct/loca
 ```{r}
 
 ggplot(data = event, aes(x = Duration, y = yi.SppR.ROM)) + 
-  geom_point(aes(colour = Expected.Change.Direction)) + 
-  ylim(c(-2, 2))
+  geom_point(aes(colour = expected_change)) + 
+  ylim(c(-2.1, 2.1)) + 
+  stat_smooth(method = 'lm')
 
 
 localmod <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration*Expected.Change.Direction)
+       mods = ~ Duration*expected_change)
 localmod
 
 local2 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration:Expected.Change.Direction + 
-              Expected.Change.Direction + 0)
+       mods = ~ Duration:expected_change + 
+              expected_change + 0)
 local2
 
-local2U <- lmer(yi.SppR.ROM ~ Duration:Expected.Change.Direction + 
-                Expected.Change.Direction + 0 + (1|Study.ID), data=event)
+local2U <- lmer(yi.SppR.ROM ~ Duration:expected_change + 
+                expected_change + 0 + (1|Study.ID), data=event)
+summary(local2U)
+
+
+local2U <- lmer(yi.SppR.ROM ~ Duration:expected_change + 
+                expected_change + 0 + (1|Study.ID), data=event)
 summary(local2U)
 
 
@@ -206,7 +212,7 @@ What kind of power do we have for this local even dataset? The weighted analysis
 
 ```{r}
 filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
-  count(., Expected.Change.Direction)
+  count(., expected_change)
 
 ```
 
@@ -214,7 +220,7 @@ I don't entirely know how to interpret the output of this unweighted model. Inte
 
 ```{r}
 local_lme <- 
-lmer(yi.SppR.ROM ~ Duration + Expected.Change.Direction + (1 | Study.ID), data = event)
+lmer(yi.SppR.ROM ~ Duration + expected_change + (1 | Study.ID), data = event)
 
 summary(local_lme)
 ```
@@ -261,7 +267,7 @@ ggplot(data = global_summ_df) +
         axis.title.y = element_text(vjust = 1.5, size = 16), 
         panel.grid.major  = element_blank(),
         panel.grid.minor  = element_blank()) +
-  geom_vline(y = 0, linetype = "dashed", colour = 'yellow')
+  geom_vline(xintercept = 0, linetype = "dashed", colour = 'yellow')
   #xlim(c(-8, 8))
 
 
@@ -705,22 +711,22 @@ summary(lme1)
 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration:factor(Expected.Change.Direction) - 1)
+       mods = ~ Duration:factor(expected_change) - 1)
 
 local_lme2 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration + factor(Expected.Change.Direction) - 1)
+       mods = ~ Duration + factor(expected_change) - 1)
 
 local_lme3 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration + factor(Expected.Change.Direction) - 1)
+       mods = ~ Duration + factor(expected_change) - 1)
 
 local_lme4 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration + factor(Expected.Change.Direction) + 1)
+       mods = ~ Duration + factor(expected_change) + 1)
 
 
 
@@ -729,7 +735,7 @@ rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
 res.lme <- lme(yi.SppR.ROM ~ Duration + 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=no_event, na.action = na.exclude)
 summary(res.lme)
 
-event.lme <- lme(yi.SppR.ROM ~ Duration + Expected.Change.Direction - 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=event, na.action = na.exclude)
+event.lme <- lme(yi.SppR.ROM ~ Duration + expected_change - 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=event, na.action = na.exclude)
 summary(event.lme)
 
 
@@ -790,14 +796,14 @@ ggplot(data = data, aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.
 mod2 <- 
 rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
        random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration:factor(Expected.Change.Direction) - 1)
+       mods = ~ Duration:factor(expected_change) - 1)
 
 mod2_summ_df <- 
   mk_summary_df(event, rma_object = mod2, moderators = FALSE, 
-                mods = 'Expected.Change.Direction')
+                mods = 'expected_change')
 row.names(mod2_summ_df) <- c(' Duration*Negative', ' Duration*Positive', ' Duration*Uncertain')
 
-event_counts <- ddply(event[which(event$rich_ROM_w == 1), ], .(Expected.Change.Direction), summarise, 'studies' = length(unique(Study.ID)), 'sites' = length(unique(id)))
+event_counts <- ddply(event[which(event$rich_ROM_w == 1), ], .(expected_change), summarise, 'studies' = length(unique(Study.ID)), 'sites' = length(unique(id)))
 rownames(event_counts) <- c('Duration*Negative', 'Duration*Positive', 'Duration*Uncertain')
 
 
@@ -848,7 +854,7 @@ ggplot(data = all) +
 res.lme <- lme(yi.SppR.ROM ~ Duration + 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=no_event, na.action = na.exclude)
 summary(res.lme)
 
-event.lme <- lme(yi.SppR.ROM ~ Duration + Expected.Change.Direction - 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=event, na.action = na.exclude)
+event.lme <- lme(yi.SppR.ROM ~ Duration + expected_change - 1, random = ~ 1 | factor(Study.ID), weights = NULL, control=lmeControl(sigma = 1), data=event, na.action = na.exclude)
 summary(event.lme)
 
 
