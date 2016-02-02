@@ -1,25 +1,22 @@
-Loading \'cleaned\' data and doing a little bit of extra cleanup. This needs to be moved into the master cleaning script.
 
-```{r}
+```{r, echo = FALSE}
+if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
+
+library(raster)
 library(dplyr)
 library(ggplot2)
 library(metafor)
 library(lme4)
-library(car)
-library(raster)
+library(gridExtra)
+library(broom)
 
-setwd('Meta_analysis_ms')
 source('02_functions.R')
 
+fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv")
+event <- filter(fl_combined, Event. == 'Yes')
+no_event <- filter(fl_combined, Event. != 'Yes')
 
-# For now use this one
-fl_combined <- read.csv("Data_outputs/nov_5_fl_combined_for_wsn.csv")
-
-#fl_combined <- read.csv("Data_outputs/full_data_with_impacts_velocity_invs_fert_pest20151102.csv")
-# No need for the different taxonomic 1/0 categories:
-fl_combined <- fl_combined[, setdiff(names(fl_combined), c('coral', 'plant', 'algae', 'fish', 
-                      'inverts', 'mobile.inverts', 'sessile.inverts', 
-                      'marine.mammals', 'phytoplankton', 'zooplankton'))]
+```
 
 
 # More clean up... grrr - there can't be a species richness error = 0. This 
