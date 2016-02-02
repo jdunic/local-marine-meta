@@ -13,6 +13,13 @@ library(broom)
 source('02_functions.R')
 
 fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv")
+
+# Remove after re-running masterDataCleanSort.R
+fl_combined <- 
+  mutate(fl_combined, Event. = replace(Event., (Study.ID == 554 & Site == "downcurrent reference"), 'No')) %>%
+  mutate(Event. = replace(Event., (Study.ID == 554 & Site == "upcurrent reference"), 'No')) %>% 
+  mutate(Event. = replace(Event., (Study.ID == 607 & Site == "gravelines"), 'No'))
+
 event <- filter(fl_combined, Event. == 'Yes')
 no_event <- filter(fl_combined, Event. != 'Yes')
 
