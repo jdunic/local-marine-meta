@@ -433,13 +433,10 @@ firstSampleFilteredData <-
   richData %>% 
     group_by(Study.ID, Reference, Sys, taxa, samp_method, 
              Descriptor.of.Taxa.Sampled, Loc, Site) %>%
-    do(get_first_last(.))
+    do(get_first_last(.)) %>% 
+    ungroup()
 
 str(firstSampleFilteredData)
-
-# Remove attributes that were magically added in the do. 
-attributes(firstSampleFilteredData)[c('vars', 'drop', 'indices', 'group_sizes', 'biggest_group_size', 'labels', 'vars')] <- NULL
-
 
 # Add duration to the data frame
 firstSampleFilteredData$Duration <- with(firstSampleFilteredData, T2-T1)
@@ -469,7 +466,7 @@ for(j in measurements){
 attributes(firstSampleFilteredData)[c('digits', 'yi.names', 'vi.names')] <- NULL
 
 # Check that there are no notes
-str(firstSampleFilteredData, list.len = 119)
+str(firstSampleFilteredData)
 
 attributes(firstSampleFilteredData$yi.SppR.MD)[c('measure', 'ni')] <- NULL
 attributes(firstSampleFilteredData$yi.SppR.SMD)[c('measure', 'ni')] <- NULL
@@ -485,7 +482,7 @@ attributes(firstSampleFilteredData$yi.Even.ROM)[c('measure', 'ni')] <- NULL
 attributes(firstSampleFilteredData$yi.Even.SMDH)[c('measure', 'ni')] <- NULL
 attributes(firstSampleFilteredData$vi.Even.SMDH)[c('measure', 'ni')] <- NULL
 
-str(firstSampleFilteredData, list.len = 119)
+str(firstSampleFilteredData)
 
 
 # Do the same for the full dataset
