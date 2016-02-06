@@ -14,6 +14,7 @@
 ##    3/30/2014 - Added Log Ratio
 ##    2/03/2015 - Added conversions to standardize site and plot sizes
 ########################################################################################
+if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
 
 # libraries for Accessing Data from the web
 # and meta-analysis
@@ -27,8 +28,6 @@ library(stringr)
 library(beepr)
 
 source('02_functions.R')
-
-setwd('Meta_analysis_ms')
 
 ###########
 ## Data Loading and Cleaning
@@ -88,8 +87,6 @@ convert.magic <- function(obj, types){
 
 re_ordered <- meta_data[match(names(richData), meta_data[['Column']]), ]
 
-re_ordered %>% select(Column, DataType)
-
 richData <- convert.magic(richData, types = re_ordered$DataType)
 
 
@@ -111,7 +108,7 @@ event_data <-
          expected_change = trimws(.$expected_change), 
          event_notes = trimws(.$event_notes))
 
-richData <- left_join(richData, event_data, by = c('Event.type' = 'event_desc'))
+richData2 <- left_join(richData, event_data, by = c('Event.type' = 'event_desc'))
 
 # Check that the event data spreadsheet is up to date:
 extra_events <- setdiff(richData$Event.type, event_data$event_desc)
@@ -208,24 +205,17 @@ source("datamart_UnitSetManager2_source.r")
 source("datamart_mashup_source.r")
 
 # Standardize unit names
-richData$SiSz..units. <- tolower(as.character(richData$SiSz..units.))
 richData$PltSz..units. <- tolower(as.character(richData$PltSz..units.))
 
-unique(richData$SiSz..units.)
 unique(richData$PltSz..units.)
 
-richData$SiSz..units. <- gsub('acres', 'ac', richData$SiSz..units.)
+
 richData$PltSz..units. <- gsub('acres', 'ac', richData$PltSz..units.)
-richData$SiSz..units. <- gsub('km2', 'km^2', richData$SiSz..units.)
 richData$PltSz..units. <- gsub('km2', 'km^2', richData$PltSz..units.)
-richData$SiSz..units. <- gsub('m2', 'm^2', richData$SiSz..units.)
 richData$PltSz..units. <- gsub('m2', 'm^2', richData$PltSz..units.)
-richData$SiSz..units. <- gsub('m3', 'm^3', richData$SiSz..units.)
 richData$PltSz..units. <- gsub('m3', 'm^3', richData$PltSz..units.)
 print('Double check that \'nm\' is nautical miles if you run this script')
-richData$SiSz..units. <- gsub('^nm', 'nmi', richData$SiSz..units.)
 richData$PltSz..units. <- gsub('^nm[^i]', 'nmi', richData$PltSz..units.)
-richData$SiSz..units. <- gsub('liters', 'l', richData$SiSz..units.)
 richData$PltSz..units. <- gsub('liters', 'l', richData$PltSz..units.)
 
 
@@ -236,16 +226,16 @@ convert_units <- function(value, unit) {
   } else if (unit %in% uconvlist()$Length) {
       out_value <- uconv(x = value, from = unit, to = 'm', uset = 'Length')
       out_unit <- 'm'
-    } else if (unit %in% uconvlist()$Area) {
-        out_value <- uconv(x = value, from = unit, to = 'm^2', uset = 'Area')
-        out_unit <- 'm^2'
-      } else if (unit %in% uconvlist()$Volume) {
-          out_value <- uconv(x = value, from = unit, to = 'm^3', uset = 'Volume')
-          out_unit <- 'm^3'
-        } else if (!unit %in% c(uconvlist()$Length, uconvlist()$Area, uconvlist()$Volume)) {
-            print(unit)
-            stop('unit not in uconvlist of Length, Area, or Volume')
-        }
+  } else if (unit %in% uconvlist()$Area) {
+      out_value <- uconv(x = value, from = unit, to = 'm^2', uset = 'Area')
+      out_unit <- 'm^2'
+  } else if (unit %in% uconvlist()$Volume) {
+      out_value <- uconv(x = value, from = unit, to = 'm^3', uset = 'Volume')
+      out_unit <- 'm^3'
+  } else if (!unit %in% c(uconvlist()$Length, uconvlist()$Area, uconvlist()$Volume)) {
+      print(unit)
+      stop('unit not in uconvlist of Length, Area, or Volume')
+  }
     convert_df <- data.frame('new_val' = as.numeric(out_value), 'new_unit' = as.character(out_unit))
     #browser()
     return(convert_df)
