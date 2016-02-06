@@ -329,6 +329,11 @@ if (nrow(taxa_values) != nrow(richData)) {
   print('Something went wrong converting taxonomic data to single taxa column')
 }
 
+# remove the now redundant taxa columns
+richData <- select(richData, -plant, -coral, -algae, -fish, -inverts, -mobile.inverts, 
+                   -sessile.inverts, -marine.mammals, -phytoplankton, 
+                   -zooplankton)
+
 # Get nice sampling method column
 getSampMethod <- function(samp_method_list) {
   #browser()
