@@ -161,7 +161,7 @@ get_month_diff <- function(date1, date2) {
     return(md)
 }
 
-get_first_last <- function(adf) {
+get_first_last <- function(adf, dataset = 'richData') {
   #browser()
   if (length(adf$date1) == 1) {
     date_ones <- adf$date1
@@ -215,8 +215,17 @@ get_first_last <- function(adf) {
   if (is.na(last_id)) {
       last_id <- which(adf$date1 == last)[1]
     }
+    
+  if (dataset == 'richData') {
+    output <- cbind(adf[first_id, c(noYCols, y1Cols)], adf[last_id, y2Cols])
+  }
 
-  output <- cbind(adf[first_id, c(noYCols, y1Cols)], adf[last_id, y2Cols])
+  if (dataset == 'cbdata') {
+    timeless_cols <- select(adf, -date1, -SppR1, -I1, -Shan1, -date2, -SppR2, 
+                            -I2, -Shan2)
+
+    output <- cbind(adf[first_id, c(names(timeless_cols), 'date1', 'SppR1', 'I1', 'Shan1')], adf[last_id, c('date2', 'SppR2', 'I2', 'Shan2')])
+  }
 
 # print notifications of what kinds of dates are being pulled for each of the 
 # studies.
