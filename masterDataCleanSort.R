@@ -598,29 +598,6 @@ timeData <- timeData[,-(agrep("Simps", names(timeData)))]
 #qplot(Date, temporal_std_r, data=timeData, color=paste(Reference,Site), facets=~Taxa)
 
 
-
-############################################################
-#Write the data
-############################################################
-
-#Data plan
-#0.1 - First time created
-#0.2 - Dump from data work party in April 2014
-# 0.2-1, data excluded that fails checks
-# 0.2-2, After addition of 18 new studies
-# 0.2-20140505, After addition of 8 new studies
-# 0.3 - data at end of class
-# 0.4 - improved cleaning after class
-#0.5 - All data entered
-#0.9 - All data quality controlled
-#1.0 - Final data for the paper
-
-
-ver <- 0.9
-outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
-trailer <- paste0("_v",ver,"-",outdate,".csv")
-write.csv(firstSampleFilteredData, paste0('Data_outputs/firstLastData', trailer), row.names = F)
-
 #write.csv(firstSampleFilteredData[-eventIDX,], paste0("Data/firstLastData_noevent",trailer), row.names=F)
 #write.csv(firstSampleFilteredData[eventIDX,], paste0("Data/firstLastData_event",trailer), row.names=F)
 #write.csv(timeData[-timeEventIDX,], paste0("Data/timeseriesData_noevent",trailer), row.names=F)
@@ -671,74 +648,3 @@ test <- ddply(ts_data, .(Study.ID, Reference, Sys,
               }
 )
 
-
-############################################################
-#for funsies
-############################################################
-library(ggplot2)
-qplot(T1, SppR, data=timeData, color=paste(Study.ID, Site, sep=","), geom="line") +
-  facet_wrap(~Taxa) + 
-  theme_classic(base_size=18) +
-  xlab("\nYear") + ylab("Species Richness\n")
-
-hist(firstSampleFilteredData$Duration, main="Study Duration", xlab="Years")
-
-qplot(Taxa, Duration, data=firstSampleFilteredData, geom="boxplot", fill=Taxa) +
-  theme_bw(base_size=20)
-
-##############
-plot(SppR1~SppR2, data=firstSampleFilteredData[-eventIDX,])
-abline(lm(SppR2~SppR1, data=firstSampleFilteredData), col="red", lty=2)
-
-plot(SppR1~SppR2, data=firstSampleFilteredData[eventIDX,])
-abline(lm(SppR2~SppR1, data=firstSampleFilteredData), col="red", lty=2)
-
-plot(log(SppR2)-log(SppR1) ~ I(log(Duration)), data=firstSampleFilteredData)
-
-zidx <- which(firstSampleFilteredData$SppR2==0 | firstSampleFilteredData$SppR1==0)
-abline(lm(log(SppR2)-log(SppR1) ~ I(log(Duration)), data=firstSampleFilteredData[-zidx,]), col="red", lty=2)
-summary(lm(log(SppR2)-log(SppR1) ~ I(log(Duration)), data=firstSampleFilteredData[-zidx,]), col="red", lty=2)
-hist(firstSampleFilteredData$Duration, breaks=50)
-
-
-########Just playing around a bit
-newRich <-firstSampleFilteredData[-eventIDX,]
-eventNewRich <-firstSampleFilteredData[eventIDX,]
-
-rma(yi.SppR.ROM, vi.SppR.ROM, data=newRich)
-rma(yi.SppR.ROM~Duration, vi.SppR.ROM, data=newRich)
-rma(yi.SppR.SMD, vi.SppR.SMD, data=newRich)
-rma(yi.SppR.SMD~I(log(Duration)), vi.SppR.SMD, data=newRich)
-rma(yi.SppR.SMD~Duration, vi.SppR.SMD, data=eventNewRich)
-plot(yi.SppR.SMD~Duration,  data=eventNewRich)
-
-library(ggplot2)
-ggplot(data=eventNewRich, mapping=aes(y=yi.SppR.SMD, x=Duration,
-                                      ymin=yi.SppR.SMD-sqrt(yi.SppR.SMD),
-                                      ymax=yi.SppR.SMD+sqrt(yi.SppR.SMD)))+
-  geom_pointrange(mapping=aes(color=Expected.Change.Direction))
-
-ggplot(data=eventNewRich, mapping=aes(y=yi.SppR.ROM, x=Event.type.2,
-                                      ymin=yi.SppR.SMD-sqrt(yi.SppR.SMD),
-                                      ymax=yi.SppR.SMD+sqrt(yi.SppR.SMD)))+
-  geom_pointrange(mapping=aes(color=Expected.Change.Direction))
-
-
-ggplot(data=eventNewRich, mapping=aes(y=yi.SppR.ROM, x=Duration))+
-         geom_point(mapping=aes(color=Event.type.2, shape=Expected.Change.Direction)) +
-         facet_wrap(~Expected.Change.Direction, scale="free_x") +
-         stat_smooth(method="lm") +
-  theme_bw(base_size=18)
-
-#newRichM <- newRich[-which(is.na(newRich$Site)),]
-rma.mv(yi.SMD~Duration, vi.SMD, random = list(~1|Site, ~1|Study.ID), data=newRich)
-summary(lm(yi.MD ~ Duration, data=newRich))
-summary(lm(yi.ROM ~ I(log(Duration)), data=newRich))
-plot(yi.ROM ~ I(log(Duration)), data=newRich)
-abline(lm(yi.ROM ~ I(log(Duration)), data=newRich), lty=2, col="red")
-
-library(ggplot2)
-qplot(log(Duration), yi.ROM, data=newRich, facets=~Sys) +
-  stat_smooth(method="lm")
-
-qplot(T1, SppR, data=full, color=I("grey"),  group=Study.ID, geom="point") + stat_smooth(method="lm", fill=NA, mapping=aes(color=factor(Study.ID)))
