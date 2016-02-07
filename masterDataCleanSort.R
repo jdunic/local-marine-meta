@@ -35,7 +35,7 @@ source('02_functions.R')
 
 # Load the master data!!!!
 richData <- read.csv('master_data/Data.csv', stringsAsFactors=FALSE, 
-                     na.strings = c('', 'NA', 'N/A', 'Na', 'na', 'M', ' '))
+                     na.strings = c('', 'NA', 'N/A', 'Na', 'na', ' '))
 
 # Event types should NOT be 'No'
 richData$Event.type[which(richData$Event.type == 'No')] <- NA
@@ -500,38 +500,6 @@ str(firstSampleFilteredData)
 #                      append=T, var.names=var.names)  
 # }
 #}
-
-# What to do with zero values for first and last?
-filter(firstSampleFilteredData, SppR1 == 0 | SppR2 == 0) %>% 
-  select(Study.ID, Site, SppR1, SppR2)
-
-
-# To make life easier when counting studies, create boolean field that flags:
-# - richness ROMs (with and without variance)
-# - richness ROMs (with variance) 
-# - shannon ROMs (with and without variance)
-# - shannon ROMs (with variance)
-# - richness SMD
-# - shannon SMD
-
-firstSampleFilteredData$rich_ROM_uw <- as.numeric(!is.na(firstSampleFilteredData$yi.SppR.ROM))
-firstSampleFilteredData$rich_ROM_w <- as.numeric(!is.na(firstSampleFilteredData$vi.SppR.ROM))
-
-firstSampleFilteredData$shan_ROM_uw <- as.numeric(!is.na(firstSampleFilteredData$yi.Shan.ROM))
-firstSampleFilteredData$shan_ROM_w <- as.numeric(!is.na(firstSampleFilteredData$vi.Shan.ROM))
-
-firstSampleFilteredData$rich_SMD_uw <- as.numeric(!is.na(firstSampleFilteredData$yi.SppR.SMD))
-firstSampleFilteredData$rich_SMD_w <- as.numeric(!is.na(firstSampleFilteredData$vi.SppR.SMD))
-
-firstSampleFilteredData$shan_SMD_uw <- as.numeric(!is.na(firstSampleFilteredData$yi.Shan.SMD))
-firstSampleFilteredData$shan_SMD_w <- as.numeric(!is.na(firstSampleFilteredData$vi.Shan.SMD))
-
-
-
-# Need to figure out how to deal with 0 values for the log ratio...
-rich_zero_samples <- 
-firstSampleFilteredData[which(firstSampleFilteredData$SppR1 == 0 | 
-                              firstSampleFilteredData$SppR2 == 0), ]
 
 #####################
 # Reformat for timeseries analysis
