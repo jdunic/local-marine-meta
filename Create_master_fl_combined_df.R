@@ -1,4 +1,7 @@
-#library(RCurl)
+rm(list = ls())
+pkgs = names(sessionInfo()$otherPkgs)
+sapply(pkgs, detach_package, character.only = TRUE)
+
 library(raster)
 library(dplyr)
 library(purrr)
