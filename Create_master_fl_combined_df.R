@@ -347,11 +347,16 @@ write.csv(temp_data_combined, "Data_outputs/spatial_data_with_temp_data.csv", ro
 # ------------------------------------------------------------------------------
 # Combine the extracted spatial data 
 # ------------------------------------------------------------------------------
-imps <- readr::read_csv('Data_outputs/spatial_data_with_cumulative_impacts.csv')
-invs <- readr::read_csv('Data_outputs/spatial_data_with_invasives.csv')
-nuts <- readr::read_csv('Data_outputs/spatial_data_with_nutrients.csv')
-pest <- readr::read_csv('Data_outputs/spatial_data_with_pesticides.csv')
-temp <- readr::read_csv('Data_outputs/spatial_data_with_temp_data.csv')
+imps <- read.csv('Data_outputs/spatial_data_with_cumulative_impacts.csv', 
+                 stringsAsFactors = FALSE)[, -1]
+invs <- read.csv('Data_outputs/spatial_data_with_invasives.csv', 
+                 stringsAsFactors = FALSE)[, -1]
+nuts <- read.csv('Data_outputs/spatial_data_with_nutrients.csv', 
+                 stringsAsFactors = FALSE)[, -1]
+pest <- read.csv('Data_outputs/spatial_data_with_pesticides.csv', 
+                 stringsAsFactors = FALSE)[, -1]
+temp <- read.csv('Data_outputs/spatial_data_with_temp_data.csv', 
+                 stringsAsFactors = FALSE)
 
 imps <- dplyr::select(imps, row, mean_imps)
 invs <- dplyr::select(invs, row, mean_invs)
