@@ -31,6 +31,12 @@ sp_data_points <- filter(spatial_data, Shape == 'point')
 sp_data_lines <- filter(spatial_data, Shape == 'line')
 
 
+# For now, fix study 360 Site. This has been changed in the raw data, but 
+# requires the master cleaning script to be run again 
+# see commits 84262bcc53 and 2e885c1b57
+
+fl <- mutate(fl, Site = replace(Site, is.na(Site) & Study.ID == 360, 'M'))
+
 # Load and add site_id column to first last data to be able to combine the 
 # spatial data with the master first last sheet. Also used for doing the 
 # year-specific linear temperature change and climate velocity extractions.
