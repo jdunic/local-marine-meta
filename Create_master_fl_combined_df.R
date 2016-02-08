@@ -40,7 +40,7 @@ fl <- mutate(fl, Site = replace(Site, is.na(Site) & Study.ID == 360, 'M'))
 # Load and add site_id column to first last data to be able to combine the 
 # spatial data with the master first last sheet. Also used for doing the 
 # year-specific linear temperature change and climate velocity extractions.
-fl <- read.csv('Data_outputs/firstLastData_v0.9-20160115.csv', stringsAsFactors = FALSE)
+fl <- read.csv('Data_outputs/firstLastData_v0.9-20160206.csv', stringsAsFactors = FALSE)
 fl <- 
   mutate(fl, Site = replace(Site, Site == 'Fishery' & Study.ID == 524, 'Fished')) %>%
   mutate(Site = replace(Site, Site == 'Nothern' & Study.ID == 441, 'Northern')) %>%
@@ -53,11 +53,6 @@ fl <-
          Site = trimws(.$Site)) %>% 
   mutate(site_id = paste(.$Study.ID, .$Site, sep = "_")) %>% 
   as_data_frame(.)
-
-
-# For now, fix study 425 Study.ID. This has been changed in the raw data, but 
-# requires the master cleaning script to be run again
-
 
 # Create spatial objects
 # ------------------------------------------------------------------------------
