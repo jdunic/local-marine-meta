@@ -1,5 +1,9 @@
 
 ```{r, echo = FALSE}
+rm(list = setdiff(ls(), lsf.str()))
+pkgs = names(sessionInfo()$otherPkgs)
+sapply(pkgs, detach_package, character.only = TRUE)
+
 if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
 
 library(raster)

@@ -1,4 +1,4 @@
-rm(list = ls())
+rm(list = setdiff(ls(), lsf.str()))
 pkgs = names(sessionInfo()$otherPkgs)
 sapply(pkgs, detach_package, character.only = TRUE)
 
