@@ -31,28 +31,12 @@ sp_data_points <- filter(spatial_data, Shape == 'point')
 sp_data_lines <- filter(spatial_data, Shape == 'line')
 
 
-# For now, fix study 360 Site. This has been changed in the raw data, but 
-# requires the master cleaning script to be run again 
-# see commits 84262bcc53 and 2e885c1b57
-
-fl <- mutate(fl, Site = replace(Site, is.na(Site) & Study.ID == 360, 'M'))
-
 # Load and add site_id column to first last data to be able to combine the 
 # spatial data with the master first last sheet. Also used for doing the 
 # year-specific linear temperature change and climate velocity extractions.
-fl <- read.csv('Data_outputs/firstLastData_v0.9-20160206.csv', stringsAsFactors = FALSE)
-fl <- 
-  mutate(fl, Site = replace(Site, Site == 'Fishery' & Study.ID == 524, 'Fished')) %>%
-  mutate(Site = replace(Site, Site == 'Nothern' & Study.ID == 441, 'Northern')) %>%
-  mutate(Reference = trimws(.$Reference), 
-         Collector = trimws(.$Collector), 
-         Descriptor.of.Taxa.Sampled = trimws(.$Descriptor.of.Taxa.Sampled), 
-         Sys = trimws(.$Sys), 
-         Event.type = trimws(.$Event.type), 
-         Year.of.Event = trimws(.$Year.of.Event), 
-         Site = trimws(.$Site)) %>% 
-  mutate(site_id = paste(.$Study.ID, .$Site, sep = "_")) %>% 
-  as_data_frame(.)
+fl <- read.csv('Data_outputs/firstLastData_v0.9-20160209.csv', stringsAsFactors = FALSE)
+
+fl <- mutate(fl, site_id = paste(.$Study.ID, .$Site, sep = "_"))
 
 # Create spatial objects
 # ------------------------------------------------------------------------------
