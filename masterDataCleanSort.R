@@ -70,7 +70,6 @@ meta_data$Column <-
 if (length(setdiff(names(richData), meta_data$Column)) > 0) { 
   stop('There are new columns listed in the master data sheet or meta data sheet thare are unaccounted for. Please update before running this script.')}
 
-
 # Solution taken from 
 # http://stackoverflow.com/questions/7680959/convert-type-of-multiple-columns-of-a-dataframe-at-once
 # and http://stackoverflow.com/questions/11261399/function-for-converting-dataframe-column-type
@@ -88,7 +87,6 @@ convert.magic <- function(obj, types){
 re_ordered <- meta_data[match(names(richData), meta_data[['Column']]), ]
 
 richData <- convert.magic(richData, types = re_ordered$DataType)
-
 
 ###########
 # Add event type categorisation.
@@ -108,8 +106,9 @@ event_data <-
          expected_change = trimws(.$expected_change), 
          event_notes = trimws(.$event_notes))
 
-richData2 <- left_join(richData, event_data, by = c('Event.type' = 'event_desc'))
+richData <- left_join(richData, event_data, by = c('Event.type' = 'event_desc'))
 
+richData <- rename(richData, Event = Event.)
 # Check that the event data spreadsheet is up to date:
 extra_events <- setdiff(richData$Event.type, event_data$event_desc)
 extra_events

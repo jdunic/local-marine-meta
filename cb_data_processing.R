@@ -11,7 +11,8 @@ cbdata <- read_csv('master_data/robin_bts_reformat.csv')[, -1]
 
 cbdata <- 
   cbdata %>% 
-  filter(studyName %in% subset_list[[1]])
+  filter(studyName %in% subset_list[[1]]) %>% 
+  rename(Site = site)
 
 
 # get average number of replicates
@@ -45,7 +46,7 @@ cbdata <-
          Sys = trimws(.$Sys), 
          Event_type = trimws(.$Event_type), 
          Year_of_Event = trimws(.$Year_of_Event), 
-         Site = trimws(.$site))
+         Site = trimws(.$Site))
 
 
 # Include event data
@@ -102,6 +103,12 @@ taxa_values <-
   group_by(id) %>%
   do(getTaxa(taxa_list = .$key)) %>%
   arrange(id)
+
+cbdata <- 
+  cbdata %>% 
+    select(-protist, -coral, -plant, -algae, -fish, -inverts, -mobile.inverts, 
+           -mobile.inverts, -sessile.inverts, -marine.mammals, -phytoplankton, 
+           -zooplankton)
 
 cbdata$taxa <- taxa_values$taxa
 
@@ -210,13 +217,24 @@ attributes(cb_firstSampleFilteredData$yi.Shan.SMDH)[c('measure', 'ni')] <- NULL
 str(cb_firstSampleFilteredData)
 
 
-# Combine master data with Robin's CB data
+# Make sure that some of the 
+cb_firstSampleFilteredData <- 
+  cb_firstSampleFilteredData %>% 
+    rename(Study.ID = studySub) %>% 
+    select(-study_site, -id, -subSiteID, -date1, -date2)
 
 # Months need to be same data type before rbinding
 fl_combined <- rbind_all(
   list(mutate(firstSampleFilteredData, T1m = as.numeric(T1m), 
               T2m = as.numeric(T2m)), 
        cb_firstSampleFilteredData))
+
+# Get spatial data from cb data
+
+cb_site_data <- select(cb_firstSampleFilteredData, Study.ID, Reference, Site, 
+                       Lat, Long)
+
+write.csv(cb_site_data, 'Data_outputs/cb_site_data.csv')
 
 ############################################################
 #Write the data
