@@ -1,0 +1,18 @@
+# Links to data files used (as of Feb 9th, 2016)
+# Cumulative human impacts
+https://knb.ecoinformatics.org/knb/d1/mn/v2/object/cumulative_impact_one_2013_global_cumul_impact_2013_mol_20150714053146
+
+# Nutrients
+https://knb.ecoinformatics.org/knb/d1/mn/v2/object/pressure_one_2013_plumes_fert_mol_20150714052515
+
+# Invasive potential
+https://knb.ecoinformatics.org/knb/d1/mn/v2/object/pressure_one_2013_invasives_mol_20150714052418
+
+# Inorganic (runoff/land-based pollution)
+https://knb.ecoinformatics.org/knb/d1/mn/v2/object/pressure_one_2013_inorganic_mol_20150714052413
+
+# Pesticides
+https://knb.ecoinformatics.org/knb/d1/mn/v2/object/pressure_one_2013_plumes_pest_mol_20150714052522
+
+# Sea surface temperature data
+http://www.metoffice.gov.uk/hadobs/hadisst/data/HadISST_sst.nc.gz
