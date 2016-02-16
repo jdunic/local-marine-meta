@@ -1,1 +1,5 @@
 *.csv filter=lfnotcr
+
+*.csv diff=daff-diff
+*.csv merge=daff-merge
+
