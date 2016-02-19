@@ -310,6 +310,7 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
 global4
 ```
 
+```{r}
 global5 <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%

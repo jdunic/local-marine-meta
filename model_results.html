@@ -676,14 +676,56 @@ filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp;
           mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
 )
 global4</code></pre>
-<p>global5 &lt;- filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;% rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = ., random = ~ 1 | Study.ID, mods = ~ Duration * (single_vel + mean_invs + mean_nuts) ) global5</p>
-<div id="global_summ_df--" class="section level1">
-<h1>global_summ_df &lt;-</h1>
-</div>
-<div id="mk_rma_summary_dffl_combined-rma_object-global2" class="section level1">
-<h1>mk_rma_summary_df(fl_combined, rma_object = global2)</h1>
-<p>```</p>
-</div>
+<pre class="r"><code>global5 &lt;- 
+filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
+                     vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)
+)</code></pre>
+<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = ., random = ~1
+## | : Rows with NAs omitted from model fitting.</code></pre>
+<pre class="r"><code>global5</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 101; method: REML)
+## 
+## Variance Components: 
+## 
+##             estim    sqrt  nlvls  fixed    factor
+## sigma^2    0.0716  0.2676     28     no  Study.ID
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 93) = 892.2915, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2,3,4,5,6,7,8): 
+## QM(df = 7) = 65.0385, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                      estimate      se     zval    pval    ci.lb    ci.ub
+## intrcpt                0.1278  0.0978   1.3070  0.1912  -0.0638   0.3194
+## Duration               0.0026  0.0061   0.4182  0.6758  -0.0094   0.0145
+## single_vel            -0.0024  0.0018  -1.3352  0.1818  -0.0059   0.0011
+## mean_invs             -0.0000  0.0000  -3.6057  0.0003  -0.0000  -0.0000
+## mean_nuts              0.0121  0.0035   3.4241  0.0006   0.0052   0.0190
+## Duration:single_vel    0.0000  0.0002   0.1317  0.8952  -0.0003   0.0004
+## Duration:mean_invs     0.0000  0.0000   3.7535  0.0002   0.0000   0.0000
+## Duration:mean_nuts    -0.0016  0.0006  -2.8175  0.0048  -0.0027  -0.0005
+##                         
+## intrcpt                 
+## Duration                
+## single_vel              
+## mean_invs            ***
+## mean_nuts            ***
+## Duration:single_vel     
+## Duration:mean_invs   ***
+## Duration:mean_nuts    **
+## 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<pre class="r"><code>#global_summ_df &lt;- 
+#  mk_rma_summary_df(fl_combined, rma_object = global2)</code></pre>
 
 
 </div>
