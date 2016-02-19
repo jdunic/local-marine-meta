@@ -1,4 +1,4 @@
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
 library(raster)
 library(dplyr)
 library(ggplot2)
@@ -127,7 +127,9 @@ ggplot(data = event, aes(x = Duration, y = yi.SppR.ROM)) +
 local2U <- lme(yi.SppR.ROM ~ Duration:expected_change + expected_change + 0, 
                random = ~ 1 | factor(Study.ID), data=event, na.action = na.omit)
 summary(local2U)
+```
 
+```{r, eval = FALSE}
 #event_dir_summ_df <- 
  # mk_rma_summary_df(original_df = event, rma_object = local2, categorical = TRUE)
 
@@ -213,7 +215,10 @@ global2 <-
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * mean_imps)
 global2
+```
 
+```{r, eval=FALSE}
+# This failed too.
 
 global_summ_df <- 
   mk_rma_summary_df(no_event, rma_object = global1)
@@ -245,8 +250,9 @@ ggplot(data = global_summ_df) +
         panel.grid.minor  = element_blank()) +
   geom_vline(xintercept = 0, linetype = "dashed", colour = 'yellow')
   #xlim(c(-8, 8))
+```
 
-
+```{r}
 global_lme <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
@@ -286,9 +292,13 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
           mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
 )
 global3
+```
 
 
-# Study specific slices
+Study specific slices
+
+```{r, eval=FALSE}
+# optimization error - check single_line_change vals
 global4 <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
@@ -298,7 +308,7 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
           mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
 )
 global4
-
+```
 
 global5 <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
@@ -311,6 +321,6 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
 global5
 
 
-global_summ_df <- 
-  mk_rma_summary_df(fl_combined, rma_object = global2)
+#global_summ_df <- 
+#  mk_rma_summary_df(fl_combined, rma_object = global2)
 ```
