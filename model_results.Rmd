@@ -265,6 +265,7 @@ filter(no_event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
 )
 global2
 
+
 global2 <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
@@ -308,7 +309,6 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
           mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)
 )
 global5
-
 
 
 global_summ_df <- 
