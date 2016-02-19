@@ -190,6 +190,8 @@ get_percent_change(local_lme$coefficients$fixed)
 
 In the subset of studies for which no events were explicitly documented, cumulative human impacts were associated with immediate declines. On average when mean impact was zero, species declined by 4.8%. For each unit of cumulative human impact (global range = ~0 - 11.1 (need to double check this value); from our study range = 0.26 - 9.5), our results show that the rate of species loss increases by 7.5%. However, as study duration increases, the effect of mean impact on the rate of change in species richness is actually positive. Cumulative human impact moderates the rate of change in richness by 1 % per year. (Does this mean that each year the rate of change in richness is: -4.8% * 1.2)
 
+However, the unweighted analyses do not a change in richness over time, nor an effect of cumulative impact. 
+
 Does this conflict at all with the fact that duration * events have the opposite effect as we expected?
 
 ```{r}
@@ -225,6 +227,7 @@ row.names(global_summ_df) <- c('Intercept', 'Duration', 'Human Impact',
                                 'Duration*Human Impact')
 global_summ_df$predictors <- factor(row.names(global_summ_df), levels = c('Intercept', 'Duration', 'Human Impact', 'Duration*Human Impact'))
 
+# Fix graph
 ggplot(data = global_summ_df) +
   geom_point(aes(x = mean_estimate, y = predictors), 
              size = 4, colour = 'white') +
@@ -253,6 +256,16 @@ summary(global_lme)
 
 
 global2 <- 
+filter(no_event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
+)
+global2
+
+global2 <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
@@ -261,6 +274,42 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
           mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
 )
 global2
+
+
+global3 <- 
+filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
+)
+global3
+
+
+# Study specific slices
+global4 <- 
+filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
+)
+global4
+
+
+global5 <- 
+filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)
+)
+global5
+
+
 
 global_summ_df <- 
   mk_rma_summary_df(fl_combined, rma_object = global2)
