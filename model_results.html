@@ -374,7 +374,7 @@ summary(local_lme)</code></pre>
 ##                       -0.06937447                       -1.31942022</code></pre>
 <p>In the subset of studies for which no events were explicitly documented, cumulative human impacts were associated with immediate declines. On average when mean impact was zero, species declined by 4.8%. For each unit of cumulative human impact (global range = ~0 - 11.1 (need to double check this value); from our study range = 0.26 - 9.5), our results show that the rate of species loss increases by 7.5%. However, as study duration increases, the effect of mean impact on the rate of change in species richness is actually positive. Cumulative human impact moderates the rate of change in richness by 1 % per year. (Does this mean that each year the rate of change in richness is: -4.8% * 1.2)</p>
 <p>However, the unweighted analyses do not a change in richness over time, nor an effect of cumulative impact.</p>
-<p>Does this conflict at all with the fact that duration * events have the opposite effect as we expected?</p>
+<p>The model global1 uses only the studies that did not have events associated with them.</p>
 <pre class="r"><code>global1 &lt;- 
   rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
          data = no_event,
@@ -418,6 +418,7 @@ summary(local_lme)</code></pre>
 ## Duration           -4.806212
 ## mean_imps          -7.513424
 ## Duration:mean_imps  1.069746</code></pre>
+<p>The model global2 uses the full dataset and the effect is reversed…</p>
 <pre class="r"><code>global2 &lt;- 
   rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
          data = fl_combined,
@@ -455,208 +456,297 @@ summary(local_lme)</code></pre>
 ## 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<pre class="r"><code># This failed too.
-
-global_summ_df &lt;- 
-  mk_rma_summary_df(no_event, rma_object = global1)
-
-filter(no_event, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
-                     vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
-  distinct(Site) %&gt;%
-  count(.)
-
-row.names(global_summ_df) &lt;- c('Intercept', 'Duration', 'Human Impact', 
-                                'Duration*Human Impact')
-global_summ_df$predictors &lt;- factor(row.names(global_summ_df), levels = c('Intercept', 'Duration', 'Human Impact', 'Duration*Human Impact'))
-
-# Fix graph
-ggplot(data = global_summ_df) +
-  geom_point(aes(x = mean_estimate, y = predictors), 
-             size = 4, colour = 'white') +
-  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
-                    y = predictors, height = 0), colour = 'white', 
-                    size = 1) + 
-  theme_wb() + 
-  xlab('Mean Effect Size\n') +
-  ylab('\nPredictor') + 
-  theme(axis.title.x = element_text(vjust = -0.5, size = 16), 
-        axis.text.x = element_text(size = 14), 
-        axis.text.y = element_text(size = 14), 
-        axis.title.y = element_text(vjust = 1.5, size = 16), 
-        panel.grid.major  = element_blank(),
-        panel.grid.minor  = element_blank()) +
-  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, colour = 'yellow')
-  #xlim(c(-8, 8))</code></pre>
+<p>The unweighted analyses (again with the no_event data and the full dataset) also show the opposite pattern compared to the global1 model (with no event data).</p>
 <pre class="r"><code>global_lme &lt;- 
-filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
-                     vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
   lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
-      data = .)
+      data = no_event, na.action = na.omit)
 summary(global_lme)</code></pre>
 <pre><code>## Linear mixed-effects model fit by REML
-##  Data: . 
-##        AIC      BIC   logLik
-##   144.7768 162.2084 -66.3884
+##  Data: no_event 
+##        AIC      BIC    logLik
+##   326.1588 349.9557 -157.0794
 ## 
 ## Random effects:
 ##  Formula: ~1 | factor(Study.ID)
 ##         (Intercept)  Residual
-## StdDev:    0.315121 0.2968979
+## StdDev:   0.2478225 0.3083502
 ## 
 ## Fixed effects: yi.SppR.ROM ~ Duration * scale(mean_imps) 
-##                                 Value  Std.Error DF    t-value p-value
-## (Intercept)                0.00208580 0.08354952 99  0.0249648  0.9801
-## Duration                  -0.00205113 0.00590658 99 -0.3472624  0.7291
-## scale(mean_imps)           0.10631883 0.06669428 99  1.5941221  0.1141
-## Duration:scale(mean_imps) -0.00553711 0.00358303 99 -1.5453680  0.1254
+##                                 Value  Std.Error  DF    t-value p-value
+## (Intercept)                0.00361965 0.04700580 301  0.0770042  0.9387
+## Duration                   0.00353491 0.00275718 301  1.2820747  0.2008
+## scale(mean_imps)           0.06121173 0.03615430 301  1.6930689  0.0915
+## Duration:scale(mean_imps) -0.00292429 0.00173052 301 -1.6898369  0.0921
 ##  Correlation: 
 ##                           (Intr) Duratn scl(_)
-## Duration                  -0.669              
-## scale(mean_imps)          -0.114  0.257       
-## Duration:scale(mean_imps)  0.310 -0.626 -0.650
+## Duration                  -0.675              
+## scale(mean_imps)          -0.177  0.082       
+## Duration:scale(mean_imps)  0.117 -0.135 -0.675
 ## 
 ## Standardized Within-Group Residuals:
 ##         Min          Q1         Med          Q3         Max 
-## -4.19503993 -0.44524894  0.02133413  0.47460679  3.95817411 
+## -2.94082900 -0.51110198 -0.03848597  0.51388417  3.20847254 
 ## 
-## Number of Observations: 139
-## Number of Groups: 37</code></pre>
-<pre class="r"><code>global2 &lt;- 
-filter(no_event, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
-                     vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
+## Number of Observations: 394
+## Number of Groups: 90</code></pre>
+<pre class="r"><code>global_lme_all &lt;- 
+  lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme_all)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: fl_combined 
+##        AIC      BIC    logLik
+##   655.4943 681.4512 -321.7471
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept)  Residual
+## StdDev:   0.2840314 0.3737678
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * scale(mean_imps) 
+##                                 Value  Std.Error  DF    t-value p-value
+## (Intercept)                0.03014536 0.04577384 441  0.6585718  0.5105
+## Duration                   0.00144100 0.00266014 441  0.5417012  0.5883
+## scale(mean_imps)           0.08512967 0.03908858 441  2.1778658  0.0299
+## Duration:scale(mean_imps) -0.00523771 0.00195446 441 -2.6798781  0.0076
+##  Correlation: 
+##                           (Intr) Duratn scl(_)
+## Duration                  -0.664              
+## scale(mean_imps)          -0.185  0.143       
+## Duration:scale(mean_imps)  0.170 -0.259 -0.636
+## 
+## Standardized Within-Group Residuals:
+##         Min          Q1         Med          Q3         Max 
+## -4.37974323 -0.43977021 -0.03325186  0.43356451  4.84662264 
+## 
+## Number of Observations: 563
+## Number of Groups: 119</code></pre>
+<p>When comparing the models with no event and the full dataset the patterns are the same, but the short term effect of invasive potential is not significant when looking at the no_event subset of the data.</p>
+<pre class="r"><code>global_ne &lt;- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = ., 
+          data = no_event, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
 )</code></pre>
-<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = ., random = ~1
-## | : Rows with NAs omitted from model fitting.</code></pre>
-<pre class="r"><code>global2</code></pre>
+<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+## random = ~1 | : Rows with NAs omitted from model fitting.</code></pre>
+<pre class="r"><code>global_ne</code></pre>
 <pre><code>## 
-## Multivariate Meta-Analysis Model (k = 63; method: REML)
+## Multivariate Meta-Analysis Model (k = 68; method: REML)
 ## 
 ## Variance Components: 
 ## 
 ##             estim    sqrt  nlvls  fixed    factor
-## sigma^2    0.0674  0.2597     19     no  Study.ID
+## sigma^2    0.0584  0.2418     20     no  Study.ID
 ## 
 ## Test for Residual Heterogeneity: 
-## QE(df = 55) = 408.8714, p-val &lt; .0001
+## QE(df = 60) = 491.0389, p-val &lt; .0001
 ## 
 ## Test of Moderators (coefficient(s) 2,3,4,5,6,7,8): 
-## QM(df = 7) = 49.0295, p-val &lt; .0001
+## QM(df = 7) = 50.8173, p-val &lt; .0001
 ## 
 ## Model Results:
 ## 
 ##                           estimate      se     zval    pval    ci.lb
-## intrcpt                     0.0523  0.1058   0.4938  0.6215  -0.1552
-## Duration                    0.0077  0.0075   1.0237  0.3060  -0.0071
-## mean_lin_change             0.0201  0.0258   0.7797  0.4356  -0.0305
-## mean_invs                  -0.0000  0.0000  -1.6174  0.1058  -0.0000
-## mean_nuts                   0.0118  0.0052   2.2842  0.0224   0.0017
-## Duration:mean_lin_change   -0.0060  0.0155  -0.3886  0.6976  -0.0363
-## Duration:mean_invs          0.0000  0.0000   2.0899  0.0366   0.0000
-## Duration:mean_nuts         -0.0018  0.0007  -2.4829  0.0130  -0.0031
+## intrcpt                     0.0356  0.0976   0.3645  0.7155  -0.1557
+## Duration                    0.0091  0.0069   1.3166  0.1880  -0.0045
+## mean_lin_change             0.0203  0.0240   0.8453  0.3979  -0.0267
+## mean_invs                  -0.0000  0.0000  -1.6115  0.1071  -0.0000
+## mean_nuts                   0.0116  0.0049   2.3456  0.0190   0.0019
+## Duration:mean_lin_change   -0.0051  0.0146  -0.3501  0.7262  -0.0337
+## Duration:mean_invs          0.0000  0.0000   2.0965  0.0360   0.0000
+## Duration:mean_nuts         -0.0017  0.0007  -2.5166  0.0119  -0.0031
 ##                             ci.ub   
-## intrcpt                    0.2597   
-## Duration                   0.0225   
-## mean_lin_change            0.0707   
+## intrcpt                    0.2268   
+## Duration                   0.0228   
+## mean_lin_change            0.0673   
 ## mean_invs                  0.0000   
-## mean_nuts                  0.0219  *
-## Duration:mean_lin_change   0.0243   
+## mean_nuts                  0.0213  *
+## Duration:mean_lin_change   0.0235   
 ## Duration:mean_invs         0.0000  *
 ## Duration:mean_nuts        -0.0004  *
 ## 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<pre class="r"><code>global2 &lt;- 
-filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
-                     vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
+<pre class="r"><code>global_all &lt;- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = ., 
+          data = fl_combined, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
 )</code></pre>
-<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = ., random = ~1
-## | : Rows with NAs omitted from model fitting.</code></pre>
-<pre class="r"><code>global2</code></pre>
+<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = fl_combined, :
+## Rows with NAs omitted from model fitting.</code></pre>
+<pre class="r"><code>global_all</code></pre>
 <pre><code>## 
-## Multivariate Meta-Analysis Model (k = 101; method: REML)
+## Multivariate Meta-Analysis Model (k = 107; method: REML)
 ## 
 ## Variance Components: 
 ## 
 ##             estim    sqrt  nlvls  fixed    factor
-## sigma^2    0.0785  0.2802     28     no  Study.ID
+## sigma^2    0.0717  0.2677     29     no  Study.ID
 ## 
 ## Test for Residual Heterogeneity: 
-## QE(df = 93) = 998.3937, p-val &lt; .0001
+## QE(df = 99) = 1028.9440, p-val &lt; .0001
 ## 
 ## Test of Moderators (coefficient(s) 2,3,4,5,6,7,8): 
-## QM(df = 7) = 61.9737, p-val &lt; .0001
+## QM(df = 7) = 63.0159, p-val &lt; .0001
 ## 
 ## Model Results:
 ## 
 ##                           estimate      se     zval    pval    ci.lb
-## intrcpt                     0.0456  0.0859   0.5311  0.5953  -0.1227
-## Duration                    0.0060  0.0057   1.0448  0.2961  -0.0052
-## mean_lin_change             0.0293  0.0235   1.2485  0.2119  -0.0167
-## mean_invs                  -0.0000  0.0000  -4.0615  &lt;.0001  -0.0000
-## mean_nuts                   0.0139  0.0035   3.9488  &lt;.0001   0.0070
-## Duration:mean_lin_change   -0.0150  0.0123  -1.2273  0.2197  -0.0391
-## Duration:mean_invs          0.0000  0.0000   4.2214  &lt;.0001   0.0000
-## Duration:mean_nuts         -0.0019  0.0006  -3.3290  0.0009  -0.0030
+## intrcpt                     0.0376  0.0814   0.4623  0.6438  -0.1219
+## Duration                    0.0067  0.0054   1.2411  0.2146  -0.0039
+## mean_lin_change             0.0301  0.0222   1.3587  0.1742  -0.0133
+## mean_invs                  -0.0000  0.0000  -4.1551  &lt;.0001  -0.0000
+## mean_nuts                   0.0141  0.0035   4.0773  &lt;.0001   0.0073
+## Duration:mean_lin_change   -0.0140  0.0118  -1.1862  0.2355  -0.0372
+## Duration:mean_invs          0.0000  0.0000   4.3203  &lt;.0001   0.0000
+## Duration:mean_nuts         -0.0019  0.0006  -3.4382  0.0006  -0.0030
 ##                             ci.ub     
-## intrcpt                    0.2140     
-## Duration                   0.0172     
-## mean_lin_change            0.0753     
+## intrcpt                    0.1971     
+## Duration                   0.0174     
+## mean_lin_change            0.0736     
 ## mean_invs                 -0.0000  ***
-## mean_nuts                  0.0208  ***
-## Duration:mean_lin_change   0.0090     
+## mean_nuts                  0.0209  ***
+## Duration:mean_lin_change   0.0091     
 ## Duration:mean_invs         0.0000  ***
 ## Duration:mean_nuts        -0.0008  ***
 ## 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<pre class="r"><code>global3 &lt;- 
-filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
-                     vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
+<pre class="r"><code>global_lme2 &lt;- 
+  lme(yi.SppR.ROM ~ Duration * (mean_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme2)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: fl_combined 
+##        AIC      BIC    logLik
+##   548.4532 589.3889 -264.2266
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept) Residual
+## StdDev:   0.2695517  0.34416
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * (mean_lin_change + mean_invs + mean_nuts) 
+##                                Value  Std.Error  DF    t-value p-value
+## (Intercept)               0.04065480 0.05047620 348  0.8054252  0.4211
+## Duration                  0.00122369 0.00345323 348  0.3543623  0.7233
+## mean_lin_change          -0.00404151 0.01628912 348 -0.2481109  0.8042
+## mean_invs                 0.00000103 0.00000174 348  0.5946663  0.5525
+## mean_nuts                 0.00189286 0.00217843 348  0.8689127  0.3855
+## Duration:mean_lin_change  0.00298212 0.00790131 348  0.3774209  0.7061
+## Duration:mean_invs       -0.00000004 0.00000016 348 -0.2645684  0.7915
+## Duration:mean_nuts       -0.00006903 0.00015200 348 -0.4541210  0.6500
+##  Correlation: 
+##                          (Intr) Duratn mn_ln_ mn_nvs mn_nts Drt:__
+## Duration                 -0.640                                   
+## mean_lin_change           0.100  0.103                            
+## mean_invs                 0.039  0.069  0.017                     
+## mean_nuts                -0.232  0.137  0.016 -0.569              
+## Duration:mean_lin_change -0.088 -0.235 -0.654 -0.071  0.058       
+## Duration:mean_invs       -0.032 -0.062 -0.027 -0.901  0.381  0.061
+## Duration:mean_nuts        0.200 -0.318  0.030  0.198 -0.564 -0.079
+##                          Drtn:mn_nv
+## Duration                           
+## mean_lin_change                    
+## mean_invs                          
+## mean_nuts                          
+## Duration:mean_lin_change           
+## Duration:mean_invs                 
+## Duration:mean_nuts       -0.228    
+## 
+## Standardized Within-Group Residuals:
+##          Min           Q1          Med           Q3          Max 
+## -4.764186684 -0.445074678 -0.001088188  0.410983638  5.255915025 
+## 
+## Number of Observations: 451
+## Number of Groups: 96</code></pre>
+<p>There is no effect of velocity of climate change in the subset of the data that does not have an event, but there is a negative effect in the long term when looking at the full dataset.</p>
+<pre class="r"><code>global_ne &lt;- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = ., 
+          data = no_event, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
 )</code></pre>
-<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = ., random = ~1
-## | : Rows with NAs omitted from model fitting.</code></pre>
-<pre class="r"><code>global3</code></pre>
+<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = no_event,
+## random = ~1 | : Rows with NAs omitted from model fitting.</code></pre>
+<pre class="r"><code>global_ne</code></pre>
 <pre><code>## 
-## Multivariate Meta-Analysis Model (k = 101; method: REML)
+## Multivariate Meta-Analysis Model (k = 68; method: REML)
 ## 
 ## Variance Components: 
 ## 
 ##             estim    sqrt  nlvls  fixed    factor
-## sigma^2    0.0806  0.2840     28     no  Study.ID
+## sigma^2    0.0601  0.2451     20     no  Study.ID
 ## 
 ## Test for Residual Heterogeneity: 
-## QE(df = 93) = 1151.5038, p-val &lt; .0001
+## QE(df = 60) = 606.1116, p-val &lt; .0001
 ## 
 ## Test of Moderators (coefficient(s) 2,3,4,5,6,7,8): 
-## QM(df = 7) = 65.9074, p-val &lt; .0001
+## QM(df = 7) = 51.0783, p-val &lt; .0001
 ## 
 ## Model Results:
 ## 
 ##                     estimate      se     zval    pval    ci.lb    ci.ub
-## intrcpt               0.0288  0.0846   0.3401  0.7338  -0.1370   0.1945
-## Duration              0.0076  0.0057   1.3368  0.1813  -0.0035   0.0187
-## mean_vocc             0.0002  0.0001   1.4677  0.1422  -0.0001   0.0004
-## mean_invs            -0.0000  0.0000  -4.2584  &lt;.0001  -0.0000  -0.0000
-## mean_nuts             0.0147  0.0036   4.0891  &lt;.0001   0.0077   0.0218
-## Duration:mean_vocc   -0.0001  0.0000  -2.3680  0.0179  -0.0001  -0.0000
-## Duration:mean_invs    0.0000  0.0000   4.4226  &lt;.0001   0.0000   0.0000
-## Duration:mean_nuts   -0.0020  0.0006  -3.4955  0.0005  -0.0031  -0.0009
+## intrcpt               0.0296  0.0968   0.3062  0.7595  -0.1600   0.2193
+## Duration              0.0095  0.0068   1.3859  0.1658  -0.0039   0.0229
+## mean_vocc             0.0001  0.0001   1.1709  0.2416  -0.0001   0.0003
+## mean_invs            -0.0000  0.0000  -1.6730  0.0943  -0.0000   0.0000
+## mean_nuts             0.0125  0.0051   2.4398  0.0147   0.0024   0.0225
+## Duration:mean_vocc   -0.0000  0.0000  -0.8645  0.3873  -0.0001   0.0000
+## Duration:mean_invs    0.0000  0.0000   2.1688  0.0301   0.0000   0.0000
+## Duration:mean_nuts   -0.0019  0.0007  -2.6064  0.0092  -0.0033  -0.0005
+##                       
+## intrcpt               
+## Duration              
+## mean_vocc             
+## mean_invs            .
+## mean_nuts            *
+## Duration:mean_vocc    
+## Duration:mean_invs   *
+## Duration:mean_nuts  **
+## 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<pre class="r"><code>global_all &lt;- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
+)</code></pre>
+<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = fl_combined, :
+## Rows with NAs omitted from model fitting.</code></pre>
+<pre class="r"><code>global_all</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 107; method: REML)
+## 
+## Variance Components: 
+## 
+##             estim    sqrt  nlvls  fixed    factor
+## sigma^2    0.0735  0.2711     29     no  Study.ID
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 99) = 1186.1440, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2,3,4,5,6,7,8): 
+## QM(df = 7) = 67.0474, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                     estimate      se     zval    pval    ci.lb    ci.ub
+## intrcpt               0.0226  0.0798   0.2833  0.7769  -0.1337   0.1789
+## Duration              0.0084  0.0054   1.5633  0.1180  -0.0021   0.0189
+## mean_vocc             0.0002  0.0001   1.6760  0.0937  -0.0000   0.0004
+## mean_invs            -0.0000  0.0000  -4.3725  &lt;.0001  -0.0000  -0.0000
+## mean_nuts             0.0150  0.0035   4.2425  &lt;.0001   0.0081   0.0220
+## Duration:mean_vocc   -0.0001  0.0000  -2.4482  0.0144  -0.0001  -0.0000
+## Duration:mean_invs    0.0000  0.0000   4.5422  &lt;.0001   0.0000   0.0000
+## Duration:mean_nuts   -0.0021  0.0006  -3.6269  0.0003  -0.0032  -0.0009
 ##                        
 ## intrcpt                
 ## Duration               
-## mean_vocc              
+## mean_vocc             .
 ## mean_invs           ***
 ## mean_nuts           ***
 ## Duration:mean_vocc    *
@@ -665,8 +755,89 @@ filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp;
 ## 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<p>Study specific slices</p>
-<pre class="r"><code># optimization error - check single_line_change vals
+<p>The unweighted analyses of velocity of climate change, invasives, and nutrients show no significant relationships.</p>
+<pre class="r"><code>global_lme_ne &lt;- 
+  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_lme_ne)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: no_event 
+##        AIC      BIC    logLik
+##   362.4844 400.2299 -171.2422
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept)  Residual
+## StdDev:    0.224049 0.2996082
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs + mean_nuts) 
+##                           Value  Std.Error  DF    t-value p-value
+## (Intercept)         0.023426543 0.04947296 247  0.4735222  0.6363
+## Duration            0.001170330 0.00335823 247  0.3484967  0.7278
+## mean_vocc          -0.000021746 0.00004644 247 -0.4682546  0.6400
+## mean_invs           0.000000131 0.00000158 247  0.0829945  0.9339
+## mean_nuts           0.000278616 0.00237398 247  0.1173625  0.9067
+## Duration:mean_vocc  0.000001504 0.00002109 247  0.0713149  0.9432
+## Duration:mean_invs  0.000000105 0.00000016 247  0.6349155  0.5261
+## Duration:mean_nuts  0.000267570 0.00037226 247  0.7187640  0.4730
+##  Correlation: 
+##                    (Intr) Duratn mn_vcc mn_nvs mn_nts Drtn:mn_v Drtn:mn_nv
+## Duration           -0.671                                                 
+## mean_vocc          -0.011  0.192                                          
+## mean_invs           0.023  0.076  0.030                                   
+## mean_nuts          -0.183  0.114 -0.067 -0.513                            
+## Duration:mean_vocc  0.074 -0.356 -0.639 -0.071  0.176                     
+## Duration:mean_invs -0.007 -0.052 -0.055 -0.851  0.480  0.095              
+## Duration:mean_nuts  0.066 -0.135  0.102  0.152 -0.698 -0.196    -0.428    
+## 
+## Standardized Within-Group Residuals:
+##         Min          Q1         Med          Q3         Max 
+## -3.08235759 -0.47343807 -0.02289173  0.44912301  3.33634332 
+## 
+## Number of Observations: 330
+## Number of Groups: 76</code></pre>
+<pre class="r"><code>global_lme3 &lt;- 
+  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme3)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: fl_combined 
+##        AIC      BIC    logLik
+##   571.5405 612.4762 -275.7702
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept)  Residual
+## StdDev:   0.2695522 0.3440899
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs + mean_nuts) 
+##                          Value  Std.Error  DF    t-value p-value
+## (Intercept)         0.04309118 0.05021520 348  0.8581302  0.3914
+## Duration            0.00118918 0.00354244 348  0.3356946  0.7373
+## mean_vocc          -0.00002832 0.00005181 348 -0.5466172  0.5850
+## mean_invs           0.00000108 0.00000173 348  0.6234591  0.5334
+## mean_nuts           0.00181888 0.00217284 348  0.8371010  0.4031
+## Duration:mean_vocc  0.00000688 0.00002173 348  0.3168178  0.7516
+## Duration:mean_invs -0.00000004 0.00000016 348 -0.2826039  0.7776
+## Duration:mean_nuts -0.00006466 0.00015157 348 -0.4265666  0.6700
+##  Correlation: 
+##                    (Intr) Duratn mn_vcc mn_nvs mn_nts Drtn:mn_v Drtn:mn_nv
+## Duration           -0.648                                                 
+## mean_vocc          -0.028  0.194                                          
+## mean_invs           0.035  0.054  0.002                                   
+## mean_nuts          -0.233  0.140  0.019 -0.566                            
+## Duration:mean_vocc  0.016 -0.327 -0.632 -0.018  0.033                     
+## Duration:mean_invs -0.028 -0.052 -0.011 -0.901  0.378  0.019              
+## Duration:mean_nuts  0.196 -0.320  0.004  0.194 -0.562 -0.034    -0.224    
+## 
+## Standardized Within-Group Residuals:
+##          Min           Q1          Med           Q3          Max 
+## -4.771606873 -0.440936021 -0.007501506  0.400968526  5.250536338 
+## 
+## Number of Observations: 451
+## Number of Groups: 96</code></pre>
+<p>Study specific slices using rma() and the linear change fails.</p>
+<pre class="r"><code># optimization error - unclear why this is happening
 global4 &lt;- 
 filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
                      vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
@@ -675,8 +846,246 @@ filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp;
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
 )
+global4
+
+global4 &lt;- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = no_event, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
+)
 global4</code></pre>
-<pre class="r"><code>global5 &lt;- 
+<p>However, the unweighted analyses for linear temperature change do not fail, but show no effect of the moderators: linear temperature change, invasives, and nutrients. The unweighted analyses that include climate velocity instead of linear temperature change do not show an effect of the moderators.</p>
+<pre class="r"><code># Unweighted
+# Linear temperature change
+global_lme_ne &lt;- 
+  lme(yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_lme_ne)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: no_event 
+##        AIC      BIC    logLik
+##   327.3748 365.1203 -153.6874
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept)  Residual
+## StdDev:   0.2229207 0.2997818
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs + mean_nuts) 
+##                                 Value Std.Error  DF    t-value p-value
+## (Intercept)                -0.0044821 0.0749610 247 -0.0597925  0.9524
+## Duration                    0.0016335 0.0048100 247  0.3395987  0.7344
+## single_lin_change           0.4626424 0.8929370 247  0.5181131  0.6048
+## mean_invs                   0.0000001 0.0000016 247  0.0663859  0.9471
+## mean_nuts                   0.0004548 0.0023563 247  0.1930195  0.8471
+## Duration:single_lin_change -0.0091944 0.0524955 247 -0.1751474  0.8611
+## Duration:mean_invs          0.0000001 0.0000002 247  0.6421051  0.5214
+## Duration:mean_nuts          0.0002483 0.0003760 247  0.6603412  0.5097
+##  Correlation: 
+##                            (Intr) Duratn sngl__ mn_nvs mn_nts Drt:__
+## Duration                   -0.708                                   
+## single_lin_change          -0.755  0.539                            
+## mean_invs                   0.023  0.042 -0.005                     
+## mean_nuts                  -0.137  0.051  0.009 -0.506              
+## Duration:single_lin_change  0.582 -0.758 -0.760 -0.008  0.090       
+## Duration:mean_invs          0.025 -0.087 -0.045 -0.848  0.479  0.094
+## Duration:mean_nuts          0.005  0.019  0.061  0.140 -0.694 -0.202
+##                            Drtn:mn_nv
+## Duration                             
+## single_lin_change                    
+## mean_invs                            
+## mean_nuts                            
+## Duration:single_lin_change           
+## Duration:mean_invs                   
+## Duration:mean_nuts         -0.429    
+## 
+## Standardized Within-Group Residuals:
+##         Min          Q1         Med          Q3         Max 
+## -3.09019653 -0.47631365 -0.02284453  0.44699887  3.34135190 
+## 
+## Number of Observations: 330
+## Number of Groups: 76</code></pre>
+<pre class="r"><code>global_lme_all &lt;- 
+  lme(yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme_all)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: fl_combined 
+##        AIC      BIC    logLik
+##   536.0635 576.9992 -258.0318
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept)  Residual
+## StdDev:    0.266377 0.3443209
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs + mean_nuts) 
+##                                 Value Std.Error  DF    t-value p-value
+## (Intercept)                -0.0018060 0.0727178 348 -0.0248354  0.9802
+## Duration                    0.0018311 0.0048782 348  0.3753659  0.7076
+## single_lin_change           0.6937502 0.8299547 348  0.8358893  0.4038
+## mean_invs                   0.0000011 0.0000017 348  0.6416194  0.5215
+## mean_nuts                   0.0018508 0.0021658 348  0.8545322  0.3934
+## Duration:single_lin_change -0.0087748 0.0516120 348 -0.1700142  0.8651
+## Duration:mean_invs          0.0000000 0.0000002 348 -0.3158413  0.7523
+## Duration:mean_nuts         -0.0000620 0.0001529 348 -0.4052940  0.6855
+##  Correlation: 
+##                            (Intr) Duratn sngl__ mn_nvs mn_nts Drt:__
+## Duration                   -0.675                                   
+## single_lin_change          -0.728  0.492                            
+## mean_invs                   0.020  0.022  0.005                     
+## mean_nuts                  -0.192  0.160  0.044 -0.565              
+## Duration:single_lin_change  0.526 -0.729 -0.726  0.016 -0.068       
+## Duration:mean_invs         -0.013 -0.011 -0.009 -0.901  0.379 -0.028
+## Duration:mean_nuts          0.196 -0.354 -0.088  0.193 -0.564  0.158
+##                            Drtn:mn_nv
+## Duration                             
+## single_lin_change                    
+## mean_invs                            
+## mean_nuts                            
+## Duration:single_lin_change           
+## Duration:mean_invs                   
+## Duration:mean_nuts         -0.226    
+## 
+## Standardized Within-Group Residuals:
+##          Min           Q1          Med           Q3          Max 
+## -4.773835776 -0.442157053 -0.007884177  0.404708570  5.241583864 
+## 
+## Number of Observations: 451
+## Number of Groups: 96</code></pre>
+<pre class="r"><code># Unweighted
+# VOCC
+global_lme_ne &lt;- 
+  lme(yi.SppR.ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_lme_ne)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: no_event 
+##      AIC      BIC   logLik
+##   350.27 388.0155 -165.135
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept)  Residual
+## StdDev:   0.2139313 0.3006777
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * (single_vel + mean_invs + mean_nuts) 
+##                            Value  Std.Error  DF    t-value p-value
+## (Intercept)          0.007476288 0.06664495 247  0.1121809  0.9108
+## Duration            -0.000994528 0.00451797 247 -0.2201270  0.8260
+## single_vel           0.000972595 0.00183818 247  0.5291062  0.5972
+## mean_invs            0.000000197 0.00000156 247  0.1263285  0.8996
+## mean_nuts            0.000720407 0.00232857 247  0.3093767  0.7573
+## Duration:single_vel  0.000063673 0.00011402 247  0.5584228  0.5771
+## Duration:mean_invs   0.000000110 0.00000016 247  0.6692947  0.5039
+## Duration:mean_nuts   0.000165450 0.00037318 247  0.4433562  0.6579
+##  Correlation: 
+##                     (Intr) Duratn sngl_v mn_nvs mn_nts Drtn:s_ Drtn:mn_nv
+## Duration            -0.719                                               
+## single_vel          -0.689  0.493                                        
+## mean_invs           -0.003  0.039  0.039                                 
+## mean_nuts           -0.115  0.040 -0.031 -0.498                          
+## Duration:single_vel  0.540 -0.734 -0.709 -0.004  0.120                   
+## Duration:mean_invs   0.047 -0.078 -0.079 -0.850  0.472  0.086            
+## Duration:mean_nuts  -0.025  0.035  0.097  0.132 -0.696 -0.242  -0.418    
+## 
+## Standardized Within-Group Residuals:
+##         Min          Q1         Med          Q3         Max 
+## -3.08229427 -0.48312634 -0.03139207  0.46900427  3.35105591 
+## 
+## Number of Observations: 330
+## Number of Groups: 76</code></pre>
+<pre class="r"><code>global_lme_all &lt;- 
+  lme(yi.SppR.ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme_all)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: fl_combined 
+##        AIC      BIC    logLik
+##   561.0077 601.9434 -270.5038
+## 
+## Random effects:
+##  Formula: ~1 | factor(Study.ID)
+##         (Intercept)  Residual
+## StdDev:   0.2671213 0.3441796
+## 
+## Fixed effects: yi.SppR.ROM ~ Duration * (single_vel + mean_invs + mean_nuts) 
+##                           Value  Std.Error  DF    t-value p-value
+## (Intercept)          0.08550151 0.06454256 348  1.3247307  0.1861
+## Duration            -0.00096804 0.00454197 348 -0.2131311  0.8313
+## single_vel          -0.00152869 0.00145784 348 -1.0485981  0.2951
+## mean_invs            0.00000104 0.00000173 348  0.6025218  0.5472
+## mean_nuts            0.00173068 0.00216928 348  0.7978127  0.4255
+## Duration:single_vel  0.00008630 0.00010776 348  0.8008561  0.4238
+## Duration:mean_invs  -0.00000004 0.00000016 348 -0.2753769  0.7832
+## Duration:mean_nuts  -0.00004775 0.00015261 348 -0.3128741  0.7546
+##  Correlation: 
+##                     (Intr) Duratn sngl_v mn_nvs mn_nts Drtn:s_ Drtn:mn_nv
+## Duration            -0.692                                               
+## single_vel          -0.634  0.476                                        
+## mean_invs            0.013  0.009  0.023                                 
+## mean_nuts           -0.208  0.171  0.043 -0.566                          
+## Duration:single_vel  0.449 -0.680 -0.698  0.042 -0.079                   
+## Duration:mean_invs  -0.015  0.007 -0.012 -0.902  0.381 -0.064            
+## Duration:mean_nuts   0.211 -0.353 -0.093  0.197 -0.565  0.146  -0.230    
+## 
+## Standardized Within-Group Residuals:
+##          Min           Q1          Med           Q3          Max 
+## -4.761757493 -0.463825378 -0.006856619  0.406808679  5.257775437 
+## 
+## Number of Observations: 451
+## Number of Groups: 96</code></pre>
+<p>But looking at the climate velocities instead of linear temperature change, the rma() models work, but there is no temperature signal.</p>
+<pre class="r"><code>global_ne &lt;- 
+filter(no_event, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
+                     vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)
+)</code></pre>
+<pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = ., random = ~1
+## | : Rows with NAs omitted from model fitting.</code></pre>
+<pre class="r"><code>global_ne</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 63; method: REML)
+## 
+## Variance Components: 
+## 
+##             estim    sqrt  nlvls  fixed    factor
+## sigma^2    0.0656  0.2561     19     no  Study.ID
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 55) = 387.1950, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2,3,4,5,6,7,8): 
+## QM(df = 7) = 48.6084, p-val &lt; .0001
+## 
+## Model Results:
+## 
+##                      estimate      se     zval    pval    ci.lb    ci.ub
+## intrcpt               -0.0034  0.1252  -0.0270  0.9785  -0.2489   0.2421
+## Duration               0.0078  0.0087   0.8984  0.3690  -0.0093   0.0249
+## single_vel             0.0000  0.0030   0.0050  0.9960  -0.0059   0.0059
+## mean_invs             -0.0000  0.0000  -1.5515  0.1208  -0.0000   0.0000
+## mean_nuts              0.0110  0.0050   2.2067  0.0273   0.0012   0.0208
+## Duration:single_vel    0.0001  0.0003   0.3025  0.7622  -0.0005   0.0007
+## Duration:mean_invs     0.0000  0.0000   2.0212  0.0433   0.0000   0.0000
+## Duration:mean_nuts    -0.0016  0.0007  -2.3670  0.0179  -0.0029  -0.0003
+##                       
+## intrcpt               
+## Duration              
+## single_vel            
+## mean_invs             
+## mean_nuts            *
+## Duration:single_vel   
+## Duration:mean_invs   *
+## Duration:mean_nuts   *
+## 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<pre class="r"><code>global_all &lt;- 
 filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp; 
                      vi.SppR.ROM &gt; 0 &amp; !is.na(mean_imps)) %&gt;%
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
@@ -686,7 +1095,7 @@ filter(fl_combined, !is.na(yi.SppR.ROM) &amp; !is.na(vi.SppR.ROM) &amp;
 )</code></pre>
 <pre><code>## Warning in rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = ., random = ~1
 ## | : Rows with NAs omitted from model fitting.</code></pre>
-<pre class="r"><code>global5</code></pre>
+<pre class="r"><code>global_all</code></pre>
 <pre><code>## 
 ## Multivariate Meta-Analysis Model (k = 101; method: REML)
 ## 

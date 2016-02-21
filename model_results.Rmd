@@ -192,9 +192,9 @@ get_percent_change(local_lme$coefficients$fixed)
 
 In the subset of studies for which no events were explicitly documented, cumulative human impacts were associated with immediate declines. On average when mean impact was zero, species declined by 4.8%. For each unit of cumulative human impact (global range = ~0 - 11.1 (need to double check this value); from our study range = 0.26 - 9.5), our results show that the rate of species loss increases by 7.5%. However, as study duration increases, the effect of mean impact on the rate of change in species richness is actually positive. Cumulative human impact moderates the rate of change in richness by 1 % per year. (Does this mean that each year the rate of change in richness is: -4.8% * 1.2)
 
-However, the unweighted analyses do not a change in richness over time, nor an effect of cumulative impact. 
+However, the unweighted analyses do not a change in richness over time, nor an effect of cumulative impact.  
 
-Does this conflict at all with the fact that duration * events have the opposite effect as we expected?
+The model global1 uses only the studies that did not have events associated with them.
 
 ```{r}
 global1 <- 
@@ -208,6 +208,8 @@ get_percent_change(global1$b)
 ```
 
 
+The model global2 uses the full dataset and the effect is reversed...
+
 ```{r}
 global2 <- 
   rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
@@ -217,7 +219,21 @@ global2 <-
 global2
 ```
 
-```{r, eval=FALSE}
+The unweighted analyses (again with the no_event data and the full dataset) also show the opposite pattern compared to the global1 model (with no event data). 
+
+```{r}
+global_lme <- 
+  lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_lme)
+
+global_lme_all <- 
+  lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme_all)
+```
+
+```{r, echo=FALSE, eval=FALSE}
 # This failed too.
 
 global_summ_df <- 
@@ -252,53 +268,74 @@ ggplot(data = global_summ_df) +
   #xlim(c(-8, 8))
 ```
 
+
+When comparing the models with no event and the full dataset the patterns are the same, but the short term effect of invasive potential is not significant when looking at the no_event subset of the data.
+
 ```{r}
-global_lme <- 
-filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-  lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
-      data = .)
-summary(global_lme)
-
-
-global2 <- 
-filter(no_event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+global_ne <- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = ., 
+          data = no_event, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
 )
-global2
+global_ne
 
-
-global2 <- 
-filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+global_all <- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = ., 
+          data = fl_combined, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
 )
-global2
+global_all
 
+global_lme2 <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme2)
 
-global3 <- 
-filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = ., 
-          random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
-)
-global3
 ```
 
 
-Study specific slices
+There is no effect of velocity of climate change in the subset of the data that does not have an event, but there is a negative effect in the long term when looking at the full dataset.
+
+
+```{r}
+global_ne <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = no_event, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
+)
+global_ne
+
+global_all <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
+)
+global_all
+```
+
+The unweighted analyses of velocity of climate change, invasives, and nutrients show no significant relationships. 
+
+```{r}
+global_lme_ne <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_lme_ne)
+
+global_lme3 <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme3)
+```
+
+
+Study specific slices using rma() and the linear change fails. 
 
 ```{r, eval=FALSE}
-# optimization error - check single_line_change vals
+# optimization error - unclear why this is happening
 global4 <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
@@ -308,10 +345,62 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
           mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
 )
 global4
+
+global4 <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = no_event, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
+)
+global4
 ```
 
+However, the unweighted analyses for linear temperature change do not fail, but show no effect of the moderators: linear temperature change, invasives, and nutrients. The unweighted analyses that include climate velocity instead of linear temperature change do not show an effect of the moderators. 
+
+```{r}  
+# Unweighted
+# Linear temperature change
+global_lme_ne <- 
+  lme(yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_lme_ne)
+
+global_lme_all <- 
+  lme(yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme_all)
+
+# Unweighted
+# VOCC
+global_lme_ne <- 
+  lme(yi.SppR.ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_lme_ne)
+
+global_lme_all <- 
+  lme(yi.SppR.ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_lme_all)
+
+```
+
+
+But looking at the climate velocities instead of linear temperature change, the rma() models work, but there is no temperature signal.
+
+
 ```{r}
-global5 <- 
+global_ne <- 
+filter(no_event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
+                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = ., 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)
+)
+global_ne
+
+
+global_all <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
@@ -319,9 +408,9 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)
 )
-global5
-
+global_all
 
 #global_summ_df <- 
 #  mk_rma_summary_df(fl_combined, rma_object = global2)
 ```
+
