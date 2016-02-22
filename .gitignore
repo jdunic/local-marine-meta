@@ -10,7 +10,6 @@
 # Data #
 ########
 *.nc
-Data_outputs/*.csv
 *.tif
 *.xlsx
 *.xls
