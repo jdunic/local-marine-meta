@@ -40,3 +40,75 @@ Save and quit. You can check that your diffs are working. If you are finding tha
 ~~~
 git diff master_data_sheet_of_choice.csv
 ~~~
+
+
+###Data cleaning
+
+Raw inputs:  
+
+*Study data*  
+* master_data/Data.csv
+* master_data/robin_bts_reformat.csv
+
+*Event types and classifications*  
+* master_data/Event_types.csv
+
+*Spatial data for studies*  
+* master_data/SiteSpatialData.csv
+
+
+# Cleaning pipeline:
+
+1. Clean raw meta-analysis data (data from studies)
+
+- Inputs:
+
+* master_data/Data.csv
+* master_data/robin_bts_reformat.csv
+* master_data/Event_types.csv
+
+- Script: 
+* masterDataCleanSort.R (sources cb_data_processing.R)
+
+- Outputs:  
+* firstLastData_v0.9-20160223.csv  
+
+2. Extract data from all spatial layers:   
+
+- Inputs  
+* CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif
+* invasives_raw/invasives.tif
+* plumes_fertilizer_raw/plumes_fert.tif
+* plumes_pesticide_raw/plumes_pest.tif
+* HadISST_sst.nc
+
+
+- Script:  
+* Create_master_fl_combined_df.R
+
+- Outputs
+* Data_outputs/spatial_data_with_cumulative_impacts.csv
+* Data_outputs/spatial_data_with_invasives.csv
+* Data_outputs/spatial_data_with_nutrients.csv
+* Data_outputs/spatial_data_with_pesticides.csv
+* Data_outputs/spatial_data_with_single_temp_changes.csv
+* Data_outputs/spatial_data_with_temp_data.csv
+
+3. Average the spatial data for each site and combine this data with the first 
+   last data. End result is a dataset that contains a single spatial data value 
+   for each unique Study.ID - Site - Taxonomic Group  
+
+- Inputs 
+* Data_outputs/firstLastData_v0.9-20160223.csv  
+* Data_outputs/spatial_data_with_cumulative_impacts.csv
+* Data_outputs/spatial_data_with_invasives.csv
+* Data_outputs/spatial_data_with_nutrients.csv
+* Data_outputs/spatial_data_with_pesticides.csv
+* Data_outputs/spatial_data_with_single_temp_changes.csv
+* Data_outputs/spatial_data_with_temp_data.csv
+
+- Script:  
+* combine_spatial_master_data.R
+
+- Outputs
+* Data_outputs/fl_combined.csv
