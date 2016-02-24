@@ -46,14 +46,14 @@ git diff master_data_sheet_of_choice.csv
 
 Raw inputs:  
 
-*Study data*  
+*Study data*
 * master_data/Data.csv
 * master_data/robin_bts_reformat.csv
 
-*Event types and classifications*  
+*Event types and classifications*
 * master_data/Event_types.csv
 
-*Spatial data for studies*  
+*Spatial data for studies*
 * master_data/SiteSpatialData.csv
 
 
