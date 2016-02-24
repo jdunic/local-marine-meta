@@ -1,16 +1,16 @@
 library(dplyr)
 library(ggplot2)
 
-meta_points <- read.csv("Data_outputs/cb_site_data.csv")
+meta_points <- read.csv('./master_data/SiteSpatialData.csv', stringsAsFactors = FALSE)
 
 meta_points_summary <- meta_points %>%
-  group_by(Study.ID, Lat, Long) %>%
+  group_by(Study.ID, Start_Lat, Start_Long) %>%
   dplyr::summarise(Sites = length(Site))
 
 
 
-ggplot(data=meta_points_summary, aes(x=Long, y=Lat))  +
-  geom_point(mapping=aes(color=Study.ID, size=Sites)) +
+ggplot(data=meta_points_summary, aes(x=Start_Long, y=Start_Lat))  +
+  geom_point(mapping=aes(color=factor(Study.ID), size=Sites)) +
   borders("world", alpha=0.5) +
   theme_void() +
   theme(legend.position = "none") +
@@ -21,11 +21,8 @@ ggplot(data=meta_points_summary, aes(x=Long, y=Lat))  +
 
 
 
-
-
-
-ggplot(data=meta_points, aes(x=Long, y=Lat))  +
-  geom_point(mapping=aes(color=Study.ID), size=3) +
+ggplot(data=meta_points, aes(x=Start_Long, y=Start_Lat))  +
+  geom_point(mapping=aes(color=Study.ID), size=1) +
   borders("world", alpha=0.5) +
   theme_void() +
   theme(legend.position = "none") +
