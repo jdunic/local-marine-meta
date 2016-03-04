@@ -14,7 +14,7 @@
 ##    3/30/2014 - Added Log Ratio
 ##    2/03/2015 - Added conversions to standardize site and plot sizes
 ########################################################################################
-if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
+#if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
 
 # libraries for Accessing Data from the web
 # and meta-analysis
@@ -22,7 +22,8 @@ library(metafor)
 library(lubridate)
 library(dplyr)
 library(tidyr)
-library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query' is masked by dplyr. I'm not sure that datamart properly uses namespace
+library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query'
+#is masked by dplyr. I'm not sure that datamart properly uses namespace
 # or calls specific functions using package::foo, but I know that dplyr does.
 library(stringr)
 library(beepr)
