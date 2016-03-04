@@ -18,12 +18,16 @@ pest <- read.csv('Data_outputs/spatial_data_with_pesticides.csv',
                  stringsAsFactors = FALSE)[, -1]
 temp <- read.csv('Data_outputs/spatial_data_with_temp_data.csv', 
                  stringsAsFactors = FALSE)
+single_temps <- read.csv('Data_outputs/spatial_data_with_single_temp_changes.csv', 
+                          stringsAsFactors = FALSE)[, -1]
 
-imps <- dplyr::select(imps, row, mean_imps)
+imps <- dplyr::select(imps, row, mean_imps) %>% 
+          group_by()
 invs <- dplyr::select(invs, row, mean_invs)
 nuts <- dplyr::select(nuts, row, mean_nuts)
 pest <- dplyr::select(pest, row, mean_pests)
 temp <- dplyr::select(temp, row, mean_lin_change, mean_vocc)
+sing_temp <- dplyr::select(single_temps, row, single_lin_change, single_vel)
 
 spatial_data <- read.csv('master_data/SiteSpatialData.csv', stringsAsFactors = FALSE)
 spatial_data <- 
@@ -42,6 +46,7 @@ left_join(spatial_data, imps, by = c('row' = 'row')) %>%
   left_join(., nuts, by = c('row' = 'row')) %>% 
   left_join(., pest, by = c('row' = 'row')) %>% 
   left_join(., temp, by = c('row' = 'row')) %>% 
+  left_join(., sing_temp, by = c('row' = 'row')) %>% 
   as_data_frame(.)
 
 summarised_spatial <- 
