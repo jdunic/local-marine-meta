@@ -483,3 +483,8 @@ attributes(firstSampleFilteredData$yi.Even.SMDH)[c('measure', 'ni')] <- NULL
 attributes(firstSampleFilteredData$vi.Even.SMDH)[c('measure', 'ni')] <- NULL
 
 str(firstSampleFilteredData)
+
+# Complete the creation of all the first and last data
+source('cb_data_processing.R')
+
+write.csv(richData, 'Data_outputs/cleaned_richData.csv')
