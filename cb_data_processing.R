@@ -252,6 +252,15 @@ write.csv(cb_site_data, 'Data_outputs/cb_site_data.csv')
 #0.9 - All data quality controlled
 #1.0 - Final data for the paper
 
+fl_combined$id <- 1:nrow(fl_combined)
+
+# Include aggregation so taht we can see if it affects effect size.
+fl_combined %>%
+  mutate(sub1 = replace(sub1, is.na(sub1), 1), 
+         sub2 = replace(sub2, is.na(sub2), 1)) %>%
+  mutate(aggregation = ifelse(sub1 > 1 | sub2 > 1, 'aggregated', 'single plot')) %>% 
+  mutate(PlotSize = ifelse(aggregation == 'aggregated', sub1 * PlotSize, PlotSize))
+
 
 ver <- 0.9
 outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
