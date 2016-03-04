@@ -59,7 +59,9 @@ summarised_spatial <-
             mean_nuts = mean(mean_nuts, na.rm = TRUE), 
             mean_pests = mean(mean_pests, na.rm = TRUE), 
             mean_lin_change = mean(mean_lin_change, na.rm = TRUE), 
-            mean_vocc = mean(mean_vocc, na.rm = TRUE))
+            mean_vocc = mean(mean_vocc, na.rm = TRUE), 
+            single_lin_change = mean(single_lin_change, na.rm = TRUE), 
+            single_vel = mean(single_vel, na.rm = TRUE))
 
 fl_combined <- 
   left_join(fl, summarised_spatial, by = c('id' = 'id'))
