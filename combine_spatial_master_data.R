@@ -50,7 +50,9 @@ left_join(spatial_data, imps, by = c('row' = 'row')) %>%
   as_data_frame(.)
 
 summarised_spatial <- 
-  full_join(all_spatial_data, fl, by = c('site_id' = 'site_id')) %>%
+  all_spatial_data %>% 
+  dplyr::select(-Study.ID, -Reference, -Site, -Notes, -Source) %>% 
+  full_join(., fl, by = c('site_id' = 'site_id')) %>%
   group_by(id) %>% 
   summarise(mean_imps = mean(mean_imps, na.rm = TRUE), 
             mean_invs = mean(mean_invs, na.rm = TRUE), 
