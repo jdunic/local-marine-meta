@@ -1,11 +1,4 @@
-
 ```{r, echo = FALSE}
-rm(list = setdiff(ls(), lsf.str()))
-pkgs = names(sessionInfo()$otherPkgs)
-sapply(pkgs, detach_package, character.only = TRUE)
-
-if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
-
 library(raster)
 library(dplyr)
 library(ggplot2)
@@ -18,14 +11,8 @@ source('02_functions.R')
 
 fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv")
 
-# Remove after re-running masterDataCleanSort.R
-fl_combined <- 
-  mutate(fl_combined, Event. = replace(Event., (Study.ID == 554 & Site == "downcurrent reference"), 'No')) %>%
-  mutate(Event. = replace(Event., (Study.ID == 554 & Site == "upcurrent reference"), 'No')) %>% 
-  mutate(Event. = replace(Event., (Study.ID == 607 & Site == "gravelines"), 'No'))
-
-event <- filter(fl_combined, Event. == 'Yes')
-no_event <- filter(fl_combined, Event. != 'Yes')
+event <- filter(fl_combined, Event == 'Yes')
+no_event <- filter(fl_combined, Event != 'Yes')
 
 ```
 
@@ -79,10 +66,10 @@ lme1 <- lme(yi.SppR.ROM ~ Duration, random = ~ 1 | Study.ID, data = fl_combined,
 summary(lme1)
 ```
 
-Looking at the caterpillar plot for each of the studies, it is probably best to keep Study.ID as a random 
-effect.
+Looking at the caterpillar plot for each of the studies, it is probably best to keep Study.ID as a random effect.
 
 ```{r, echo = FALSE, eval = FALSE}
+# something is wrong with this plot righ tnow
 lattice::dotplot(ranef(lme1, condVar=TRUE), cex = 0.5, scales=list(cex=0.4))
 ```
 
@@ -129,32 +116,20 @@ When we examine the change in species richness as may be affected by direct/loca
 
 ```{r}
 
+localmod <- 
+  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+         random = ~ 1 | factor(Study.ID),
+         mods = ~ Duration:expected_change + expected_change + 0)
+localmod
+
 ggplot(data = event, aes(x = Duration, y = yi.SppR.ROM)) + 
   geom_point(aes(colour = expected_change)) + 
   ylim(c(-2.1, 2.1)) + 
-  stat_smooth(method = 'lm')
+  stat_smooth(method = 'lm', aes(colour = expected_change))
 
 
-localmod <- 
-rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
-       random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration*expected_change)
-localmod
-
-local2 <- 
-rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
-       random = ~ 1 | factor(Study.ID),
-       mods = ~ Duration:expected_change + 
-              expected_change + 0)
-local2
-
-local2U <- lmer(yi.SppR.ROM ~ Duration:expected_change + 
-                expected_change + 0 + (1|Study.ID), data=event)
-summary(local2U)
-
-
-local2U <- lmer(yi.SppR.ROM ~ Duration:expected_change + 
-                expected_change + 0 + (1|Study.ID), data=event)
+local2U <- lme(yi.SppR.ROM ~ Duration:expected_change + expected_change + 0, 
+               random = ~ 1 | factor(Study.ID), data=event, na.action = na.omit)
 summary(local2U)
 
 
@@ -181,7 +156,7 @@ ggplot(data = event_dir_summ_df[1:3, ]) +
         axis.title.y = element_text(vjust = -0.5, size = 20), 
         panel.grid.major  = element_blank(),
         panel.grid.minor  = element_blank()) +
-  geom_hline(x = 0, linetype = "dashed", colour = 'yellow') +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = 'yellow') +
   ylim(c(-0.75, 0.75)) +
   scale_x_discrete(labels = paste(row.names(event_dir_summ_df[1:3, ]), "\n k = ", as.character(event_dir_summ_df[1:3, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[1:3, ]$sites_per_mod)))
 
@@ -201,14 +176,14 @@ ggplot(data = event_dir_summ_df[4:6, ]) +
         axis.title.y = element_text(vjust = -0.5, size = 20), 
         panel.grid.major  = element_blank(),
         panel.grid.minor  = element_blank()) +
-  geom_hline(x = 0, linetype = "dashed", colour = 'yellow') +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = 'yellow') +
   ylim(c(-0.03, 0.03)) +
   scale_x_discrete(labels = paste(row.names(event_dir_summ_df[4:6, ]), "\n k = ", as.character(event_dir_summ_df[4:6, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[4:6, ]$sites_per_mod)))
 
 
 ```
 
-What kind of power do we have for this local even dataset? The weighted analysis is done using 8 negative events, 22 positive events, and 7 uncertain events.
+What kind of power do we have for this local even dataset? The weighted analysis is done using 27 negative events, 19 positive events, and 14 uncertain events.
 
 ```{r}
 filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
@@ -220,7 +195,8 @@ I don't entirely know how to interpret the output of this unweighted model. Inte
 
 ```{r}
 local_lme <- 
-lmer(yi.SppR.ROM ~ Duration + expected_change + (1 | Study.ID), data = event)
+  lme(yi.SppR.ROM ~ Duration + expected_change, random = ~ 1 | factor(Study.ID), 
+      data = event, na.action = na.omit)
 
 summary(local_lme)
 ```
@@ -274,7 +250,8 @@ ggplot(data = global_summ_df) +
 global_lme <- 
 filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
                      vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-  lmer(yi.SppR.ROM ~ Duration * scale(mean_imps) + (1 | Study.ID), data = .)
+  lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
+      data = .)
 summary(global_lme)
 
 
@@ -290,9 +267,11 @@ global2
 
 global_summ_df <- 
   mk_rma_summary_df(fl_combined, rma_object = global2)
+```
 
 does it matter that for short term studies the linear change is essentially the absolute change?
 
+```{r}
 row.names(global_summ_df) <- c('Intercept', 'Duration', 'Climate Velocity', 
                                'Linear Temp Change', 'Invasive Potential', 
                                'Pesticides', 'Nutrients', 
