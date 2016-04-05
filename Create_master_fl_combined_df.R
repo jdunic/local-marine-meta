@@ -1,17 +1,17 @@
-rm(list = setdiff(ls(), lsf.str()))
-pkgs = names(sessionInfo()$otherPkgs)
-sapply(pkgs, detach_package, character.only = TRUE)
+#rm(list = setdiff(ls(), lsf.str()))
+#pkgs = names(sessionInfo()$otherPkgs)
+#sapply(pkgs, detach_package, character.only = TRUE)
 
 library(raster)
 library(dplyr)
 library(purrr)
 library(beepr)
-devtools::install_github("jdunic/hadsstr")
+#devtools::install_github("jdunic/hadsstr")
 library(hadsstr)
 
 source('02_functions.R')
 
-if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
+#if (getwd() != '/Users/jillian/R_projects/Meta_analysis_ms') setwd('Meta_analysis_ms')
 
 # Get spatial data (accurate lat longs for every site and where possible plots 
 # contained within a site)
