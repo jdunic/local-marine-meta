@@ -6,6 +6,10 @@ library(metafor)
 library(nlme)
 library(gridExtra)
 library(broom)
+library(knitr)
+
+pander::panderOptions('table.split.table', 120)
+options(width = 120)
 
 source('02_functions.R')
 
@@ -61,16 +65,23 @@ mod2
 
 # Unweighted analysis that includes all of the log ratios that do not have 
 # variance associated with them. 
-lme1 <- lme(yi.SppR.ROM ~ Duration, random = ~ 1 | Study.ID, data = fl_combined, 
-            na.action = na.omit)
+lme1 <- lme(yi.SppR.ROM ~ Duration, random = ~ 1 | factor(Study.ID), 
+            data = fl_combined, na.action = na.omit)
 summary(lme1)
 ```
 
 Looking at the caterpillar plot for each of the studies, it is probably best to keep Study.ID as a random effect.
 
 ```{r, echo = FALSE, eval = FALSE}
-# something is wrong with this plot righ tnow
-lattice::dotplot(ranef(lme1, condVar=TRUE), cex = 0.5, scales=list(cex=0.4))
+rr <- ranef(lme1)
+rr.order <- rr[order(rr$`(Intercept)`), , drop = FALSE]
+rr.order$Study.ID <- factor(row.names(rr.order), levels = row.names(rr.order))
+
+ggplot(data = rr.order, aes(x = Study.ID, y = `(Intercept)`)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0, colour = 'red', linetype = 'dashed') + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5))
+
 ```
 
 ```{r, fig.height=7.5, fig.width=6.7}
@@ -104,207 +115,305 @@ grid.arrange(duration_w, duration_uw, nrow = 2)
 
 Both the weighted and unweighted naive models, where duration is the only predictor, show no significant change in species richness on average.  
 
-In the short term, negative and uncertain events were associated with increases in species richness. On average this was increase was 39% and 32% for a study associated with a positive and uncertain event, respectively.
-
-Long term? Studies associated with events expected to be positive or uncertain were found to have a decline in richess? 5 - 1% per year? This doesn't make a ton of sense.
-
-```{r}
-# Confirm that the events are being matched with the data properly #
-localmod <- 
-  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
-         random = ~ 1 | factor(Study.ID),
-         mods = ~ Duration:expected_change + expected_change + 0)
-localmod
-
-get_percent_change(localmod$b)
-
-ggplot(data = event, aes(x = Duration, y = yi.SppR.ROM)) + 
-  geom_point(aes(colour = expected_change)) + 
-#  ylim(c(-2.1, 2.1)) + 
-  stat_smooth(method = 'lm', aes(colour = expected_change))
-
-
-local2U <- lme(yi.SppR.ROM ~ Duration:expected_change + expected_change + 0, 
-               random = ~ 1 | factor(Study.ID), data=event, na.action = na.omit)
-summary(local2U)
-```
-
-```{r, eval = FALSE}
-#event_dir_summ_df <- 
- # mk_rma_summary_df(original_df = event, rma_object = local2, categorical = TRUE)
-
-row.names(event_dir_summ_df) <- c(' Negative', ' Positive', ' Uncertain', 
-                                  ' D*Negative', ' D*Positive', 
-                                  ' D*Uncertain')
-
-# The short term effect of events
-ggplot(data = event_dir_summ_df[1:3, ]) +
-  geom_point(aes(x = row.names(event_dir_summ_df[1:3, ]), y = mean_estimate)) +
-  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, 
-                    x = row.names(event_dir_summ_df[1:3, ]), width = 0)) +
-  theme_bw() + 
-  ylab('Change in log ratio / year\n') +
-  xlab('\nEvent Type\n') + 
-  theme(panel.grid.major  = element_blank(),
-        panel.grid.minor  = element_blank()) +
-  geom_hline(yintercept = 0, linetype = "dashed", colour = 'yellow') +
-  ylim(c(-0.75, 0.75)) +
-  scale_x_discrete(labels = paste(row.names(event_dir_summ_df[1:3, ]), "\n k = ", as.character(event_dir_summ_df[1:3, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[1:3, ]$sites_per_mod)))
-
-# The long term effect of events:
-ggplot(data = event_dir_summ_df[4:6, ]) +
-geom_point(aes(x = row.names(event_dir_summ_df[4:6, ]), y = mean_estimate)) +
-  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, 
-                    x = row.names(event_dir_summ_df[4:6, ]), width = 0)) +
-  theme_bw() + 
-  ylab('Change in log ratio / year\n') +
-  xlab('\nEvent Type\n') + 
-  theme(panel.grid.major  = element_blank(),
-        panel.grid.minor  = element_blank()) +
-  geom_hline(yintercept = 0, linetype = "dashed", colour = 'yellow') +
-  ylim(c(-0.1, 0.1)) +
-  scale_x_discrete(labels = paste(row.names(event_dir_summ_df[4:6, ]), "\n k = ", as.character(event_dir_summ_df[4:6, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[4:6, ]$sites_per_mod)))
-
-
-```
-
-What sample sizes do we have for this local even dataset? The weighted analysis is done using 27 negative events, 19 positive events, and 14 uncertain events.
-
-```{r}
-filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
-  count(., expected_change)
-
-```
-
-In the unweighted model there is no significant effect of event except in those studies for which an exepcted change direction was unclear. In these studies there was a decline in species in long term studies of about -1% per year. 
-
-Clarify: -1% change in ther ate of change -> this is the duration effect alone? From log_ratio ~ Duration?
-
-```{r}
-local_lme <- 
-  lme(yi.SppR.ROM ~ Duration:expected_change + expected_change + 0, 
-      random = ~ 1 | factor(Study.ID), 
-      data = event, na.action = na.omit)
-summary(local_lme)
-
-get_percent_change(local_lme$coefficients$fixed)
-```
-
 In the subset of studies for which no events were explicitly documented, cumulative human impacts were associated with immediate declines. On average when mean impact was zero, species declined by 4.8%. For each unit of cumulative human impact (global range = ~0 - 11.1 (need to double check this value); from our study range = 0.26 - 9.5), our results show that the rate of species loss increases by 7.5%. However, as study duration increases, the effect of mean impact on the rate of change in species richness is actually positive. Cumulative human impact moderates the rate of change in richness by 1 % per year. (Does this mean that each year the rate of change in richness is: -4.8% * 1.2)
 
-However, the unweighted analyses do not a change in richness over time, nor an effect of cumulative impact.  
 
-The model global1 uses only the studies that did not have events associated with them.
+### Cumulative human impacts model 
+
+
+#### Comparison between the cumulative impact model with no event and full datasets for weighted and unweighted analyses
+
+In the unweighted analysis of both the event and no event data, short term studies show a positive effect of duration and cumulative human impacts. However, in the long term (duration*cumulative impact) shows a decline in richness over time. This is consistent with the weighted analysis that uses the full dataset. 
+
 
 ```{r}
-global1 <- 
+
+impact_ne_w <- 
   rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
          data = no_event,
-         random = ~ 1 | Study.ID, 
+         random = ~ 1 | factor(Study.ID), 
          mods = ~ Duration * mean_imps)
-global1
+impact_ne_w
 
-get_percent_change(global1$b)
-```
-
-
-The model global2 uses the full dataset and the effect is reversed...
-
-```{r}
-global2 <- 
+impact_all_w <- 
   rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
          data = fl_combined,
-         random = ~ 1 | Study.ID, 
+         random = ~ 1 | factor(Study.ID), 
          mods = ~ Duration * mean_imps)
-global2
-```
+impact_all_w
 
-The unweighted analyses (again with the no_event data and the full dataset) also show the opposite pattern compared to the global1 model (with no event data). 
 
-```{r}
-global_lme <- 
-  lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
+impact_lme_ne <- 
+  lme(yi.SppR.ROM ~ Duration * mean_imps, random = ~ 1 | factor(Study.ID),
       data = no_event, na.action = na.omit)
-summary(global_lme)
+summary(impact_lme_ne)
 
-global_lme_all <- 
-  lme(yi.SppR.ROM ~ Duration * scale(mean_imps), random = ~ 1 | factor(Study.ID),
+impact_lme_all <- 
+  lme(yi.SppR.ROM ~ Duration * mean_imps, random = ~ 1 | factor(Study.ID),
       data = fl_combined, na.action = na.omit)
-summary(global_lme_all)
-```
 
-```{r, echo=FALSE, eval=FALSE}
-# This failed too.
+data_frame(parameter = rownames(impact_ne_w$b), 
+           ne_rma_per_change  = as.vector(get_percent_change(impact_ne_w$b)), 
+           ne_rma_pval  = impact_ne_w$pval, 
+           all_rma_per_change = as.vector(get_percent_change(impact_all_w$b)), 
+           all_rma_pval = impact_all_w$pval, 
+           #parameter_lme = rownames(summary(impact_lme_ne)$tTable), 
+           lme_ne_per_change  = as.vector(get_percent_change(summary(impact_lme_ne)$tTable[, 1])), 
+           lme_ne_pval  = summary(impact_lme_ne)$tTable[, 5], 
+           lme_all_per_change = as.vector(get_percent_change(summary(impact_lme_all)$tTable[, 1])), 
+           lme_all_pval = summary(impact_lme_all)$tTable[, 5]
+           ) %>%
+pandoc.table(.)
 
-global_summ_df <- 
-  mk_rma_summary_df(no_event, rma_object = global1)
-
-filter(no_event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-  distinct(Site) %>%
-  count(.)
-
-row.names(global_summ_df) <- c('Intercept', 'Duration', 'Human Impact', 
-                                'Duration*Human Impact')
-global_summ_df$predictors <- factor(row.names(global_summ_df), levels = c('Intercept', 'Duration', 'Human Impact', 'Duration*Human Impact'))
-
-# Fix graph
-ggplot(data = global_summ_df) +
-  geom_point(aes(x = mean_estimate, y = predictors), 
-             size = 4, colour = 'white') +
-  geom_errorbarh(aes(x = mean_estimate, xmin = lower_ci, xmax = upper_ci, 
-                    y = predictors, height = 0), colour = 'white', 
-                    size = 1) + 
-  theme_wb() + 
-  xlab('Mean Effect Size\n') +
-  ylab('\nPredictor') + 
-  theme(axis.title.x = element_text(vjust = -0.5, size = 16), 
-        axis.text.x = element_text(size = 14), 
-        axis.text.y = element_text(size = 14), 
-        axis.title.y = element_text(vjust = 1.5, size = 16), 
-        panel.grid.major  = element_blank(),
-        panel.grid.minor  = element_blank()) +
-  geom_vline(xintercept = 0, linetype = "dashed", colour = 'yellow')
-  #xlim(c(-8, 8))
 ```
 
 
-When comparing the models with no event and the full dataset the patterns are the same, but the short term effect of invasive potential is not significant when looking at the no_event subset of the data.
+
+### Specific driver model selection (study specific time slices)
+
+Duration*(I + VOCC - LTC - Nut)  
+Duration*(I + V + I*L + LTC - N +I*N + L*N + VOCC)  
+(with both vocc and ltc, with just vocc, and with just ltc)  
+- Use AIC for model selection
+
+
+#### Weighted analyses using the no event data
 
 ```{r}
-global_ne <- 
+# Simplest model with all drivers
+global_ne_all_drivers <- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
           data = no_event, 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
+          mods = ~ Duration * (mean_invs + mean_vocc + mean_lin_change + mean_nuts)
 )
-global_ne
+global_ne_all_drivers
 
-global_all <- 
+global_ne_no_vocc <- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = fl_combined, 
+          data = no_event, 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_lin_change + mean_invs +  mean_nuts)
+          mods = ~ Duration * (mean_invs + mean_lin_change + mean_nuts)
 )
-global_all
+global_ne_no_vocc
 
-global_lme2 <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
-      data = fl_combined, na.action = na.omit)
-summary(global_lme2)
+global_ne_no_ltc <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = no_event, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_invs + mean_vocc + mean_nuts)
+)
+global_ne_no_ltc
+
+data_frame(parameter = rownames(global_ne_all_drivers$b), 
+           all_drivers_percent  = as.vector(get_percent_change(global_ne_all_drivers$b)), 
+           all_drivers_pval  = global_ne_all_drivers$pval
+           ) %>% 
+  left_join(., data_frame(parameter = rownames(global_ne_no_vocc$b), 
+                         no_vocc_percent = as.vector(get_percent_change(global_ne_no_vocc$b)), 
+                         no_vocc_pval = global_ne_no_vocc$pval)) %>%
+  left_join(., data_frame(parameter = rownames(global_ne_no_ltc$b), 
+                         no_ltc_percent = as.vector(get_percent_change(global_ne_no_ltc$b)), 
+                         no_ltc_pval = global_ne_no_ltc$pval)) %>%
+pandoc.table(.)
 
 ```
 
+#### Weighted analyses using the full dataset
+
+```{r}
+# Simplest model with all drivers
+global_full_all_drivers <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_invs + mean_vocc + mean_lin_change + mean_nuts)
+)
+global_full_all_drivers
+
+global_full_no_vocc <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_invs + mean_lin_change + mean_nuts)
+)
+global_full_no_vocc
+
+global_full_no_ltc <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_invs + mean_vocc + mean_nuts)
+)
+global_full_no_ltc
+
+data_frame(parameter = rownames(global_full_all_drivers$b), 
+           all_drivers_percent  = as.vector(get_percent_change(global_full_all_drivers$b)), 
+           all_drivers_pval  = global_full_all_drivers$pval
+           ) %>% 
+  left_join(., data_frame(parameter = rownames(global_full_no_vocc$b), 
+                         no_vocc_percent = as.vector(get_percent_change(global_full_no_vocc$b)), 
+                         no_vocc_pval = global_full_no_vocc$pval)) %>%
+  left_join(., data_frame(parameter = rownames(global_full_no_ltc$b), 
+                         no_ltc_percent = as.vector(get_percent_change(global_full_no_ltc$b)), 
+                         no_ltc_pval = global_full_no_ltc$pval)) %>%
+pandoc.table(.)
+
+```
+
+
+### Attempt with the full interaction models: Duration*(I + VOCC + I*L + LTC - N +I*N + L*N)
+
+The full interaction models do not converge when we use the weighted meta-regression. They do converge for the full model 
+
+```{r, eval = FALSE}
+global_ne_all_interactions <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = no_event, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts)
+)
+
+global_all_interactions <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts)
+)
+```
+
+```{r}
+global_all_invs_ltc_interaction <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_invs + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_vocc)
+)
+global_all_invs_ltc_interaction
+
+
+global_ne_all_interactions_lme <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts), 
+      random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(global_ne_all_interactions_lme)
+
+global_all_interactions_lme <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts), 
+      random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_all_interactions_lme)
+
+
+global_all_invs_ltc_interaction_lme <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts), 
+      random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(global_all_invs_ltc_interaction_lme)
+
+```
+
+Key for the table: 
+
+* rma_interact_change = variance weighted analysis with the full dataset, with the following model: LR ~ Duration * (I + V + I*LTC + LTC + N)
+
+* all_full_interact_change = unweighted analysis with the full dataset, with the following model: LR ~ Duration * (I + V + I*LTC + LTC + N + I*N + LTC*N)
+
+* all_invs_ltc_int_change = unweighted analysis with the full dataset, with the following model: LR ~ Duration * (I + V + I*LTC + LTC + N)
+
+```{r}
+data_frame(parameter = rownames(global_all_invs_ltc_interaction$b), 
+           rma_interact_change  = as.vector(get_percent_change(global_all_invs_ltc_interaction$b)), 
+           rma_interact_pval  = global_all_invs_ltc_interaction$pval
+           ) %>% 
+  left_join(., data_frame(parameter = rownames(summary(global_all_interactions_lme)$tTable), 
+                         all_full_interact_change = as.vector(get_percent_change(summary(global_all_interactions_lme)$tTable[, 1])), 
+                         all_full_interact_pval = as.vector(summary(global_all_interactions_lme)$tTable[, 5]))) %>%
+  left_join(., data_frame(parameter = rownames(summary(global_all_invs_ltc_interaction_lme)$tTable), 
+                         all_invs_ltc_int_change = as.vector(get_percent_change(summary(global_all_invs_ltc_interaction_lme)$tTable[, 1])), 
+                         all_invs_ltc_int_pval = as.vector(summary(global_all_invs_ltc_interaction_lme)$tTable[, 5]))) %>% 
+pandoc.table(.)
+
+```
+
+### Including initial species richness
+
+In our predictions we have assumed that climate velocity is likely to lead to an influx of species into initially, relatively depauperate regions. We can include this assumption by including an interaction between initial species richness and mean climate velocity. We do not include this interaction with the other drivers because it is less clear how initial species richness will alter the effects of linear changes in temperature (too high too fast should result in loss regardless of the initial number of species), it is equivocal in the literature how invasive species relates to species richness (conflicting evidence), and nutrients (need to check, but I think just general declines in the long term? - e.g., paradox of enrichment?).  
+
+Jillian''s reasoning for initial species richness interactions:
+
+1. SppR1 * Invs - I do not think this should be included. In the literature, the relationship between initial diversity and invasives is equivocal. I think that this relationship is likely too context dependent to meaningfully include it in the model.
+
+2. SppR1 * VOCC - loss is likely to be higher in low diversity (likely polar) locations where species are closer to thermal tolerances and this also accounts for the idea of poleward range expansions from species rich to depauperate areas.
+
+3. SppR1 * LTC - same as VOCC. - probably need a better explanation/support
+
+4. SppR1 * Nuts - may expect a non-linear relationship because more diverse systems may have a higher capacity to buffer nutrients (at least in the short term). (e.g., "Biodiversity improves water quality through niche partitioning" - Cardinale 2011 )
+
+How much do we need to be concerned that the log ratio calculation includes SppR1? Does this matter if we are taking a predictive approach? Because if SppR1 is valuable as a predictor then the mechanism for why shouldn''t matter.
+
+
+
+```{r}
+initial_richness_ne <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = no_event, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration
+)
+initial_richness_ne
+
+initial_richness_all <- 
+    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration
+)
+initial_richness_all
+
+# Unweighted analysis
+initial_richness_ne_lme <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration, 
+      random = ~ 1 | factor(Study.ID),
+      data = no_event, na.action = na.omit)
+summary(initial_richness_ne_lme)
+
+initial_richness_all_lme <- 
+  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration, 
+      random = ~ 1 | factor(Study.ID),
+      data = fl_combined, na.action = na.omit)
+summary(initial_richness_all_lme)
+
+```
+
+#### Issues with including initial richness as a predictor
+Do these results suggest that 
+
+```{r}
+
+x1 <- sample(na.omit(fl_combined$SppR1), size = 708, replace = FALSE)
+
+x2 <- sample(na.omit(fl_combined$SppR2), size = 708, replace = FALSE)
+
+test <- data.frame(ROM = log(x2 / x1), initial = x1)
+
+plot(test$ROM ~ test$initial)
+
+```
+
+
+### Analysis without interactions between drivers
 
 There is no effect of velocity of climate change in the subset of the data that does not have an event, but there is a negative effect in the long term when looking at the full dataset.
 
 
 ```{r}
+
 global_ne <- 
     rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
           data = no_event, 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
+          mods = ~ Duration * (SppR1*mean_vocc + mean_lin_change + mean_invs +  mean_nuts)
 )
 global_ne
 
