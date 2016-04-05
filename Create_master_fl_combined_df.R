@@ -34,9 +34,9 @@ sp_data_lines <- filter(spatial_data, Shape == 'line')
 # Load and add site_id column to first last data to be able to combine the 
 # spatial data with the master first last sheet. Also used for doing the 
 # year-specific linear temperature change and climate velocity extractions.
-fl <- read.csv('Data_outputs/firstLastData_v0.9-20160209.csv', stringsAsFactors = FALSE)
+fl <- read.csv('Data_outputs/firstLastData_v0.9-20160223.csv', stringsAsFactors = FALSE) %>% as_data_frame(.)
 
-fl <- mutate(fl, site_id = paste(.$Study.ID, .$Site, sep = "_"))
+fl <- mutate(fl, site_id = paste(Study.ID, Site, sep = "_"))
 
 # Create spatial objects
 # ------------------------------------------------------------------------------
