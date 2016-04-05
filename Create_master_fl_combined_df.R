@@ -260,10 +260,10 @@ names(rast_set) <- duration_text
 # Get a simplified data frame that has the necessary data needed to lookup 
 # across tables. 
 sp_data_points_lookup <- filter(spatial_data, Shape == 'point') %>% 
-  select(site_id, Start_Lat, Start_Long, row) %>% 
+  dplyr::select(site_id, Start_Lat, Start_Long, row) %>% 
   left_join(x = ., y = fl, by = c('site_id' = 'site_id')) %>% 
   mutate(timespans = paste(.$T1, .$T2, sep = "_")) %>%
-  select(site_id, Study.ID, Site, Start_Lat, Start_Long, row, timespans) %>%
+  dplyr::select(site_id, Study.ID, Site, Start_Lat, Start_Long, row, timespans) %>%
   distinct(row) %>%
   as_data_frame(.)
 
@@ -300,9 +300,9 @@ beep()
 # data and first last data so that I can get the right raster dates.
 sp_data_lines <- 
   filter(spatial_data, Shape == 'line') %>% 
-  select(-Study.ID, -Site) %>% 
+  dplyr::select(-Study.ID, -Site) %>% 
   left_join(x = ., y = mutate(fl, timespans = paste(T1, T2, sep = "_")), by = c('site_id' = 'site_id')) %>%
-  select(site_id, Study.ID, Site, Start_Lat, Start_Long, End_Lat, End_Long, row, timespans) %>%
+  dplyr::select(site_id, Study.ID, Site, Start_Lat, Start_Long, End_Lat, End_Long, row, timespans) %>%
     as_data_frame(.)
 
 linear_change_line_vals <- list()
@@ -315,7 +315,7 @@ vocc_line_vals <- list()
 for (i in seq_along(spatial_lines_obj)) {
   time_span_lookup <- 
   filter(sp_data_lines, row == names(spatial_lines_obj[i])) %>% 
-  select(timespans) %>% 
+  dplyr::select(timespans) %>% 
   .[[1]]
 #  
   lin_change_rast <- raster::subset(rast_set[[time_span_lookup]], 'linear_change')
