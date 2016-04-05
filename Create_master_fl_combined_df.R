@@ -204,6 +204,33 @@ linear <- select_raster(all_rasters, 'linear_change')
 
 beep()
 
+single_vel_points <- extract(velocity, sp_data_points, buffer = 1000)
+single_vel_lines <- extract(velocity, spatial_lines_obj, along = TRUE)
+mean_single_vel_points <- unlist(lapply(single_vel_points, FUN = get_mean_imp))
+mean_single_vel_change_lines <- unlist(lapply(single_vel_lines, FUN = get_mean_imp))
+
+single_lin_change_points <- extract(linear, sp_data_points, buffer = 1000)
+single_lin_change_lines <- extract(linear, spatial_lines_obj, along = TRUE)
+mean_single_line_change_points <- unlist(lapply(single_lin_change_points, FUN = get_mean_imp))
+mean_single_lin_change_lines <- unlist(lapply(single_lin_change_lines, FUN = get_mean_imp))
+
+sp_data_points2 <- filter(spatial_data, Shape == 'point')
+sp_data_lines2  <- filter(spatial_data, Shape == 'line')
+
+sp_data_points2$single_vel <- unlist(mean_single_vel_points)
+sp_data_lines2$single_vel  <- unlist(mean_single_lin_change_lines)
+
+sp_data_points2$single_lin_change <- unlist(mean_single_line_change_points)
+sp_data_lines2$single_lin_change  <- unlist(mean_single_lin_change_lines)
+
+single_temp_changes <- rbind(sp_data_points2, sp_data_lines2)
+
+# Save the data so I don't have to run all of this again + waste more time
+outdate <- as.character(format(Sys.Date(), format="%Y%m%d"))
+trailer <- paste0(outdate,".csv")
+write.csv(single_temp_changes, 'Data_outputs/spatial_data_with_single_temp_changes.csv')
+
+
 # Get a velocity and linear temp change raster for each unique duration in the 
 # dataset
 
