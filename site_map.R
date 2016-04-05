@@ -10,9 +10,10 @@ worldmap <- map_data(map = "world")
 # For interest you can take a look at the data for the worldmap
 str(worldmap)
 
-# Plot entire world map with sites
+# Remove these sites for now. Something is wrong with their positions. 
 sites <- filter(sites, !(Study.ID %in% c(172, 547, 581, 637)))
 
+# Plot entire world map with sites
 ggplot(data = worldmap, aes(x = long, y = lat)) +
   geom_polygon(aes(group = group)) +
   theme_bw() +
