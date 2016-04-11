@@ -1,0 +1,17 @@
+#### The relationship of initial richness and log ratio is not biased
+
+This simulation demonstrates the relationship between initial richness and the proportion of change when the average proportion of change is 
+
+How much do we need to be concerned that the log ratio calculation includes SppR1? Does this matter if we are taking a predictive approach? Because if SppR1 is valuable as a predictor then the mechanism for why shouldn''t matter.
+
+```{r}
+s_df <- data.frame(t1 = rpois(100, 30))
+s_df$change <- exp(rnorm(100, 0, 0.2))
+s_df$t2 <-  s_df$t1 * s_df$change
+
+hist(s_df$change)
+plot(t2 ~ t1, data=s_df)
+
+
+plot(log(t2/t1) ~ t1, data=s_df)
+```

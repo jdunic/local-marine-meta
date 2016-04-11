@@ -7,9 +7,10 @@ library(nlme)
 library(gridExtra)
 library(broom)
 library(knitr)
+library(pander)
 
-pander::panderOptions('table.split.table', 120)
-options(width = 120)
+pander::panderOptions('table.split.table', 150)
+options(width = 150)
 
 source('02_functions.R')
 
@@ -153,16 +154,16 @@ impact_lme_all <-
       data = fl_combined, na.action = na.omit)
 
 data_frame(parameter = rownames(impact_ne_w$b), 
-           ne_rma_per_change  = as.vector(get_percent_change(impact_ne_w$b)), 
-           ne_rma_pval  = impact_ne_w$pval, 
-           all_rma_per_change = as.vector(get_percent_change(impact_all_w$b)), 
-           all_rma_pval = impact_all_w$pval, 
+           ne_rma_per_change  = round(as.vector(get_percent_change(impact_ne_w$b)), digits = 4), 
+           ne_rma_pval  = round(impact_ne_w$pval, digits = 4), 
+           all_rma_per_change = round(as.vector(get_percent_change(impact_all_w$b)), digits = 4), 
+           all_rma_pval = round(impact_all_w$pval, digits = 4), 
            #parameter_lme = rownames(summary(impact_lme_ne)$tTable), 
-           lme_ne_per_change  = as.vector(get_percent_change(summary(impact_lme_ne)$tTable[, 1])), 
-           lme_ne_pval  = summary(impact_lme_ne)$tTable[, 5], 
-           lme_all_per_change = as.vector(get_percent_change(summary(impact_lme_all)$tTable[, 1])), 
-           lme_all_pval = summary(impact_lme_all)$tTable[, 5]
-           ) %>%
+           lme_ne_per_change  = round(as.vector(get_percent_change(summary(impact_lme_ne)$tTable[, 1])), digits = 4), 
+(       round    lme_ne_pval  = summary(impact_lme_ne)$tTable[, 5], ), digits = 4
+           lme_all_per_change = round(as.vector(get_percent_change(summary(impact_lme_all)$tTable[, 1])), digits = 4), 
+           lme_all_pvalround (= summary(impact_lme_all)$tTable[, 5], digits = 4
+            )          ) %>%
 pandoc.table(.)
 
 ```
@@ -206,15 +207,15 @@ global_ne_no_ltc <-
 global_ne_no_ltc
 
 data_frame(parameter = rownames(global_ne_all_drivers$b), 
-           all_drivers_percent  = as.vector(get_percent_change(global_ne_all_drivers$b)), 
-           all_drivers_pval  = global_ne_all_drivers$pval
+           all_drivers_percent  = round(as.vector(get_percent_change(global_ne_all_drivers$b)), digits = 4), 
+           all_drivers_pval  = round(global_ne_all_drivers$pval, digits = 4)
            ) %>% 
   left_join(., data_frame(parameter = rownames(global_ne_no_vocc$b), 
-                         no_vocc_percent = as.vector(get_percent_change(global_ne_no_vocc$b)), 
-                         no_vocc_pval = global_ne_no_vocc$pval)) %>%
+                         no_vocc_percent = round(as.vector(get_percent_change(global_ne_no_vocc$b)), digits = 4), 
+                         no_vocc_pval = round(global_ne_no_vocc$pval, digits = 4))) %>%
   left_join(., data_frame(parameter = rownames(global_ne_no_ltc$b), 
-                         no_ltc_percent = as.vector(get_percent_change(global_ne_no_ltc$b)), 
-                         no_ltc_pval = global_ne_no_ltc$pval)) %>%
+                         no_ltc_percent = round(as.vector(get_percent_change(global_ne_no_ltc$b)), digits = 4), 
+                         no_ltc_pval = round(global_ne_no_ltc$pval, digits = 4))) %>%
 pandoc.table(.)
 
 ```
@@ -248,15 +249,15 @@ global_full_no_ltc <-
 global_full_no_ltc
 
 data_frame(parameter = rownames(global_full_all_drivers$b), 
-           all_drivers_percent  = as.vector(get_percent_change(global_full_all_drivers$b)), 
-           all_drivers_pval  = global_full_all_drivers$pval
+           all_drivers_percent  = round(as.vector(get_percent_change(global_full_all_drivers$b)), digits = 4), 
+           all_drivers_pval  = round(global_full_all_drivers$pval, digits = 4)
            ) %>% 
   left_join(., data_frame(parameter = rownames(global_full_no_vocc$b), 
-                         no_vocc_percent = as.vector(get_percent_change(global_full_no_vocc$b)), 
-                         no_vocc_pval = global_full_no_vocc$pval)) %>%
+                         no_vocc_percent = round(as.vector(get_percent_change(global_full_no_vocc$b)), digits = 4), 
+                         no_vocc_pval = round(global_full_no_vocc$pval, digits = 4))) %>%
   left_join(., data_frame(parameter = rownames(global_full_no_ltc$b), 
-                         no_ltc_percent = as.vector(get_percent_change(global_full_no_ltc$b)), 
-                         no_ltc_pval = global_full_no_ltc$pval)) %>%
+                         no_ltc_percent = round(as.vector(get_percent_change(global_full_no_ltc$b)), digits = 4), 
+                         no_ltc_pval = round(global_full_no_ltc$pval, digits = 4))) %>%
 pandoc.table(.)
 
 ```
@@ -323,15 +324,15 @@ Key for the table:
 
 ```{r}
 data_frame(parameter = rownames(global_all_invs_ltc_interaction$b), 
-           rma_interact_change  = as.vector(get_percent_change(global_all_invs_ltc_interaction$b)), 
-           rma_interact_pval  = global_all_invs_ltc_interaction$pval
+           rma_interact_change  = round(as.vector(get_percent_change(global_all_invs_ltc_interaction$b)), digits = 4), 
+           rma_interact_pval  = round(global_all_invs_ltc_interaction$pval, digits = 4)
            ) %>% 
   left_join(., data_frame(parameter = rownames(summary(global_all_interactions_lme)$tTable), 
-                         all_full_interact_change = as.vector(get_percent_change(summary(global_all_interactions_lme)$tTable[, 1])), 
-                         all_full_interact_pval = as.vector(summary(global_all_interactions_lme)$tTable[, 5]))) %>%
+                         all_full_interact_change = round(as.vector(get_percent_change(summa, digits = 4ry(global_all_interactions_lme)$tTable[, 1]))), 
+                         all_full_interact_pval = round(as.vector(summary(global_all_interactions_lme)$tTable[, 5]), digits = 4))) %>%
   left_join(., data_frame(parameter = rownames(summary(global_all_invs_ltc_interaction_lme)$tTable), 
-                         all_invs_ltc_int_change = as.vector(get_percent_change(summary(global_all_invs_ltc_interaction_lme)$tTable[, 1])), 
-                         all_invs_ltc_int_pval = as.vector(summary(global_all_invs_ltc_interaction_lme)$tTable[, 5]))) %>% 
+                         all_invs_ltc_int_change = round(as.vector(get_percent_change(summa, digits = 4ry(global_all_invs_ltc_interaction_lme)$tTable[, 1]))), 
+                         all_invs_ltc_int_pval = round(as.vector(summary(global_all_invs_ltc_interaction_lme)$, digits = 4tTable[, 5])))) %>% 
 pandoc.table(.)
 
 ```
