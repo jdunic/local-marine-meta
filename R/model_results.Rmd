@@ -12,7 +12,7 @@ library(pander)
 pander::panderOptions('table.split.table', 150)
 options(width = 150)
 
-source('02_functions.R')
+source('R/02_functions.R')
 
 fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv")
 

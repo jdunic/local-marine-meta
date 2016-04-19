@@ -28,7 +28,7 @@ library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query
 library(stringr)
 library(beepr)
 
-source('02_functions.R')
+source('R/02_functions.R')
 
 ###########
 ## Data Loading and Cleaning
@@ -201,8 +201,8 @@ unique(richData$Sys)
 
 # Load modified datamart::uncov function set to allow use of '^' in unit names
 # and to silence datamart::mashup output
-source("datamart_UnitSetManager2_source.r")
-source("datamart_mashup_source.r")
+source("R/datamart_UnitSetManager2_source.r")
+source("R/datamart_mashup_source.r")
 
 # Standardize unit names
 richData$PltSz..units. <- tolower(as.character(richData$PltSz..units.))
@@ -485,6 +485,6 @@ attributes(firstSampleFilteredData$vi.Even.SMDH)[c('measure', 'ni')] <- NULL
 str(firstSampleFilteredData)
 
 # Complete the creation of all the first and last data
-source('cb_data_processing.R')
+source('R/cb_data_processing.R')
 
 write.csv(richData, 'Data_outputs/cleaned_richData.csv')
