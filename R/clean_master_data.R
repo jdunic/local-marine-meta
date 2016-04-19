@@ -4,7 +4,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   richData <- mutate(richData, Event.type = replace(Event.type, Event.type == 'No', NA))
 
   # Remove unnecessary columns to make my life easier later
-  richData <- select(richData, -Lat, -Long, -SiSz, -SiSz..units.)
+  richData <- select(richData, -SiSz, -SiSz..units.)
 
   ###########
   # Add event type categorisation.
