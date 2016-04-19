@@ -7,32 +7,6 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   richData <- select(richData, -Lat, -Long, -SiSz, -SiSz..units.)
 
   ###########
-  # Coerce data to correct data types
-  ###########
-  # First we need to get a lookup table of what all the proper data types should 
-  # Make meta_data$Column equal the colnames in the master datasheet.
-  meta_data$Column <- 
-    str_replace_all(string = meta_data$Column, pattern = "[ ()?]", replacement = ".")
-
-  if (length(setdiff(names(richData), meta_data$Column)) > 0) { 
-    stop('There are new columns listed in the master data sheet or meta data sheet thare are unaccounted for. Please update before running this script.')}
-
-  convert.magic <- function(obj, types){
-    for (i in 1:length(obj)){
-      #browser()
-        FUN <- switch(types[i], character = as.character, 
-                                   numeric = as.numeric, 
-                                   factor = as.factor)
-        obj[[i]] <- FUN(obj[[i]])
-    }
-    return(obj)
-  }
-
-  re_ordered <- meta_data[match(names(richData), meta_data[['Column']]), ]
-
-  richData <- convert.magic(richData, types = re_ordered$DataType)
-
-  ###########
   # Add event type categorisation.
   ###########
   # Write a list of the unique event types so that they can be classified
