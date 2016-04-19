@@ -1,18 +1,5 @@
 process_master_data <- function(richData = rich_data, meta_data = meta_data, event_data = event_data, subset_list = subset_list, cbdata = cb_data) {
-  
-  browser()
-  
-#test <- read_csv(file = 'master_data/Data.csv', col_types = cols(Lat = col_skip(), Long = col_skip()), na = c('', 'NA', 'N/A', 'Na', 'na', ' '))
 
-#dim(test)
-
-#test <- read.table(file = 'master_data/Data2.txt', sep = '\t', header = TRUE, stringsAsFactors=FALSE, na.strings = c('', 'NA', 'N/A', 'Na', 'na', ' '))
-  #meta_data <-read.csv(file = 'master_data/Meta_data.csv', stringsAsFactors=FALSE)
-  #event_data <- read.csv(file = "master_data/Event_types.csv", stringsAsFactors = FALSE)
-  #subset_list <- read_csv(file = 'master_data/CB_study_list_for_reformat.csv')
-  #cbdata <- read_csv(file = 'master_data/robin_bts_reformat.csv')
-
-  #browser()
   # Event types should NOT be 'No'
   richData <- mutate(richData, Event.type = replace(Event.type, Event.type == 'No', NA))
 
