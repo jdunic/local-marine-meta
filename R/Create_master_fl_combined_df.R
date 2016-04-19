@@ -73,13 +73,13 @@ impact_dir <- '/Users/jillian/R_projects/Human_Cumulative_Impacts/Data/CI_2013_O
 imp_map <- raster(paste0(impact_dir, '/global_cumul_impact_2013_all_layers.tif'))
 
 
-point_imps <- extract(imp_map, sp_data_points, buffer = 1000)
+point_imps <- raster::extract(imp_map, sp_data_points, buffer = 1000)
 # Clean up the list of lists of impact values for both point imps and line imps
 # get_mean_imp replaces zero values with NA because zero is land.
 mean_point_imps <- unlist(lapply(point_imps, FUN = get_mean_imp))
 
 
-line_imps <- extract(imp_map, spatial_lines_obj, along = TRUE)
+line_imps <- raster::extract(imp_map, spatial_lines_obj, along = TRUE)
 mean_line_imps <- unlist(lapply(line_imps, FUN = get_mean_imp))
 
 
@@ -116,8 +116,8 @@ switch_NA_zero <- function(x) {
   return(x)
 }
 
-point_invs <- extract(invasives, sp_data_points, buffer = 1000)
-line_invs <- extract(invasives, spatial_lines_obj, along = TRUE)
+point_invs <- raster::extract(invasives, sp_data_points, buffer = 1000)
+line_invs <- raster::extract(invasives, spatial_lines_obj, along = TRUE)
 
 point_invs_NA_switched <- lapply(point_invs, FUN = switch_NA_zero)
 line_invs_NA_switched <- lapply(line_invs, FUN = switch_NA_zero)
@@ -144,9 +144,9 @@ write.csv(invs_combined_data, 'Data_outputs/spatial_data_with_invasives.csv')
 # -----------------------------------------------------------------------
 nuts <- raster(paste0(extra_impact_dir, '/plumes_fertilizer_raw/plumes_fert.tif'))
 
-point_nuts <- extract(nuts, sp_data_points, buffer = 1000)
+point_nuts <- raster::extract(nuts, sp_data_points, buffer = 1000)
 mean_point_nuts <- lapply(point_nuts, FUN = mean, na.rm = TRUE)
-line_nuts <- extract(nuts, spatial_lines_obj, along = TRUE)
+line_nuts <- raster::extract(nuts, spatial_lines_obj, along = TRUE)
 mean_line_nuts <- lapply(line_nuts, FUN = mean, na.rm = TRUE)
 
 sp_data_points2 <- filter(spatial_data, Shape == 'point')
@@ -167,9 +167,9 @@ write.csv(nuts_combined_data, 'Data_outputs/spatial_data_with_nutrients.csv')
 # -----------------------------------------------------------------------
 pesticides <- raster(paste0(extra_impact_dir, '/plumes_pesticide_raw/plumes_pest.tif'))
 
-point_pests <- extract(pesticides, sp_data_points, buffer = 1000)
+point_pests <- raster::extract(pesticides, sp_data_points, buffer = 1000)
 mean_point_pests <- lapply(point_pests, FUN = mean, na.rm = TRUE)
-line_pests <- extract(pesticides, spatial_lines_obj, along = TRUE)
+line_pests <- raster::extract(pesticides, spatial_lines_obj, along = TRUE)
 mean_line_pests <- lapply(line_pests, FUN = mean, na.rm = TRUE)
 
 sp_data_points2 <- filter(spatial_data, Shape == 'point')
@@ -204,13 +204,13 @@ linear <- select_raster(all_rasters, 'linear_change')
 
 beep()
 
-single_vel_points <- extract(velocity, sp_data_points, buffer = 1000)
-single_vel_lines <- extract(velocity, spatial_lines_obj, along = TRUE)
+single_vel_points <- raster::extract(velocity, sp_data_points, buffer = 1000)
+single_vel_lines <- raster::extract(velocity, spatial_lines_obj, along = TRUE)
 mean_single_vel_points <- unlist(lapply(single_vel_points, FUN = get_mean_imp))
 mean_single_vel_change_lines <- unlist(lapply(single_vel_lines, FUN = get_mean_imp))
 
-single_lin_change_points <- extract(linear, sp_data_points, buffer = 1000)
-single_lin_change_lines <- extract(linear, spatial_lines_obj, along = TRUE)
+single_lin_change_points <- raster::extract(linear, sp_data_points, buffer = 1000)
+single_lin_change_lines <- raster::extract(linear, spatial_lines_obj, along = TRUE)
 mean_single_line_change_points <- unlist(lapply(single_lin_change_points, FUN = get_mean_imp))
 mean_single_lin_change_lines <- unlist(lapply(single_lin_change_lines, FUN = get_mean_imp))
 
@@ -288,8 +288,8 @@ for (i in seq_along(sp_data_points_list)) {
   coordinates(sp_data_points_list[[i]]) <- ~Start_Long + Start_Lat
   projection(sp_data_points_list[[i]]) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 #
-  linear_change_point_vals[[i]] <- extract(lin_change_rast, sp_data_points_list[[i]], buffer = 1000)
-  vocc_point_vals[[i]] <- extract(vocc_rast, sp_data_points_list[[i]], buffer = 1000)
+  linear_change_point_vals[[i]] <- raster::extract(lin_change_rast, sp_data_points_list[[i]], buffer = 1000)
+  vocc_point_vals[[i]] <- raster::extract(vocc_rast, sp_data_points_list[[i]], buffer = 1000)
   names(linear_change_point_vals[[i]]) <- sp_data_points_list[[i]]$row
   names(vocc_point_vals[[i]]) <- sp_data_points_list[[i]]$row
 }
@@ -321,8 +321,8 @@ for (i in seq_along(spatial_lines_obj)) {
   lin_change_rast <- raster::subset(rast_set[[time_span_lookup]], 'linear_change')
   vocc_rast <- raster::subset(rast_set[[time_span_lookup]], 'velocity_magnitude')
 #
-  linear_change_line_vals[[i]] <- extract(lin_change_rast, spatial_lines_obj[i], along = TRUE)
-  vocc_line_vals[[i]] <- extract(vocc_rast, spatial_lines_obj[i], along = TRUE)
+  linear_change_line_vals[[i]] <- raster::extract(lin_change_rast, spatial_lines_obj[i], along = TRUE)
+  vocc_line_vals[[i]] <- raster::extract(vocc_rast, spatial_lines_obj[i], along = TRUE)
   names(linear_change_line_vals[[i]]) <- names(spatial_lines_obj[i])
   names(vocc_line_vals[[i]]) <- names(spatial_lines_obj[i])
 }
