@@ -1,4 +1,12 @@
-#Meta-analysis functions
+# General functions to make life easier
+
+# to not use quotes
+qw <- function(...) {
+  sapply(match.call()[-1], deparse)
+}
+
+
+# Meta-analysis functions
 
 # Back calculate log ratio into the percent change in species richness
 get_percent_change <- function(log_ratio, as_percent = TRUE) {
@@ -9,6 +17,9 @@ get_percent_change <- function(log_ratio, as_percent = TRUE) {
   return(change)
 }
 
+read_rich_data <- function(file = 'master_data/Data.csv') {
+  read_csv(file, col_types = cols(Lat = col_skip(), Long = col_skip()), na = c('', 'NA', 'N/A', 'Na', 'na', ' '))
+}
 
 ###########################################################################
 #                        Make summary data frames                         #
