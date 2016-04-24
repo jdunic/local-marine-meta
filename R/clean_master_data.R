@@ -1,10 +1,7 @@
-process_master_data <- function(richData = rich_data, meta_data = meta_data, event_data = event_data, subset_list = subset_list, cbdata = cb_data) {
-
-  # Event types should NOT be 'No'
-  richData <- mutate(richData, Event.type = replace(Event.type, Event.type == 'No', NA))
+process_master_data <- function(richData = rich_data, event_data = event_data, subset_list = subset_list, cbdata = cb_data) {
 
   # Remove unnecessary columns to make my life easier later
-  richData <- select(richData, -SiSz, -SiSz..units.)
+  richData <- dplyr::select(richData, -SiSz, -`SiSz (units)`)
 
   ###########
   # Add event type categorisation.
@@ -13,89 +10,69 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   #event_list <- unique(richData$Event.type)
   #write.csv(event_list[order(event_list)], 'master_data/event_list.csv')
 
-  # Add additional event data
-  event_data <- 
-    event_data %>% 
-    mutate(event_category = trimws(.$event_category), 
-           event_desc = trimws(.$event_desc), 
-           expected_change = trimws(.$expected_change), 
-           event_notes = trimws(.$event_notes))
+  richData <- dplyr::left_join(richData, event_data, by = c('Event type' = 'event_desc'))
 
-  richData <- left_join(richData, event_data, by = c('Event.type' = 'event_desc'))
-
-  richData <- rename(richData, Event = Event.)
   # Check that the event data spreadsheet is up to date:
-  extra_events <- setdiff(richData$Event.type, event_data$event_desc)
+  extra_events <- dplyr::setdiff(richData$`Event type`, event_data$event_desc)
   extra_events
 
   if (sum(!is.na(extra_events)) > 1) {
     stop('There are listed in the master data sheet that are unaccounted for in the Event Types spreadsheet. Please update this before running this script.')
   }
 
-
   ###########
   ## Convert Error Types to SD
   ###########
+  richData <- 
+    richData %>% 
+      dplyr::mutate(`SppR1 SD` = 
+        ifelse(grepl('sd', `SppR1 Error Type`, ignore.case = TRUE), `SppR1 Error`, 
+           ifelse(grepl('95', `SppR1 Error Type`, ), `SppR1 Error` / 1.96, 
+             ifelse(grepl('SE', `SppR1 Error Type`), `SppR1 Error` * sqrt(n1), NA)))) %>% 
+      dplyr::mutate(`SppR2 SD` = 
+        ifelse(grepl('sd', `SppR2 Error Type`, ignore.case = TRUE), `SppR2 Error`, 
+          ifelse(grepl('95', `SppR2 Error Type`, ), `SppR2 Error` / 1.96, 
+            ifelse(grepl('SE', `SppR2 Error Type`), `SppR2 Error` * sqrt(n2), NA)))) %>% 
+      dplyr::mutate(`Shan1 SD` = 
+        ifelse(grepl('sd', `Shan1 Error Type`, ignore.case = TRUE), `Shan1 Error`, 
+          ifelse(grepl('95', `Shan1 Error Type`, ), `Shan1 Error` / 1.96, 
+            ifelse(grepl('SE', `Shan1 Error Type`), `Shan1 Error` * sqrt(n1), NA)))) %>% 
+      dplyr::mutate(`Shan2 SD` = 
+        ifelse(grepl('sd', `Shan2 Error Type`, ignore.case = TRUE), `Shan2 Error`, 
+          ifelse(grepl('95', `Shan2 Error Type`, ), `Shan2 Error` / 1.96, 
+            ifelse(grepl('SE', `Shan2 Error Type`), `Shan2 Error` * sqrt(n2), NA)))) %>% 
+      dplyr::mutate(`Simps1 SD` = 
+        ifelse(grepl('sd', `Simps1 Error Type`, ignore.case = TRUE), `Simps1 Error`, 
+          ifelse(grepl('95', `Simps1 Error Type`, ), `Simps1 Error` / 1.96, 
+            ifelse(grepl('SE', `Simps1 Error Type`), `Simps1 Error` * sqrt(n1), NA)))) %>% 
+      dplyr::mutate(`Simps2 SD` = 
+        ifelse(grepl('sd', `Simps2 Error Type`, ignore.case = TRUE), `Simps2 Error`, 
+          ifelse(grepl('95', `Simps2 Error Type`, ), `Simps2 Error` / 1.96, 
+            ifelse(grepl('SE', `Simps2 Error Type`), `Simps2 Error` * sqrt(n2), NA)))) %>% 
+      dplyr::mutate(`Even1 SD` = 
+        ifelse(grepl('sd', `Even1 Error Type`, ignore.case = TRUE), `Even1 Error`, 
+          ifelse(grepl('95', `Even1 Error Type`, ), `Even1 Error` / 1.96, 
+            ifelse(grepl('SE', `Even1 Error Type`), `Even1 Error` * sqrt(n1), NA)))) %>% 
+      dplyr::mutate(`Even2 SD` = 
+        ifelse(grepl('sd', `Even2 Error Type`, ignore.case = TRUE), `Even2 Error`, 
+          ifelse(grepl('95', `Even2 Error Type`, ), `Even2 Error` / 1.96, 
+            ifelse(grepl('SE', `Even2 Error Type`), `Even2 Error` * sqrt(n2), NA)))) %>% 
+      dplyr::mutate(`Ind1 SD` = 
+        ifelse(grepl('sd', `ind1_error_type`, ignore.case = TRUE), `ind1_error`, 
+          ifelse(grepl('95', `ind1_error_type`, ), `ind1_error` / 1.96, 
+            ifelse(grepl('SE', `ind1_error_type`), `ind1_error` * sqrt(n2), NA)))) %>% 
+      dplyr::mutate(`Ind2 SD` = 
+        ifelse(grepl('sd', `ind2_error_type`, ignore.case = TRUE), `ind2_error`, 
+          ifelse(grepl('95', `ind2_error_type`, ), `ind2_error` / 1.96, 
+            ifelse(grepl('SE', `ind2_error_type`), `ind2_error` * sqrt(n2), NA)))) %>% 
+      dplyr::select(-ends_with('Error'), -ends_with('Error Type'), -ends_with('error_type'))
 
-  convertError <- function(x, errorType, n){
-    errorType <- as.character(errorType)
-    errorType <- gsub("\n", "", errorType)
-    
-    ret <- rep(NA, length(x))
-    
-    #first, the SD
-    ret[grep("SD", errorType)] <- x[grep("SD", errorType)]
-    ret[grep("sd", errorType)] <- x[grep("sd", errorType)]
-    ret[grep("Sd", errorType)] <- x[grep("Sd", errorType)]
-    
-    #The CI
-    ciIDX <- grep("95", errorType)
-    x[ciIDX] <- x[ciIDX]/1.96 #assuming 1.96 for the CI
-    
-    #SE
-    seIDX <- c(ciIDX, grep("SE", errorType))
-    ret[seIDX] <- x[seIDX] * sqrt(n[seIDX])
-    
-    ret
-  }
-
-  getSD <- function(colname, dataset=richData){
-    errName <- paste(colname, "Error", sep=".")
-    errType <- paste(colname, "Error.Type", sep=".")
-    n <- paste("n", gsub("(.*)(\\d)", "\\2", colname), sep="")
-    convertError(dataset[[errName]], dataset[[errType]], dataset[[n]])  
-  }
-
-  errVec <- qw(SppR1, SppR2, Shan1, Shan2, Simps1, Simps2, Even1, Even2)
-
-  # Do the SD calculation for all of the sites.
-  for (err in errVec) {
-    # Create new error column
-    newCol <- paste(err, "SD", sep=".")
-    error_correction <- tryCatch(getSD(err), 
-                                   error = function(e) e, 
-                                   warning = function(w) w
-    )
-    
-    if (inherits(error_correction, 'error')) { 
-      print(newCol)
-      print(error_correction)
-      next }
-    richData[[newCol]] <- error_correction
-  }
-
-  avec <- paste(errVec, "Error.Type", sep=".")
-  for(i in avec) {
-    #print(i)
-    #print(levels(richData[[i]]))
-    cat("\n")
-  }
 
   ###########
   ## Fix capitalization of Sys
   ###########
   richData$Sys <- as.character(richData$Sys)
-  richData$Sys  <- tolower(richData$Sys)
+  richData$Sys <- tolower(richData$Sys)
   richData$Sys <- gsub("coarl", "coral", richData$Sys)
   richData$Sys <- gsub("rocky bottom", "rocky subtidal", richData$Sys)
   richData$Sys <- gsub("coastalshelf", "coastal shelf", richData$Sys)
@@ -114,18 +91,18 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   source("R/datamart_mashup_source.r")
 
   # Standardize unit names
-  richData$PltSz..units. <- tolower(as.character(richData$PltSz..units.))
+  richData$`PltSz (units)` <- tolower(as.character(richData$`PltSz (units)`))
 
-  unique(richData$PltSz..units.)
+  unique(richData$`PltSz (units)`)
 
 
-  richData$PltSz..units. <- gsub('acres', 'ac', richData$PltSz..units.)
-  richData$PltSz..units. <- gsub('km2', 'km^2', richData$PltSz..units.)
-  richData$PltSz..units. <- gsub('m2', 'm^2', richData$PltSz..units.)
-  richData$PltSz..units. <- gsub('m3', 'm^3', richData$PltSz..units.)
+  richData$`PltSz (units)` <- gsub('acres', 'ac', richData$`PltSz (units)`)
+  richData$`PltSz (units)` <- gsub('km2', 'km^2', richData$`PltSz (units)`)
+  richData$`PltSz (units)` <- gsub('m2', 'm^2', richData$`PltSz (units)`)
+  richData$`PltSz (units)` <- gsub('m3', 'm^3', richData$`PltSz (units)`)
   print('Double check that \'nm\' is nautical miles if you run this script')
-  richData$PltSz..units. <- gsub('^nm[^i]', 'nmi', richData$PltSz..units.)
-  richData$PltSz..units. <- gsub('liters', 'l', richData$PltSz..units.)
+  richData$`PltSz (units)` <- gsub('^nm[^i]', 'nmi', richData$`PltSz (units)`)
+  richData$`PltSz (units)` <- gsub('liters', 'l', richData$`PltSz (units)`)
 
 
   convert_units <- function(value, unit) {
@@ -154,26 +131,30 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   plot_size_conversion <- 
     richData %>% 
       rowwise() %>%
-          do(convert_units(value = .$PltSz, unit = .$PltSz..units.)) 
+          do(convert_units(value = .$PltSz, unit = .$`PltSz (units)`)) 
 
   names(plot_size_conversion) <- c('PlotSize', 'PlotSizeUnits')
   richData <- tbl_df(bind_cols(richData, plot_size_conversion))
 
+  # remove the now redundant sampling columns
+  richData <- dplyr::select(richData, -PltSz -`PltSz (units)`)
+
+
   # Is there a taxonomic type?
   types <- c("coral", "plant", "algae", 
-             "fish", 'inverts', "mobile.inverts", "sessile.inverts", 
-             "marine.mammals", "phytoplankton", "zooplankton")
+             "fish", 'inverts', "mobile inverts", "sessile inverts", 
+             "marine mammals", "phytoplankton", "zooplankton")
 
-  typeSum <- rowSums(select(richData, one_of(types)), na.rm = T)
+  typeSum <- rowSums(dplyr::select(richData, one_of(types)), na.rm = T)
 
-  noTaxa <- richData[which(typeSum == 0), c('Study.ID', 'Reference', 
+  noTaxa <- richData[which(typeSum == 0), c('Study ID', 'Reference', 
                                             'Collector')]
   noTaxa
 
-  missing_data_df <- data.frame(Study.ID = NA, Reference = NA, 
+  missing_data_df <- data.frame(`Study ID` = NA, Reference = NA, 
                                 Collector = NA, Note = NA)
 
-  missing <- select(noTaxa, Study.ID, Reference, Collector)
+  missing <- dplyr::select(noTaxa, `Study ID`, Reference, Collector)
   if (!is.data.frame(missing)) {
     missing$Note <- 'This sample is missing taxa'
   }
@@ -182,12 +163,12 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
 
   sampling <- c("Vis", "Trwl", "Line", "Drdg", "Trp")
 
-  sampleSum <- rowSums(select(richData, one_of(sampling)), na.rm=T)
+  sampleSum <- rowSums(dplyr::select(richData, one_of(sampling)), na.rm=T)
   noSample <- richData[which(sampleSum == 0), ]
   noSample
 
   if (dim(noSample)[1] != 0) {
-    missing <- select(noSample, Study.ID, Reference, Collector)
+    missing <- dplyr::select(noSample, `Study ID`, Reference, Collector)
     if (is.data.frame(missing)) {
       missing$Note <- 'This sample is missing a sampling method'
     }
@@ -204,8 +185,8 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   getTaxa <- function(taxa_list) {
     #browser()
     taxa_list <- as.character(taxa_list)
-    invert_check1 <- sum(c('mobile.inverts', 'sessile.inverts') %in% taxa_list)
-    invert_check2 <- sum(c('inverts', 'mobile.inverts', 'sessile.inverts') %in% taxa_list)
+    invert_check1 <- sum(c('mobile inverts', 'sessile inverts') %in% taxa_list)
+    invert_check2 <- sum(c('inverts', 'mobile inverts', 'sessile inverts') %in% taxa_list)
     if (length(taxa_list) == 1) {
       taxa = taxa_list
     }
@@ -222,12 +203,12 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
 
   taxa_values <- 
     richData %>% 
-    select(id, Study.ID, Site, Sys, T1, T1m, T2, T2m, coral, plant, algae, 
-           fish, inverts, mobile.inverts, sessile.inverts, marine.mammals, 
+    dplyr::select(id, `Study ID`, Site, Sys, T1, T1m, T2, T2m, coral, plant, algae, 
+           fish, inverts, `mobile inverts`, `sessile inverts`, `marine mammals`, 
            phytoplankton, zooplankton) %>%
     group_by(id) %>%
-    #group_by(Study.ID, Site, Sys, T1, T1m, T2, T2m) %>%
-    gather(key, value, -id, -Study.ID, -Site, -Sys, -T1, -T1m, -T2, -T2m) %>%
+    #group_by(`Study ID`, Site, Sys, T1, T1m, T2, T2m) %>%
+    gather(key, value, -id, -`Study ID`, -Site, -Sys, -T1, -T1m, -T2, -T2m) %>%
     filter(value == 1) %>%
     group_by(id) %>%
     do(getTaxa(taxa_list = .$key)) %>%
@@ -239,8 +220,8 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   }
 
   # remove the now redundant taxa columns
-  richData <- select(richData, -plant, -coral, -algae, -fish, -inverts, -mobile.inverts, 
-                     -sessile.inverts, -marine.mammals, -phytoplankton, 
+  richData <- dplyr::select(richData, -plant, -coral, -algae, -fish, -inverts, -`mobile inverts`, 
+                     -`sessile inverts`, -`marine mammals`, -phytoplankton, 
                      -zooplankton)
 
   # Get nice sampling method column
@@ -258,10 +239,10 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
 
   samp_methods <- 
     richData %>% 
-    select(id, Study.ID, Site, Sys, T1, T1m, T2, T2m, Vis:Trp) %>%
+    dplyr::select(id, `Study ID`, Site, Sys, T1, T1m, T2, T2m, Vis:Trp) %>%
     group_by(id) %>%
-    #group_by(Study.ID, Site, Sys, T1, T1m, T2, T2m) %>%
-    gather(key, value, -id, -Study.ID, -Site, -Sys, -T1, -T1m, -T2, -T2m) %>%
+    #group_by(`Study ID`, Site, Sys, T1, T1m, T2, T2m) %>%
+    gather(key, value, -id, -`Study ID`, -Site, -Sys, -T1, -T1m, -T2, -T2m) %>%
     filter(value == 1) %>%
     group_by(id) %>%
     do(getSampMethod(samp_method_list = .$key)) %>%
@@ -270,7 +251,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   richData$samp_method <- samp_methods$samp_method
 
   # remove the now redundant sampling columns
-  richData <- select(richData, -Vis, -Trwl, -Line, -Drdg, -Trp)
+  richData <- dplyr::select(richData, -Vis, -Trwl, -Line, -Drdg, -Trp)
 
 
   ###########
@@ -297,8 +278,6 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   richData$T1m <- fixMonths(richData$T1m)
   richData$T2m <- fixMonths(richData$T2m)
 
-
-
   ###########
   ## Downsample the data to T1 and T2 - first/last
   ###########
@@ -306,7 +285,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   # What is going on here? - I don't even know what this is/was about
   # Where did these studies go? They are marked as being completed but they are 
   # not found in the master dataset.
-  #xdf <- subset(richData, richData$Study.ID %in% c(3, 741, 134, 89))
+  #xdf <- subset(richData, richData$`Study ID` %in% c(3, 741, 134, 89))
   #xdf$Site <- factor(xdf$Site)
   #adf <- subset(xdf, xdf$Site==xdf$Site[1])
 
@@ -336,23 +315,28 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   richData$date1 <- make_date_col(year = richData$T1, month = richData$T1m)
   richData$date2 <- make_date_col(year = richData$T2, month = richData$T2m)
 
-
+#browser()
   # Using the new date functions in 02_functions.R
   firstSampleFilteredData <- 
     richData %>% 
-      group_by(Study.ID, Reference, Sys, taxa, samp_method, 
-               Descriptor.of.Taxa.Sampled, Loc, Site) %>%
-      do(get_first_last(.)) %>% 
+      group_by(`Study ID`, Reference, Sys, taxa, samp_method, 
+               `Descriptor of Taxa Sampled`, Loc, Site) %>%
+      do(get_first_last(adf = ., dataset = 'richData', 
+                        noYCols = noYCols, y1Cols = y1Cols, 
+                        y2Cols = y2Cols)) %>% 
       ungroup()
 
   str(firstSampleFilteredData)
 
   # Add duration to the data frame
-  firstSampleFilteredData$Duration <- with(firstSampleFilteredData, T2-T1)
+  firstSampleFilteredData <- mutate(firstSampleFilteredData, Duration = T2 - T1)
+
+  firstSampleFilteredData <- data.frame(firstSampleFilteredData)
 
   ############
   #calculate a lot of effect sizes
   ############
+
   measurements <- c("SppR", "Shan", "Even")#, "Simps")
   effects <- c("MD", "SMD", "ROM", "SMDH")
 
@@ -364,7 +348,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
       v2 = firstSampleFilteredData[[paste0(j, 2)]]
       v1sd = firstSampleFilteredData[[paste(paste0(j, 1), "SD", sep=".")]]
       v2sd = firstSampleFilteredData[[paste(paste0(j, 2), "SD", sep=".")]]
-      var.names = paste(c("yi", "vi"), j, i, sep=".")
+      var.names = paste(c("yi", "vi"), j, i, sep="_")
       firstSampleFilteredData <- escalc(i, m1i=v2, sd1i = v2sd, n1i = n2, 
                         m2i=v1, sd2i = v1sd, n2i = n1, data=firstSampleFilteredData,
                         append=T, var.names=var.names)  
@@ -377,26 +361,25 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   # Check that there are no notes
   str(firstSampleFilteredData)
 
-  attributes(firstSampleFilteredData$yi.SppR.MD)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.SppR.SMD)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.SppR.ROM)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.SppR.SMDH)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Shan.MD)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Shan.SMD)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Shan.ROM)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Shan.SMDH)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Even.MD)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Even.SMD)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Even.ROM)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$yi.Even.SMDH)[c('measure', 'ni')] <- NULL
-  attributes(firstSampleFilteredData$vi.Even.SMDH)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_SppR_MD)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_SppR_SMD)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_SppR_ROM)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_SppR_SMDH)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Shan_MD)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Shan_SMD)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Shan_ROM)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Shan_SMDH)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Even_MD)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Even_SMD)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Even_ROM)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$yi_Even_SMDH)[c('measure', 'ni')] <- NULL
+  attributes(firstSampleFilteredData$vi_Even_SMDH)[c('measure', 'ni')] <- NULL
 
   str(firstSampleFilteredData)
 
   ############
   # Add CB data
   ############
-
   cbdata <- 
     cbdata[, -1] %>% 
     filter(studyName %in% subset_list[[1]]) %>% 
@@ -420,21 +403,10 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
       mutate(temp_id = seq_along(cbdata[[1]])) %>%
       group_by(temp_id) %>%
       mutate(., n = avg_reps(PltN)) %>% 
-      select(-temp_id, -PltN) %>% 
+      dplyr::select(-temp_id, -PltN) %>% 
       ungroup()
 
   names(cbdata)
-
-  # General housekeeping - stripping whitespace
-  cbdata <- 
-    cbdata %>% 
-    mutate(Reference = trimws(.$Reference), 
-           Collector = trimws(.$Collector), 
-           Descriptor.of.Taxa.Sampled = trimws(.$Descriptor.of.Taxa.Sampled), 
-           Sys = trimws(.$Sys), 
-           Event_type = trimws(.$Event_type), 
-           Year_of_Event = trimws(.$Year_of_Event), 
-           Site = trimws(.$Site))
 
   # Add event data to CB data
   cbdata <- left_join(cbdata, event_data, by = c('Event_type' = 'event_desc'))
@@ -471,11 +443,11 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
 
   taxa_values <- 
     cbdata %>% 
-    select(id, protist, coral, plant, algae, 
+    dplyr::select(id, protist, coral, plant, algae, 
            fish, inverts, mobile.inverts, sessile.inverts, marine.mammals, 
            phytoplankton, zooplankton) %>%
     group_by(id) %>%
-    #group_by(Study.ID, Site, Sys, T1, T1m, T2, T2m) %>%
+    #group_by(`Study ID`, Site, Sys, T1, T1m, T2, T2m) %>%
     gather(key, value, -id) %>%
     filter(value == 1) %>%
     group_by(id) %>%
@@ -484,7 +456,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
 
   cbdata <- 
     cbdata %>% 
-      select(-protist, -coral, -plant, -algae, -fish, -inverts, -mobile.inverts, 
+      dplyr::select(-protist, -coral, -plant, -algae, -fish, -inverts, -mobile.inverts, 
              -mobile.inverts, -sessile.inverts, -marine.mammals, -phytoplankton, 
              -zooplankton)
 
@@ -509,7 +481,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
 
   samp_methods <- 
     cbdata %>% 
-    select(id, Vis:Trp) %>%
+    dplyr::select(id, Vis:Trp) %>%
     group_by(id) %>%
     gather(key, value, -id) %>%
     filter(value == 1) %>%
@@ -520,7 +492,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   cbdata$samp_method <- samp_methods$samp_method
 
   # remove the now redundant sampling columns
-  cbdata <- select(cbdata, -Vis, -Trwl, -Line, -Drdg, -Trp)
+  cbdata <- dplyr::select(cbdata, -Vis, -Trwl, -Line, -Drdg, -Trp)
 
   # rearrange dates to match formatting in richData
   split_dates_list <- 
@@ -570,7 +542,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
       v2 = cb_firstSampleFilteredData[[paste0(j, 2)]]
       v1sd = rep(NA, length(cb_firstSampleFilteredData[[1]]))
       v2sd = rep(NA, length(cb_firstSampleFilteredData[[1]]))
-      var.names = paste(c("yi", "vi"), j, i, sep=".")
+      var.names = paste(c("yi", "vi"), j, i, sep="_")
       cb_firstSampleFilteredData <- escalc(i, m1i=v2, sd1i = v2sd, n1i = n2, 
                         m2i=v1, sd2i = v1sd, n2i = n1, data=cb_firstSampleFilteredData,
                         append=T, var.names=var.names)  
@@ -598,33 +570,31 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
   # Make sure that some of the 
   cb_firstSampleFilteredData <- 
     cb_firstSampleFilteredData %>% 
-      rename(Study.ID = studySub) %>% 
-      select(-study_site, -id, -subSiteID, -date1, -date2)
-
-
-  ## Combining class data with CB data
+      rename(Study.ID = studySub, 
+             PlotSize = PltSz,
+             PlotSizeUnits = PltSzUnits, 
+             Event.type = Event_type, 
+             A.priori = A_priori, 
+             Year.of.Event = Year_of_Event) %>% 
+      dplyr::select(-study_site, -id, -subSiteID, -date1, -date2, 
+             -Long, -Lat)
 
   # Months need to be same data type before rbinding
+  # firstSampleFilteredData Study.ID needs to be a character, 
+  # not numeric
+  firstSampleFilteredData <- 
+    firstSampleFilteredData %>% 
+    mutate(T1m = as.numeric(T1m), T2m = as.numeric(T2m)) %>% 
+    mutate(Study.ID = as.character(Study.ID))
+  
+  ## Combining class data with CB data
   fl_combined <- rbind_all(
-    list(mutate(firstSampleFilteredData, T1m = as.numeric(T1m), 
-                T2m = as.numeric(T2m)), 
-         cb_firstSampleFilteredData))
+    list(firstSampleFilteredData, cb_firstSampleFilteredData)
+    )
 
   ############################################################
   #Write the data
   ############################################################
-
-  #Data plan
-  #0.1 - First time created
-  #0.2 - Dump from data work party in April 2014
-  # 0.2-1, data excluded that fails checks
-  # 0.2-2, After addition of 18 new studies
-  # 0.2-20140505, After addition of 8 new studies
-  # 0.3 - data at end of class
-  # 0.4 - improved cleaning after class
-  #0.5 - All data entered
-  #0.9 - All data quality controlled
-  #1.0 - Final data for the paper
 
   fl_combined$id <- 1:nrow(fl_combined)
 
@@ -635,8 +605,7 @@ process_master_data <- function(richData = rich_data, meta_data = meta_data, eve
     mutate(aggregation = ifelse(sub1 > 1 | sub2 > 1, 'aggregated', 'single plot')) %>% 
     mutate(PlotSize = ifelse(aggregation == 'aggregated', sub1 * PlotSize, PlotSize))
 
-  return(firstLastData)
-
   write.csv(fl_combined, 'Data_outputs/firstLastData_1.0.csv', row.names = F)
 
+  return(fl_combined)
 }

@@ -10,37 +10,145 @@ packages:
   - datamart
   - stringr
   - beepr
+  - raster
+  - hadsstr
+
 
 sources:
   - R/02_functions.R
   - R/clean_master_data.R
+  - R/driver_extraction_functions.R
 
 
 targets:
   all:
     depends: 
       - cleaned_master_data
-      #- test_report.html
+      - sp_points
+      - sp_lines
+      - imp_data
+      - invs_data
+      - nut_data
+      - pest_data
+      - total_duration_sst_rasters
+      - total_vel_raster
+      - total_ltc_raster
+      - total_vel_data
+      - total_ltc_data
+      - sp_points_lookup
+      - sp_lines_lookup
+      - specific_ltc_points
+      - specific_vocc_points
+      - specific_ltc_lines
+      - specific_vocc_lines
+      - specific_ltc
+      - specific_vocc
+      - combined_temp_data
+      - fl_driver_data
 
   cleaned_master_data:
-    command: process_master_data(rich_data, meta_data, event_data, subset_list, cbdata)
+    command: process_master_data(richData = rich_data, event_data = event_data, subset_list = subset_list, cbdata = cb_data)
 
   rich_data:
     command: read_rich_data(file = 'master_data/Data.csv')
-    #command: read_csv(file = 'master_data/Data.csv', col_types = I(cols(Lat = col_skip(), Long = col_skip())), I(na = c('', 'NA', 'N/A', 'Na', 'na', ' ')))
-    #command: read.csv(file = 'master_data/Data.csv', header = TRUE, stringsAsFactors=FALSE, I(na.strings = c('', 'NA', 'N/A', 'Na', 'na', ' '))) 
-
-  meta_data: 
-    command: read.csv(file = 'master_data/Meta_data.csv', stringsAsFactors=FALSE)
 
   event_data: 
-    command: read.csv(file = "master_data/Event_types.csv", stringsAsFactors = FALSE)
+    command: read_csv(file = "master_data/Event_types.csv")
 
   subset_list: 
     command: read_csv(file = 'master_data/CB_study_list_for_reformat.csv')
 
-  cbdata: 
+  cb_data: 
     command: read_csv(file = 'master_data/robin_bts_reformat.csv')
+
+  spatial_data: 
+    command: read_sp_data(filename = 'master_data/SiteSpatialData.csv')
+
+  sp_points: 
+    command: create_sp_points(spatial_data)
+
+  sp_lines: 
+    command: create_sp_lines(spatial_data)
+
+  imp_data: 
+    command: extract_imp_data(spatial_data = spatial_data, sp_points = sp_points, sp_lines = sp_lines)
+
+  invs_data: 
+    command: extract_invs_data(spatial_data = spatial_data, sp_points = sp_points, sp_lines = sp_lines)
+
+  nut_data: 
+    command: extract_nut_data(spatial_data = spatial_data, sp_points = sp_points, sp_lines = sp_lines)
+
+  pest_data: 
+    command: extract_pest_data(spatial_data = spatial_data, sp_points = sp_points, sp_lines = sp_lines)
+
+  total_duration_sst_rasters:
+    command: get_total_duration_rasters(fl_data = cleaned_master_data, hadsst_file = 'master_data/HadISST_sst.nc')
+
+  total_vel_raster:
+    command: get_total_vel_raster(all_rasters = total_duration_sst_rasters)
+
+  total_ltc_raster:
+    command: get_total_ltc_raster(all_rasters = total_duration_sst_rasters)
+
+  total_ltc_data:
+    command: get_total_ltc_data(total_ltc_raster = total_ltc_raster, spatial_data = spatial_data, sp_points = sp_points, 
+      sp_lines = sp_lines)
+
+  total_vel_data:
+    command: get_total_vel_data(total_vel_raster = total_vel_raster, spatial_data = spatial_data, sp_points = sp_points, 
+      sp_lines = sp_lines)
+
+  study_dates:
+    command: get_study_dates(cleaned_master_data)
+
+  start_end_dates: 
+    command: get_start_end_dates(study_dates)
+
+  raster_stack:
+    command: get_raster_stack_list(durations = study_dates, start_end_dates = start_end_dates, hadsst_file = 'master_data/HadISST_sst.nc')
+
+  sp_points_lookup:
+    command: get_sp_points_lookup(spatial_data = spatial_data, fl_data = cleaned_master_data)
+
+  sp_lines_lookup:
+    command: get_sp_lines_lookup(spatial_data = spatial_data, fl_data = cleaned_master_data)
+
+  ltc_point_val_list: 
+    command: mk_ltc_point_vals_list()
+
+  vocc_point_val_list:
+    command: mk_vocc_point_vals_list()
+
+  ltc_line_val_list: 
+    command: mk_ltc_line_vals_list()
+
+  vocc_line_val_list:
+    command: mk_vocc_line_vals_list()
+
+  specific_ltc_points:
+    command: get_specific_ltc_points(sp_data_points_list = sp_points_lookup, ltc_point_val = ltc_point_val_list, raster_stack = raster_stack)
+
+  specific_vocc_points:
+    command: get_specific_vocc_points(sp_data_points_list = sp_points_lookup, vocc_point_vals = vocc_point_val_list, raster_stack = raster_stack)
+
+  specific_ltc_lines:
+    command: get_specific_ltc_lines(sp_lines_lookup = sp_lines_lookup, sp_lines = sp_lines, ltc_line_vals = ltc_line_val_list, raster_stack = raster_stack)
+
+  specific_vocc_lines:
+    command: get_specific_vocc_lines(sp_lines_lookup = sp_lines_lookup, sp_lines = sp_lines, vocc_line_vals = vocc_line_val_list, raster_stack = raster_stack)
+
+  specific_ltc:
+    command: get_mean_specific_ltc(specific_ltc_points, specific_ltc_lines)
+
+  specific_vocc:
+    command: get_mean_specific_vocc(specific_vocc_points, specific_vocc_lines)
+
+  combined_temp_data:
+    command: combine_temp_data(mean_lin_change = specific_ltc, mean_vocc = specific_vocc, spatial_data = spatial_data)
+
+  fl_driver_data:
+    command: combine_fl_data(fl_data = cleaned_master_data, spatial_data = spatial_data, imps = imp_data, invs = invs_data, nuts = nut_data, pest = pest_data, total_ltc = total_ltc_data, total_vocc = total_vel_data, sliced_temp = combined_temp_data)
 
 #  test_report.html:
 #    depends:

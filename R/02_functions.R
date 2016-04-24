@@ -172,7 +172,8 @@ get_month_diff <- function(date1, date2) {
     return(md)
 }
 
-get_first_last <- function(adf, dataset = 'richData') {
+get_first_last <- function(adf, dataset = 'richData', 
+  noYCols = noYCols, y1Cols = y1Cols, y2Cols = y2Cols) {
   #browser()
   if (length(adf$date1) == 1) {
     date_ones <- adf$date1
@@ -226,13 +227,13 @@ get_first_last <- function(adf, dataset = 'richData') {
   if (is.na(last_id)) {
       last_id <- which(adf$date1 == last)[1]
     }
-    
+    #browser()
   if (dataset == 'richData') {
     output <- cbind(adf[first_id, c(noYCols, y1Cols)], adf[last_id, y2Cols])
   }
 
   if (dataset == 'cbdata') {
-    timeless_cols <- select(adf, -date1, -SppR1, -I1, -Shan1, -date2, -SppR2, 
+    timeless_cols <- dplyr::select(adf, -date1, -SppR1, -I1, -Shan1, -date2, -SppR2, 
                             -I2, -Shan2)
 
     output <- cbind(adf[first_id, c(names(timeless_cols), 'date1', 'SppR1', 'I1', 'Shan1')], adf[last_id, c('date2', 'SppR2', 'I2', 'Shan2')])
