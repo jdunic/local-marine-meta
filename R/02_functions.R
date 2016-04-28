@@ -125,6 +125,10 @@ colour_var <- function(column) {
 
 # Cumulative human impact functions
 get_mean_imp <- function(impact_vector) {
+  # Must unlist the list of values for a given point to remove any empty values
+  # (these are not NULL, not NA, and not zero, they are just numeric vectors 
+  # with length = 0)
+  impact_vector <- unlist(impact_vector)
   impact_vector <- replace(impact_vector, impact_vector == 0, NA)
   mean_imp_vals <- mean(impact_vector, na.rm = TRUE)
   return(mean_imp_vals)
