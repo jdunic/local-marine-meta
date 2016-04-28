@@ -2,10 +2,14 @@
 # Create spatial objects
 # ----------------------------------------------------------------------------
 read_sp_data <- function(filename) {
-  spatial_data <- read_csv(file = filename, col_types = cols(Study.ID = col_character(), Reference = col_character(), Site = col_character(), 
-    Start_Long = col_number(), Start_Lat = col_number(), End_Lat = col_number(), End_Long = col_number()))
+  spatial_data <- read_csv(file = filename, col_types = cols(Study.ID = col_character(), Reference = col_character(), Site = col_character()))
   spatial_data <- 
-    mutate(spatial_data, site_id = paste(Study.ID, Site, sep = "_"))
+    mutate(spatial_data, site_id = paste(Study.ID, Site, sep = "_")) %>% 
+    mutate(Start_Long = as.numeric(Start_Long), 
+           Start_Lat = as.numeric(Start_Lat), 
+           End_Long = as.numeric(End_Long), 
+           End_Lat = as.numeric(End_Lat)) %>% 
+    mutate(Shape = tolower(Shape))
 
   spatial_data$row <- seq_along(spatial_data$Study.ID)
 
@@ -423,8 +427,6 @@ combine_temp_data <- function(mean_lin_change, mean_vocc, spatial_data) {
 
 # Add driver data to cleaned master data
 combine_fl_data <- function(fl_data, spatial_data, imps, invs, nuts, pest, total_ltc, total_vocc, sliced_temp) {
-
-  
 
   fl_data <- mutate(fl_data, site_id = paste(Study.ID, Site, sep = "_"))
 
