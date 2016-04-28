@@ -1,0 +1,86 @@
+
+In the short term, negative and uncertain events were associated with increases in species richness. On average this was increase was 39% and 32% for a study associated with a positive and uncertain event, respectively.
+
+Long term? Studies associated with events expected to be positive or uncertain were found to have a decline in richess? 5 - 1% per year? This doesn't make a ton of sense.
+
+```{r}
+# Confirm that the events are being matched with the data properly #
+localmod <- 
+  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, data = event,
+         random = ~ 1 | factor(Study.ID),
+         mods = ~ Duration:expected_change + expected_change + 0)
+localmod
+
+get_percent_change(localmod$b)
+
+ggplot(data = event, aes(x = Duration, y = yi.SppR.ROM)) + 
+  geom_point(aes(colour = expected_change)) + 
+#  ylim(c(-2.1, 2.1)) + 
+  stat_smooth(method = 'lm', aes(colour = expected_change))
+
+
+local2U <- lme(yi.SppR.ROM ~ Duration:expected_change + expected_change + 0, 
+               random = ~ 1 | factor(Study.ID), data=event, na.action = na.omit)
+summary(local2U)
+```
+
+```{r, eval = FALSE}
+#event_dir_summ_df <- 
+ # mk_rma_summary_df(original_df = event, rma_object = local2, categorical = TRUE)
+
+row.names(event_dir_summ_df) <- c(' Negative', ' Positive', ' Uncertain', 
+                                  ' D*Negative', ' D*Positive', 
+                                  ' D*Uncertain')
+
+# The short term effect of events
+ggplot(data = event_dir_summ_df[1:3, ]) +
+  geom_point(aes(x = row.names(event_dir_summ_df[1:3, ]), y = mean_estimate)) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, 
+                    x = row.names(event_dir_summ_df[1:3, ]), width = 0)) +
+  theme_bw() + 
+  ylab('Change in log ratio / year\n') +
+  xlab('\nEvent Type\n') + 
+  theme(panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = 'yellow') +
+  ylim(c(-0.75, 0.75)) +
+  scale_x_discrete(labels = paste(row.names(event_dir_summ_df[1:3, ]), "\n k = ", as.character(event_dir_summ_df[1:3, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[1:3, ]$sites_per_mod)))
+
+# The long term effect of events:
+ggplot(data = event_dir_summ_df[4:6, ]) +
+geom_point(aes(x = row.names(event_dir_summ_df[4:6, ]), y = mean_estimate)) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, 
+                    x = row.names(event_dir_summ_df[4:6, ]), width = 0)) +
+  theme_bw() + 
+  ylab('Change in log ratio / year\n') +
+  xlab('\nEvent Type\n') + 
+  theme(panel.grid.major  = element_blank(),
+        panel.grid.minor  = element_blank()) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = 'yellow') +
+  ylim(c(-0.1, 0.1)) +
+  scale_x_discrete(labels = paste(row.names(event_dir_summ_df[4:6, ]), "\n k = ", as.character(event_dir_summ_df[4:6, ]$studies_per_mod), "\n n = ", as.character(event_dir_summ_df[4:6, ]$sites_per_mod)))
+
+
+```
+
+What sample sizes do we have for this local even dataset? The weighted analysis is done using 27 negative events, 19 positive events, and 14 uncertain events.
+
+```{r}
+filter(event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
+  count(., expected_change)
+
+```
+
+In the unweighted model there is no significant effect of event except in those studies for which an exepcted change direction was unclear. In these studies there was a decline in species in long term studies of about -1% per year. 
+
+Clarify: -1% change in ther ate of change -> this is the duration effect alone? From log_ratio ~ Duration?
+
+```{r}
+local_lme <- 
+  lme(yi.SppR.ROM ~ Duration:expected_change + expected_change + 0, 
+      random = ~ 1 | factor(Study.ID), 
+      data = event, na.action = na.omit)
+summary(local_lme)
+
+get_percent_change(local_lme$coefficients$fixed)
+```
