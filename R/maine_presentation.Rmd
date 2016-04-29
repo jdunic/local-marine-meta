@@ -5,9 +5,9 @@ library(lme4)
 library(lmerTest)
 library(ggplot2)
 
-source('R/02_functions.R')
+source('02_functions.R')
 
-fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv") %>% 
+fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>% 
   mutate(Study.ID = factor(Study.ID))
 
 event <- filter(fl_combined, Event == 'Yes')
@@ -82,7 +82,7 @@ mk_rma_summary_df(hci_rma_all) %>%
 
 full_rma_all <- 
     rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
-         = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3) %>% 
+           data = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3),
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * SppR1 * (sliced_vocc + mean_nuts + scaled_invs)
 )
@@ -111,8 +111,10 @@ mk_rma_summary_df(full_rma_all) %>%
                                   ))) %>% 
   mutate(sig = '*', sig = replace(sig, sig_stars == ' ', ''))
 
+```
 
 Initial richness: 
+
 * areas of higher species richness experience greater losses (as expected)
 * yet over the long term, there is an average of species gains in the coastal areas examined in this study
 * I am not sure what I think this means with the richness*duration interaction - high richness does not change the long-term outcome of species richness gain. But I do not think that this makes sense.
@@ -158,7 +160,7 @@ full_rma_all_summary %>%
 
 * subset data to include only data that would be included in the model (i.e., exclude data with missing rows)
 
-```{r}
+```{r, eval = FALSE}
 sds <- 
   fl_combined %>% 
     filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & !is.na(sliced_vocc) & !is.na(mean_nuts)) %>% 
