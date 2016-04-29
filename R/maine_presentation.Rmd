@@ -49,6 +49,32 @@ mk_rma_summary_df(hci_rma_all) %>%
 
 ```
 
+* Note: the response to human impacts is different if we exclude the data containing the studies associated with events (signs reverse)
+
+
+```{r}
+
+hci_rma_ne <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = no_event, 
+         random = ~ 1 | Study.ID, 
+         mods = ~ Duration*mean_imps)
+hci_rma_ne
+
+mk_rma_summary_df(hci_rma_all) %>%
+  filter(driver != 'intrcpt') %>% 
+  mutate(driver = factor(driver, levels = c('Duration:mean_imps', 'Duration', 'mean_imps'))) %>%
+  ggplot(data = ., aes(x = estimate, y = driver)) + 
+    theme_bw() +
+    geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+    geom_point(size = 4) + 
+    geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+    xlim(c(-0.09, 0.09)) + 
+    theme(axis.text.y = element_text(hjust = 1, size = 20), 
+          axis.text.x = element_text(size = 20), 
+          axis.title = element_text(size = 20))
+
+```
 
 #### Full drivers model
 
@@ -91,6 +117,8 @@ Initial richness:
 * yet over the long term, there is an average of species gains in the coastal areas examined in this study
 * I am not sure what I think this means with the richness*duration interaction - high richness does not change the long-term outcome of species richness gain. But I do not think that this makes sense.
 
+* stars over the points indicate these were significantly different from zero.
+
 ```{r}
 
 full_rma_all_summary %>% 
@@ -105,22 +133,30 @@ full_rma_all_summary %>%
 
 ```
 
-Nutrients:
+Nutrients
+
+* In the short term, sites exposed to high nutrient loading but that have low initial species richness 
+experience species gains on average. 
+* In areas of high species richness however, 
+
 ```{r}
 
 full_rma_all_summary %>% 
-  filter(grouping == 'mods') %>% 
+  filter(grouping == 'nuts') %>% 
   ggplot(data = ., aes(x = estimate, y = driver)) + 
     theme_bw() + 
     geom_point(size = 4) +
     geom_errorbarh(aes(y = driver, xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
     geom_text(aes(x = estimate, y = driver, label = sig), hjust = 0.5, vjust = -0.4, size = 8) + 
     geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
-    xlim(c(-0.085, 0.085))
+    xlim(c(-0.17, 0.17))
 
 ```
 
 
+### Attempt to standardize coefficients 
+
+* subset data to include only data that would be included in the model (i.e., exclude data with missing rows)
 
 ```{r}
 sds <- 
