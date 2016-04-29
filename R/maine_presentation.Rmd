@@ -1,0 +1,216 @@
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+library(metafor)
+library(lme4)
+library(lmerTest)
+library(ggplot2)
+
+source('R/02_functions.R')
+
+fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv") %>% 
+  mutate(Study.ID = factor(Study.ID))
+
+event <- filter(fl_combined, Event == 'Yes')
+no_event <- filter(fl_combined, Event != 'Yes')
+
+```
+
+To test whether local marine species richness has changed over time, we have performed a meta-regression on the relationship between the log ratio of species richness between the final and initial time points and study duration. The weighted analysis included 212 sites from 50 studies while the unweighted analysis included 704 sites and 147 studies.  
+
+In the both the weighted and unweighted analyses, species richness did not change on average (mod1, mod2), nor was there a relationship between change in species richness and duration (mod1).
+
+
+#### Human Impacts
+
+When we consider how human impacts may affect species richness
+
+```{r}
+
+hci_rma_all <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = fl_combined, 
+         random = ~ 1 | Study.ID, 
+         mods = ~ Duration*mean_imps)
+hci_rma_all
+
+
+mk_rma_summary_df(hci_rma_all) %>%
+  filter(driver != 'intrcpt') %>% 
+  mutate(driver = factor(driver, levels = c('Duration:mean_imps', 'Duration', 'mean_imps'))) %>%
+  ggplot(data = ., aes(x = estimate, y = driver)) + 
+    theme_bw() +
+    geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+    geom_point(size = 4) + 
+    geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+    xlim(c(-0.09, 0.09)) + 
+    theme(axis.text.y = element_text(hjust = 1, size = 20), 
+          axis.text.x = element_text(size = 20), 
+          axis.title = element_text(size = 20))
+
+```
+
+
+#### Full drivers model
+
+```{r}
+
+full_rma_all <- 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+         = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3) %>% 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * SppR1 * (sliced_vocc + mean_nuts + scaled_invs)
+)
+full_rma_all
+
+full_rma_all_summary <- 
+mk_rma_summary_df(full_rma_all) %>% 
+  #standardise_coefs(.) %>% 
+  filter(driver != 'intrcpt') %>% 
+  #filter(sig_stars != ' ') %>% 
+  mutate(grouping = as.character(driver)) %>% 
+  mutate(grouping = replace(grouping, grouping %in% c('SppR1', 'Duration', 'Duration:SppR1'), 'mods')) %>% 
+  mutate(grouping = replace(grouping, grouping %in% c('sliced_vocc', 'SppR1:sliced_vocc',
+        'Duration:sliced_vocc', 'Duration:SppR1:sliced_vocc'), 'vocc'), 
+         grouping = replace(grouping, grouping %in% c('mean_nuts', 
+        'SppR1:mean_nuts', 'Duration:mean_nuts', 'Duration:SppR1:mean_nuts'), 'nuts'), 
+         grouping = replace(grouping, grouping %in% c('scaled_invs', 
+        'SppR1:scaled_invs', 'Duration:scaled_invs', 'Duration:SppR1:scaled_invs'), 'invs')) %>% 
+  mutate(driver = factor(driver, levels = c('Duration:SppR1', 'Duration', 'SppR1', 
+                                   'Duration:SppR1:sliced_vocc', 'Duration:sliced_vocc', 
+                                   'SppR1:sliced_vocc', 'sliced_vocc', 
+                                   'Duration:SppR1:mean_nuts', 'Duration:mean_nuts', 
+                                   'SppR1:mean_nuts', 'mean_nuts', 
+                                  'Duration:SppR1:scaled_invs', 'Duration:scaled_invs', 
+                                  'SppR1:scaled_invs', 'scaled_invs'
+                                  ))) %>% 
+  mutate(sig = '*', sig = replace(sig, sig_stars == ' ', ''))
+
+
+Initial richness: 
+* areas of higher species richness experience greater losses (as expected)
+* yet over the long term, there is an average of species gains in the coastal areas examined in this study
+* I am not sure what I think this means with the richness*duration interaction - high richness does not change the long-term outcome of species richness gain. But I do not think that this makes sense.
+
+```{r}
+
+full_rma_all_summary %>% 
+  filter(grouping == 'mods') %>% 
+  ggplot(data = ., aes(x = estimate, y = driver)) + 
+    theme_bw() + 
+    geom_point(size = 4) +
+    geom_errorbarh(aes(y = driver, xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+    geom_text(aes(x = estimate, y = driver, label = sig), hjust = 0.5, vjust = -0.4, size = 8) + 
+    geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+    xlim(c(-0.085, 0.085))
+
+```
+
+Nutrients:
+```{r}
+
+full_rma_all_summary %>% 
+  filter(grouping == 'mods') %>% 
+  ggplot(data = ., aes(x = estimate, y = driver)) + 
+    theme_bw() + 
+    geom_point(size = 4) +
+    geom_errorbarh(aes(y = driver, xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+    geom_text(aes(x = estimate, y = driver, label = sig), hjust = 0.5, vjust = -0.4, size = 8) + 
+    geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+    xlim(c(-0.085, 0.085))
+
+```
+
+
+
+```{r}
+sds <- 
+  fl_combined %>% 
+    filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & !is.na(sliced_vocc) & !is.na(mean_nuts)) %>% 
+    mutate(scaled_invs = mean_invs * 10^-3) %>% 
+    summarise(sd_yi = sd(yi_SppR_ROM), 
+              sd_duration = sd(Duration), 
+              sd_invs = sd(scaled_invs), 
+              sd_nuts = sd(mean_nuts), 
+              sd_vocc = sd(sliced_vocc), 
+              sd_SppR1 = sd(SppR1)
+              )
+
+std_full_rma_all <- 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+           data =   fl_combined %>% 
+                    mutate(scaled_invs = mean_invs * 10^-3) %>% 
+                    mutate(Duration = Duration * (sds$sd_duration / sds$sd_yi), 
+                           scaled_invs = scaled_invs * (sds$sd_invs / sds$sd_yi), 
+                           mean_nuts = mean_nuts * (sds$sd_nuts / sds$sd_yi), 
+                           sliced_vocc = sliced_vocc * (sds$sd_vocc / sds$sd_yi), 
+                           SppR1 = SppR1 * (sds$sd_SppR1 / sds$sd_yi)), 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * SppR1 * (sliced_vocc + mean_nuts + scaled_invs)
+)
+std_full_rma_all
+
+
+fl_combined %>% 
+  mutate(scaled_invs = mean_invs * 10^-2) %>% 
+  mutate(Duration = Duration * (sds$sd_duration / sds$sd_yi), 
+         scaled_invs = scaled_invs * (sds$sd_invs / sds$sd_yi), 
+         mean_nuts = mean_nuts * (sds$sd_nuts / sds$sd_yi), 
+         sliced_vocc = sliced_vocc * (sds$sd_vocc / sds$sd_yi), 
+         SppR1 = SppR1 * (sds$sd_SppR1 / sds$sd_yi)) %>% 
+  filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & !is.na(sliced_vocc) & !is.na(mean_nuts)) %>% 
+  select(Duration, scaled_invs, mean_nuts, sliced_vocc, SppR1) %>% 
+  cov()
+
+```
+
+
+
+#### Events
+
+As expected, in the short-term, sites that were associated with positive events in species richness had increases in species richness. The same was true with studies that were associated with events classified as 'uncertain'.
+
+However, in the long term, event type actually had the opposite effect of what was expected. Events were not classified as press/pulse and this may explain the direction of effects of 'positive' events in the long term.... **except this really doesn't make sense and it is probably things being so context specific. next steps with this could be - 1) seeing what events fall into these categories (but these have been checked and the original predictions do make sense), 2) press/pulse, 3) 
+
+```{r}
+
+localmod <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, data = event,
+         random = ~ 1 | factor(Study.ID),
+         mods = ~ Duration:expected_change + expected_change + 0)
+localmod
+
+# Short-term
+mk_rma_summary_df(localmod) %>% 
+  mutate(driver = factor(c('Negative', 'Positive', 'Uncertain', 'Dur*Negative', 
+                      'Dur*Positive', 'Dur*Uncertain'), 
+                        levels = c('Uncertain', 'Positive', 'Negative', 
+                        'Dur*Uncertain', 'Dur*Positive', 'Dur*Negative'))) %>% 
+  filter(driver %in% c('Negative', 'Positive', 'Uncertain')) %>% 
+  ggplot(data = ., aes(x = estimate, y = driver)) + 
+  theme_bw() +
+  geom_point(size = 4) +
+  geom_errorbarh(aes(y = driver, xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+  geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+  xlim(c(-0.65, 0.65)) + 
+  theme(axis.text.y = element_text(hjust = 1, size = 20), 
+      axis.text.x = element_text(size = 20), 
+      axis.title = element_text(size = 20))
+
+# Long-term
+mk_rma_summary_df(localmod) %>% 
+  mutate(driver = factor(c('Negative', 'Positive', 'Uncertain', 'Dur*Negative', 
+                      'Dur*Positive', 'Dur*Uncertain'), 
+                        levels = c('Uncertain', 'Positive', 'Negative', 
+                        'Dur*Uncertain', 'Dur*Positive', 'Dur*Negative'))) %>% 
+  filter(driver %in% c('Dur*Negative', 'Dur*Positive', 'Dur*Uncertain')) %>% 
+  ggplot(data = ., aes(x = estimate, y = driver)) + 
+  theme_bw() +
+  geom_point(size = 4) +
+  geom_errorbarh(aes(y = driver, xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+  geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+  xlim(c(-0.09, 0.09)) + 
+  theme(axis.text.y = element_text(hjust = 1, size = 20), 
+      axis.text.x = element_text(size = 20), 
+      axis.title = element_text(size = 20))
+
+```
