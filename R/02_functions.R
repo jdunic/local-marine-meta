@@ -129,6 +129,7 @@ get_mean_imp <- function(impact_vector) {
   # (these are not NULL, not NA, and not zero, they are just numeric vectors 
   # with length = 0)
   impact_vector <- unlist(impact_vector)
+  # Replace 0 values in mean impacts with NA because land is zero
   impact_vector <- replace(impact_vector, impact_vector == 0, NA)
   mean_imp_vals <- mean(impact_vector, na.rm = TRUE)
   return(mean_imp_vals)
@@ -273,4 +274,26 @@ get_first_last <- function(adf, dataset = 'richData',
 
   return(output)
 
+}
+
+############################################################################
+#                          Model Summary Functions                         #
+############################################################################
+
+mk_rma_summary_df <- function(rma_object) { 
+  driver = rownames(rma_object$b)
+  estimate = as.vector(rma_object$b)
+  se = rma_object$se
+  pval = rma_object$pval
+  ci_lb = rma_object$ci.lb
+  ci_ub = rma_object$ci.ub
+  summ_df <- data.frame(driver = driver, estimate = estimate, se = se, 
+                        pval = pval, ci_lb = ci_lb, ci_ub = ci_ub)
+  summ_df <- summ_df %>% 
+               mutate(sig_stars = ifelse(pval <= 0.001, '***', 
+                                    ifelse(pval <= 0.01, '**', 
+                                      ifelse(pval <= 0.05, '*', 
+                                        ifelse(pval <= 0.1, '.', 
+                                          ifelse(pval <= 1, ' '))))))
+  return(summ_df)
 }
