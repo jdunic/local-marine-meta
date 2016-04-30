@@ -62,8 +62,9 @@ hci_rma_ne <-
 hci_rma_ne
 
 mk_rma_summary_df(hci_rma_all) %>%
+  mutate(driver = gsub("mean_imps", "Human Impact", driver)) %>%
   filter(driver != 'intrcpt') %>% 
-  mutate(driver = factor(driver, levels = c('Duration:mean_imps', 'Duration', 'mean_imps'))) %>%
+  mutate(driver = factor(driver, levels = c('Duration:Human Impact', 'Duration', 'Human Impact'))) %>%
   ggplot(data = ., aes(x = estimate, y = driver)) + 
     theme_bw() +
     geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
@@ -72,7 +73,7 @@ mk_rma_summary_df(hci_rma_all) %>%
     xlim(c(-0.09, 0.09)) + 
     theme(axis.text.y = element_text(hjust = 1, size = 20), 
           axis.text.x = element_text(size = 20), 
-          axis.title = element_text(size = 20))
+          axis.title = element_text(size = 20)) + ylab("")
 
 ```
 
