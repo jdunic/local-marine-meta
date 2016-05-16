@@ -17,8 +17,21 @@ get_percent_change <- function(log_ratio, as_percent = TRUE) {
   return(change)
 }
 
+# Read rich data - used in remake yml file
 read_rich_data <- function(file = 'master_data/Data.csv') {
   read_csv(file, col_types = cols(Lat = col_skip(), Long = col_skip()), na = c('', 'NA', 'N/A', 'Na', 'na', ' '))
+}
+
+# Use LR ~ Duration + mean_imps + Duration:mean_imps model fitted to data to 
+# make predictions for discrete cumulative human impact values over a given 
+# duration.
+get_imp_predictions <- function(rma_object, impact_value, duration) {
+  mods = cbind(1:duration, rep(impact_value, duration), impact_value*(1:duration))
+  predictions <- predict(object = rma_object, newmods = mods)
+  class(predictions) <- 'list'
+  predictions <- predictions[1:6]
+  predictions <- as_data_frame(predictions)
+  return(predictions)
 }
 
 ###########################################################################
