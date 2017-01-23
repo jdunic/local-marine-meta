@@ -19,7 +19,6 @@ sources:
   - R/clean_master_data.R
   - R/driver_extraction_functions.R
 
-
 targets:
   all:
     depends: 
@@ -56,7 +55,7 @@ targets:
     command: read_csv(file = "master_data/Event_types.csv")
 
   subset_list: 
-    command: read_csv(file = 'master_data/CB_study_list_for_reformat.csv')
+    command: read_csv(file = 'master_data/CB_study_list_for_reformat.csv', col_name = FALSE)
 
   cb_data: 
     command: read_csv(file = 'master_data/robin_bts_reformat.csv')
