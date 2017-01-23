@@ -5,6 +5,19 @@ qw <- function(...) {
   sapply(match.call()[-1], deparse)
 }
 
+# Making NSE version of filter
+# http://justanotherdatablog.blogspot.com/2015/03/dplyr-use-cases-non-interactive-mode.html
+filter_fn <- function(d_in,filter_crit){
+  d_out = d_in %>%
+    filter_(filter_crit)
+  return(d_out)
+}
+
+# Plotting using grid, with a set viewport
+set_vp <- function(row, column) {
+  viewport(layout.pos.row = row, layout.pos.col = column)
+}
+
 
 # Meta-analysis functions
 
@@ -31,6 +44,31 @@ get_imp_predictions <- function(rma_object, impact_value, duration) {
   class(predictions) <- 'list'
   predictions <- predictions[1:6]
   predictions <- as_data_frame(predictions)
+  predictions$duration <- 1:duration
+  return(predictions)
+}
+
+# Use LR ~ Duration * (scaled_invs + sliced_ltc + mean_nuts) model fitted to 
+# data to make predictions for the effects of three different drivers on 
+# species richness change over a given duration.
+#
+get_driver_predictions <- function(unscaled_rma_object, invs, nuts, temp, duration) {
+  # invasive values were scaled by 0.001 to make invasives data variance similar
+  # in magnitude to the other drivers 
+  #invs <- invs * 10^-3
+#
+  mods = cbind(1:duration, 
+               rep(invs, duration),  
+               rep(temp, duration), 
+               rep(nuts, duration),
+               invs*(1:duration), 
+               temp*(1:duration), 
+               nuts*(1:duration))
+  predictions <- predict(object = unscaled_rma_object, newmods = mods)
+  class(predictions) <- 'list'
+  predictions <- predictions[1:6]
+  predictions <- as_data_frame(predictions)
+  predictions$duration <- 1:duration
   return(predictions)
 }
 
@@ -215,25 +253,40 @@ get_first_last <- function(adf, dataset = 'richData',
     md_df$modulus[i] <- md_df$month_diff[i] %% 12
   }
 
-  perfect_year <- filter(md_df, modulus == 0)
-  max_diff_id <- which.max(perfect_year$month_diff)
-  first <- perfect_year$date1[max_diff_id]
-  last  <- perfect_year$date2[max_diff_id]
-  t_diff  <- 'perfect year'
-
-  if (length(max_diff_id) == 0) {
-      plus_month <- filter(md_df, modulus == 1) 
-      max_diff_id <- which.max(plus_month$month_diff)
-      first <- plus_month$date1[max_diff_id]
-      last  <- plus_month$date2[max_diff_id]
-      t_diff <- 'plus one month'
-  } else if (length(max_diff_id) == 0) {
-      minus_month <- filter(md_df, modulus == 11)
-      max_diff_id <- which.max(minus_month$month_diff)
-      first <- minus_month$date1[max_diff_id]
-      last  <- minus_month$date2[max_diff_id]
+  within_month <- 
+    filter(md_df, modulus %in% c(0, 1, 11)) %>% 
+    arrange(modulus)
+  max_diff_id <- which.max(within_month$month_diff)
+  first <- within_month$date1[max_diff_id]
+  last  <- within_month$date2[max_diff_id]  
+  
+  if (within_month[max_diff_id, 'modulus'] == 0) {
+    t_diff  <- 'perfect year' 
+  } else if (within_month[max_diff_id, 'modulus'] == 1) {
+    t_diff <- 'plus one month'
+    } else if (within_month[max_diff_id, 'modulus'] == 11) {
       t_diff <- 'minus one month'
-  }
+    }
+
+#  perfect_year <- filter(md_df, modulus == 0)
+#  max_diff_id <- which.max(perfect_year$month_diff)
+#  first <- perfect_year$date1[max_diff_id]
+#  last  <- perfect_year$date2[max_diff_id]
+#  t_diff  <- 'perfect year'
+
+#  if (length(max_diff_id) == 0) {
+#      plus_month <- filter(md_df, modulus == 1) 
+#      max_diff_id <- which.max(plus_month$month_diff)
+#      first <- plus_month$date1[max_diff_id]
+#      last  <- plus_month$date2[max_diff_id]
+#      t_diff <- 'plus one month'
+#  } else if (length(max_diff_id) == 0) {
+#      minus_month <- filter(md_df, modulus == 11)
+#      max_diff_id <- which.max(minus_month$month_diff)
+#      first <- minus_month$date1[max_diff_id]
+#      last  <- minus_month$date2[max_diff_id]
+#      t_diff <- 'minus one month'
+#  }
 
   first_id <- which(adf$date1 == first)[1]
   last_id  <- which(adf$date2 == last)[1]
@@ -289,9 +342,9 @@ get_first_last <- function(adf, dataset = 'richData',
 
 }
 
-############################################################################
-#                          Model Summary Functions                         #
-############################################################################
+##############################################################################
+#                           Model Summary Functions                          #
+##############################################################################
 
 mk_rma_summary_df <- function(rma_object) { 
   driver = rownames(rma_object$b)
@@ -309,4 +362,225 @@ mk_rma_summary_df <- function(rma_object) {
                                         ifelse(pval <= 0.1, '.', 
                                           ifelse(pval <= 1, ' '))))))
   return(summ_df)
+}
+
+mk_lme_summary_df_nk <- function(lme_object, confint_method = 'Wald') {
+  driver <- rownames(coefficients(summary(lme_object)))
+  estimate = round(coefficients(summary(lme_object))[, 1], digits = 3)
+  se = round(coefficients(summary(lme_object))[, 2], digits = 3)
+  pval = round(coefficients(summary(lme_object))[, 5], digits = 3)
+  ci_lb = round(confint(lme_object, method = confint_method)[-(1:2), 1], digits = 3)
+  ci_ub = round(confint(lme_object, method = confint_method)[-(1:2), 2], digits = 3)
+  k = length(lme_object@frame$yi_SppR_ROM)
+  n = nlevels(lme_object@frame$Study.ID)
+  summ_df <- data.frame(driver = driver, estimate = estimate, se = se, 
+                        pval = pval, ci_lb = ci_lb, ci_ub = ci_ub, k = k, n = n)
+  summ_df <- summ_df %>% 
+               mutate(sig_stars = ifelse(pval <= 0.001, '***', 
+                                    ifelse(pval <= 0.01, '**', 
+                                      ifelse(pval <= 0.05, '*', 
+                                        ifelse(pval <= 0.1, '.', 
+                                          ifelse(pval <= 1, ' '))))))
+  return(summ_df)
+}
+
+
+##############################################################################
+#                            Leave-1-out analysis                            #
+##############################################################################
+get_leave1out_data <- function(leave1out_results_element) {
+  #browser()
+  rma_object <- leave1out_results_element
+  factors <- dimnames(rma_object$b)[[1]]
+  b <- as.vector(rma_object$b[, 1])
+  lci <- rma_object$ci.lb
+  uci <- rma_object$ci.ub
+  # sigma2 in metafor is the between study variation
+  tau2 <- rma_object$sigma2
+  # tau2 in an rma object is the within study variation
+  sigma2 <- rma_object$tau2
+  gamma2 <- rma_object$gamma2
+  pval <-rma_object$pval 
+  zval <- rma_object$zval
+  rho <- rma_object$rho
+  if(is.null(rho) == TRUE) {rho <- NA}
+  QE <- rma_object$QE
+  QEp <- rma_object$QEp
+  QM <- rma_object$QM
+  QMp <- rma_object$QMp
+  site_count <- length(rma_object$slab)
+#
+  adf <- data_frame(moderator = factors, b = b, lci = lci, uci, pval = pval, 
+                    zval = zval) %>% 
+         mutate(QE = QE, QEp = QEp, QM = QM, QMp = QMp, tau2 = tau2, 
+                sigma2 = sigma2, rho = rho, gamma2 = gamma2, 
+                site_count = site_count)
+  return(adf)
+}
+
+leave1out.rma.mv <- function(model_input_df, leave1out_col = c('Study.ID', 'id'), 
+  model = 'rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, random = ~ 1 | Study.ID, mods = ~ Duration, data = leave1out_df)', samp_size_weighted = FALSE) {
+  # Setup for leave1out inputs/outputs
+  leave1out_df_list <- list()
+  unique_studies <- unique(model_input_df[, leave1out_col])
+#
+  for (i in seq_along(unlist(unique_studies))) {
+    filter_crit <- lazyeval::interp(~ filter_var != excluded_point, 
+                                     filter_var = as.name(leave1out_col), 
+                                     excluded_point = unlist(unique_studies[i, leave1out_col]))
+#
+  leave1out_df_list[[i]] <- 
+    model_input_df %>% 
+      filter_(filter_crit)
+  }
+  names(leave1out_df_list) <- as.character(unlist(unique_studies))
+#
+  # Run leave1out analysis 
+  leave1out_rma_results_list <-
+    lapply(leave1out_df_list, function(leave1out_df) {
+      leave1out_rma_results <- eval(parse(text = model))
+#      
+      if (samp_size_weighted == FALSE) {
+        return(leave1out_rma_results)
+      } else if (samp_size_weighted == TRUE) {
+          leave1out_robust <- robust(leave1out_rma_results, cluster=1:leave1out_rma_results$k)
+          leave1out_robust$zval = NA
+          leave1out_robust$QE = NA
+          leave1out_robust$QEp = NA
+          return(leave1out_robust)
+        }
+    })
+  #browser()
+  names(leave1out_rma_results_list) <- as.character(unlist(unique_studies))
+#
+  leave1out_rma_results_summary <- 
+    lapply(leave1out_rma_results_list, get_leave1out_data)
+#
+  leave1out_rma_results_df <- 
+    bind_rows(leave1out_rma_results_summary) %>% 
+    mutate(excluded_study = rep(names(leave1out_rma_results_summary), each = nrow(leave1out_rma_results_summary[[1]])))
+#
+  return(leave1out_rma_results_df)
+}
+
+
+get_lmer_leave1out_data <- function(leave1out_results_element){
+  moderators = rownames(summary(leave1out_results_element)$coefficients)
+  b = summary(leave1out_results_element)$coefficients[, 1]
+  lci = confint(leave1out_results_element)[-(1:2), 1]
+  uci = confint(leave1out_results_element)[-(1:2), 2]
+  pval = summary(leave1out_results_element)$coefficients[, 5]
+#
+  adf = data_frame(moderator = moderators, b = b, lci = lci, uci, pval = pval)
+  return(adf)
+}
+
+leave1out.lmer <- function(model_input_df, leave1out_col = c('Study.ID', 'id'), 
+  model = 'lmer(yi_SppR_ROM ~ Duration + (1 | Study.ID), data = leave1out_df)') {
+  # Setup for leave1out inputs/outputs
+  leave1out_df_list <- list()
+  unique_studies <- unique(model_input_df[, leave1out_col])
+#
+  for (i in seq_along(unlist(unique_studies))) {
+    filter_crit <- lazyeval::interp(~ filter_var != excluded_point, 
+                                     filter_var = as.name(leave1out_col), 
+                                     excluded_point = unlist(unique_studies[i, leave1out_col]))
+#
+  leave1out_df_list[[i]] <- 
+    model_input_df %>% 
+      filter_(filter_crit)
+  }
+  names(leave1out_df_list) <- as.character(unlist(unique_studies))
+#
+  # Run leave1out analysis 
+  leave1out_lmer_results_list <-
+    lapply(leave1out_df_list, function(leave1out_df) {
+      leave1out_lmer_results <- eval(parse(text = model))
+#      
+        return(leave1out_lmer_results)
+      })
+  #browser()
+  names(leave1out_lmer_results_list) <- as.character(unlist(unique_studies))
+#
+  leave1out_lmer_results_summary <- 
+    lapply(leave1out_lmer_results_list, get_lmer_leave1out_data)
+#
+  leave1out_lmer_results_df <- 
+    bind_rows(leave1out_lmer_results_summary) %>% 
+    mutate(excluded_study = rep(names(leave1out_lmer_results_summary), each = nrow(leave1out_lmer_results_summary[[1]])))
+#
+  return(leave1out_lmer_results_df)
+}
+
+# Make plots for the specific driver leave one out analysis
+leave1out_studies_plot <- function(single_driver_df) {
+  ggplot(data = single_driver_df) + 
+  geom_point(aes(x = b, y = Reference)) + 
+  geom_errorbarh(aes(y = Reference, xmin = lci, xmax = uci, x = b), height = 0) +
+  geom_vline(xintercept = 0, colour = 'red', linetype = 'dashed') + 
+  # Make plots symmetrical
+  geom_errorbarh(data = . %>% summarise(boundary = max(abs(c(lci, uci)))), aes(x = boundary / 3, xmin = -boundary / 3, xmax = boundary / 3, y = 1), alpha = 0) +
+  theme_minimal() + 
+  xlab('\nCoefficient estimate') + 
+  ylab('Excluded study\n')
+}
+
+
+##############################################################################
+#                              Caterpillar Plots                             #
+##############################################################################
+# Caterpillar plot of raw no event-weighted data points
+mk_cater_plot <- function(meta_df, title, error_bar_se, weight, error_bar_alpha = 1) {
+  rect_ends <- c(min(meta_df$yi_SppR_ROM - 2 * sqrt(error_bar_se)), max(meta_df$yi_SppR_ROM + 2 * sqrt(error_bar_se)))
+  end <- abs(rect_ends[which.max(rect_ends)])
+  cater_plot <- 
+    meta_df %>% 
+    arrange(Reference) %>% 
+    mutate(plotting_id = 1:nrow(.), Reference = factor(Reference)) %>% 
+    mutate(odd_even = ifelse(as.numeric(Reference) %% 2 == 0, 'even', 'odd')) %>% 
+    ggplot(data = ., aes(x = plotting_id, y = yi_SppR_ROM, group = factor(id))) +
+      geom_rect(data = . %>% filter(odd_even == 'odd') %>% group_by(Reference) %>% summarise(min_plot_id = min(plotting_id), max_plot_id = max(plotting_id)), 
+        aes(x = NULL, y = NULL, xmin = min_plot_id - 0.5, xmax = max_plot_id + 0.5, ymin = -end, ymax = end, group = NULL), alpha = 0.3) +
+      geom_hline(yintercept = 0, colour = 'grey70') +
+      geom_errorbar(aes(ymin = yi_SppR_ROM - error_bar_se, 
+                        ymax = yi_SppR_ROM + error_bar_se), 
+                    width = 0, colour = 'grey40', alpha = error_bar_alpha) + 
+      geom_point(aes(fill = Reference, size = weight), shape = 21, alpha = 0.7) + 
+      theme_minimal() + 
+      theme(axis.text = element_blank(), 
+            axis.title.y = element_blank(), 
+            plot.margin = unit(c(0.2, 0.2, 0.2, 4), 'cm')) + 
+      xlim(0, 148) +
+      guides(fill = FALSE, size = FALSE) + 
+      scale_size(range = c(1.5, 10)) + 
+      scale_x_continuous(expand = c(0.01, 0)) +  
+      xlab('Log Ratio') + 
+      coord_flip() + 
+      ggtitle(title)
+#
+  ref_labs <- 
+    meta_df %>% 
+      arrange(Reference) %>% 
+      mutate(plotting_id = 1:nrow(.), Reference = factor(Reference)) %>% 
+      group_by(Reference) %>% 
+      summarise(mean_plotting_id = mean(plotting_id))
+#
+  for (i in 1:nrow(ref_labs))  {
+    cater_plot <- cater_plot + annotation_custom(
+        grob = textGrob(label = ref_labs$Reference[i], hjust = 1.01, vjust = 0.5, gp = gpar(cex = 0.8)),
+        ymin = -end,    # Vertical position of the textGrob
+        ymax = -end,
+        xmin = ref_labs$mean_plotting_id[i],  # Note: The grobs are positioned outside the plot area
+        xmax = ref_labs$mean_plotting_id[i]
+        )
+   }
+  return(cater_plot)
+}
+
+draw_cater_plot <- function(cater_plot) {
+  # Code to override clipping
+  grid.newpage()
+  gt <- ggplot_gtable(ggplot_build(cater_plot))
+  gt$layout$clip[gt$layout$name == "panel"] <- "off"
+  grid.draw(gt)
 }
