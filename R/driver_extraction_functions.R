@@ -56,7 +56,7 @@ create_sp_lines <- function(spatial_data) {
 }
 
 # ------------------------------------------------------------------------------
-# Get cumulative human impact values for all spatial data points
+# Get cumulative human impact values (Halpern, 2013) for all spatial data points
 # ------------------------------------------------------------------------------
 extract_imp_data <- function(spatial_data, sp_points, sp_lines) {
   imp_map <- raster('master_data/Impact_Data/CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif')
@@ -84,6 +84,36 @@ extract_imp_data <- function(spatial_data, sp_points, sp_lines) {
 }
 
 # ------------------------------------------------------------------------------
+# Get cumulative human impact values for 2008 Halpern et al. analysis for 
+# all spatial data points
+# ------------------------------------------------------------------------------
+extract_imp_data_2008 <- function(spatial_data, sp_points, sp_lines) {
+  imp_map <- raster('master_data/Impact_Data/CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif')
+
+  point_imps <- raster::extract(imp_map, sp_points, buffer = 1000)
+  # Clean up the list of lists of impact values for both point imps and line imps
+  # get_mean_imp replaces zero values with NA because zero is land.
+  mean_point_imps <- unlist(lapply(point_imps, FUN = get_mean_imp))
+
+  line_imps <- raster::extract(imp_map, sp_lines, along = TRUE)
+  mean_line_imps <- unlist(lapply(line_imps, FUN = get_mean_imp))
+
+  sp_data_points2 <- filter(spatial_data, Shape == 'point')
+  sp_data_lines2  <- filter(spatial_data, Shape == 'line')
+
+  sp_data_points2$mean_imps <- mean_point_imps
+  sp_data_lines2$mean_imps  <- mean_line_imps
+
+  combined_data <- rbind(sp_data_points2, sp_data_lines2)
+
+  # Save the data so I don't have to run all of this again + waste more time
+  write_csv(combined_data, 'Data_outputs/spatial_data_with_cumulative_impacts.csv')
+  beepr::beep()
+  return(combined_data)
+}
+
+
+# ------------------------------------------------------------------------------
 # Get addtional impact values 
 # ------------------------------------------------------------------------------
 
@@ -104,8 +134,8 @@ extract_invs_data <- function(spatial_data, sp_points, sp_lines) {
   point_invs <- raster::extract(invasives, sp_points, buffer = 1000)
   line_invs <- raster::extract(invasives, sp_lines, along = TRUE)
 
-  point_invs_NA_switched <- lapply(point_invs, FUN = switch_NA_zero)
-  line_invs_NA_switched <- lapply(line_invs, FUN = switch_NA_zero)
+  #point_invs_NA_switched <- lapply(point_invs, FUN = switch_NA_zero)
+  #line_invs_NA_switched <- lapply(line_invs, FUN = switch_NA_zero)
 
   mean_point_invs <- lapply(point_invs, FUN = mean, na.rm = TRUE)
   mean_line_invs  <- lapply(line_invs, FUN = mean, na.rm = TRUE)
@@ -276,11 +306,11 @@ get_sp_points_lookup <- function(spatial_data, fl_data) {
     left_join(x = ., y = fl_data, by = c('site_id' = 'site_id')) %>% 
     mutate(timespans = paste(.$T1, .$T2, sep = "_")) %>%
     dplyr::select(site_id, Study.ID, Site, Start_Lat, Start_Long, row, timespans) %>%
-    distinct(row) %>%
+    distinct(row, .keep_all = TRUE) %>%
     as_data_frame(.)
-
+#
   sp_data_points_list <- split(sp_data_points_lookup, seq(nrow(sp_data_points_lookup)))
-
+#
   return(sp_data_points_list)
 }
 
@@ -329,7 +359,7 @@ get_specific_ltc_points <- function(sp_data_points_list, ltc_point_vals, raster_
     projection(sp_data_points_list[[i]]) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 #
     ltc_point_vals[[i]] <- raster::extract(lin_change_rast, sp_data_points_list[[i]], buffer = 1000)
-
+#
     names(ltc_point_vals[[i]]) <- sp_data_points_list[[i]]$row
   }
   return(ltc_point_vals)
