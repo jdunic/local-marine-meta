@@ -189,12 +189,14 @@ process_master_data <- function(richData = rich_data, event_data = event_data, s
     invert_check2 <- sum(c('inverts', 'mobile inverts', 'sessile inverts') %in% taxa_list)
     if (length(taxa_list) == 1) {
       taxa = taxa_list
-    }
-    if (length(taxa_list) == 2 & (invert_check1 == 2 | invert_check2 == 3)) {
+    } else {
+      if (length(taxa_list) == 2 & (invert_check1 == 2 | invert_check2 == 3)) {
       taxa <- 'Mixed inverts'
-    } 
-    if (length(taxa_list) > 1) {
-      taxa <- 'Mixed'
+      } else {
+      if (length(taxa_list) > 1) {
+        taxa <- 'Mixed'
+        }
+      }
     }
     return(as.data.frame(taxa))
   }
@@ -501,10 +503,10 @@ process_master_data <- function(richData = rich_data, event_data = event_data, s
     map(function(grouping_df = .[]) {
          #browser()
          T1 <- grouping_df[1:(length(grouping_df[[1]]) - 1), ] %>% 
-               rename(date1 = dateR, n1 = n, SppR1 = rich, I1 = abund, Shan1 = div)
+               rename(date1 = dateR, n1 = n, SppR1 = rich, SppR1.SD = rich_sd, I1 = abund, Shan1 = div, Shan1.SD = div_sd)
          T2 <- grouping_df[2:length(grouping_df[[1]]), c('dateR', 'n', 'rich', 
-               'abund', 'div')] %>% 
-               rename(date2 = dateR, n2 = n, SppR2 = rich, I2 = abund, Shan2 = div)
+               'rich_sd', 'abund', 'div', 'div_sd')] %>% 
+               rename(date2 = dateR, n2 = n, SppR2 = rich, SppR2.SD = rich_sd, I2 = abund, Shan2 = div, Shan2.SD = div_sd)
          t1_t2_df <- cbind(T1, T2)
          return(t1_t2_df)
     })
