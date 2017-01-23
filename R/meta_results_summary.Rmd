@@ -1,552 +1,160 @@
 ## Local marine diversity change meta-analysis model results
 
-```{r, include=FALSE}
-knitr::opts_chunk$set(warning=FALSE, message = FALSE)
+```{r, include=FALSE, cache=TRUE}
+source('meta_models.R')
 ```
 
-```{r, include=FALSE}
 
-library(raster)
-library(dplyr)
-library(ggplot2)
-library(metafor)
-library(lme4)
-library(lmerTest)
-library(gridExtra)
-library(broom)
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+
+options(width=120)
+```
+
+```{r, echo=FALSE, cache=FALSE}
 library(knitr)
-
-source('02_functions.R')
-
-fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>% 
-  mutate(Study.ID = factor(Study.ID))
-
-#fl_combined <- mutate(fl_combined, mean_invs = replace(mean_invs, is.na(mean_invs) & mean_nuts >= 0, 0))
-
-event <- filter(fl_combined, Event == 'Yes')
-no_event <- filter(fl_combined, Event != 'Yes')
+read_chunk("./meta_models.R")
+#read_chunk("./plot_effect_sizes.R")
 
 ```
 
 ### Duration analysis
 
-To test whether local marine species richness has changed over time, we performed a meta-regression on the relationship between the log ratio of species richness between the final and initial time points and study duration. The weighted analysis included 213 sites and 50 studies while the unweighted analysis included 505 sites and 122 studies.  
+To test whether local marine species richness has changed over time, we performed a meta-regression on the relationship between the log ratio of species richness between the final and initial time points and study duration. On average, we observed an effect size of `r filter(mod1_output_df, parameter == 'Duration') %>% select(estimate)`, which corresponds to a gain in species richness at a rate of `r filter(mod1_output_df, parameter == 'Duration') %>% select(4)` % per year (Table 1). 
 
-In the both the variance-weighted meta-regression, **species richness did not change over time on average**.
-
-```{r, echo=FALSE, include=FALSE}
-# Weighted analysis - and naive model plot
-mod1 <- 
-  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & 
-                       vi_SppR_ROM > 0),
-         random = ~ 1 | as.factor(Study.ID), 
-         mods = ~ Duration)
-mod1
-
-# Unweighted analysis that includes all of the log ratios that do not have 
-# variance associated with them. 
-lme1 <- lmer(yi_SppR_ROM ~ Duration + (1 | Study.ID), 
-            data = no_event, na.action = na.omit)
-summary(lme1)
-
+```{r, duration-var-weighted-model-output-table1}
 ```
 
-```{r, echo=FALSE, fig.height=6, fig.width=8.5, fig.cap='**Figure 1.** Variance-weighted meta-regression (left) and unweighted linear mixed effects model (right) show no change in the log ratio of species richness over time. Both analyses treated individual studies as random effects.'}
-duration_w <- 
-filter(no_event, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & vi_SppR_ROM > 0) %>%
-ggplot(data = ., aes(x = Duration, y = yi_SppR_ROM, colour = as.factor(Study.ID))) +
-  geom_point(size = 1) + 
-  ylab('Log Ratio') +
-  theme_bw() +
-  theme(legend.position = 'none') +
-  geom_hline(yintercept = 0, colour = 'red', linetype = 'dashed') +
-  ggtitle('Weighted Analysis') + 
-  xlab('Duration (years)') +
-  ylim(-2, 2)
-
-duration_uw <- 
-filter(no_event, !is.na(yi_SppR_ROM)) %>%
-ggplot(data = ., aes(x = Duration, y = yi_SppR_ROM, colour = as.factor(Study.ID))) +
-  geom_point(size = 1) + 
-  ylab('Log Ratio') +
-  theme_bw() +
-  theme(legend.position = 'none') +
-  geom_hline(yintercept = 0, colour = 'red', linetype = 'dashed') +
-  ggtitle('Unweighted Analysis') + 
-  xlab('Duration (years)') +
-  ylim(-3, 3)
-
-grid.arrange(duration_w, duration_uw, ncol = 2)
+```{r, no-event-data-plotted-with-duration-var-weighted-fig1, echo=FALSE, fig.height=6, fig.width=8.5, fig.cap='**Figure 1.** Variance-weighted meta-regression shows an increase in the log ratio of species richness change over time at a rate of species richness gain of 1% per year. Studies could contain data from multiple sites and so studies were modelled as random effects.'}
 ```
 
 ### Cumulative human impacts model 
 
-```{r, include=FALSE}
+When cumulative impacts were included in the model, there was an average rate of change per year in the log proportion of species of `r filter(imp_mod_output_df, parameter == 'Duration') %>% select(estimate)` -0.033, which is equivalent to an annual rate of species loss of `r filter(imp_mod_output_df, parameter == 'Duration') %>% select(4)`% across sites (Table 2). While cumulative impact values alone did not predict species richness change in the short term, over the long term (impact * duration interaction), each unit increase in cumulative impact value decreased the rate of species loss per year by `r filter(imp_mod_output_df, parameter == 'Duration:Impact') %>% select(4)`% / (year * impact score) (Table 2, Fig. 2).
 
-impact_ne_w <- 
-  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event,
-         random = ~ 1 | factor(Study.ID), 
-         mods = ~ Duration * mean_imps)
-impact_ne_w
+Predictions from this model that includes cumulative human impacts show that when cumulative impacts are low, there is a signal of species loss over 15 years (Figs 3 and 4). At intermediate levels of human impact (25th and 50th impact quantiles observed in our data), human impacts alter the rate of change of species richness and produce predictions where no net change is observed over 15 years (Figs 3 and 4). Meanwhile high cumulative impacts (maximum value observed in our data) predict species gains over the long term. However, even when human impacts are high, gains are not predicted to be observed in studies shorter than eight years (Figs 3 and 4). 
 
-impact_lme_ne <- 
-  lmer(yi_SppR_ROM ~ Duration * mean_imps + (1 | Study.ID),
-      data = no_event, na.action = na.omit)
-summary(impact_lme_ne)
-
+```{r, impact-var-weighted-model-output-table2}
 ```
 
-In the short term, cumulative impacts were associated with an average loss of species of 5% for each increase in unit of cumulative human impact. Globally these impact values range from 0 to >15. When cumulative human impacts were included in the analysis, an average effect of duration was observed, with a decline on average of -3.5 % of species per year in the absence of cumulative human impacts. However, when the effect of cumulative human impacts are considered over time, they are associated with an increase in species richness, of 0.92 % / (year * impact score) (Figs 2, 3). 
-
-
-The fifty percent of our studies have cumulative human impact values between 2.84 and 5.03. This analysis highlights how biases in the way that we have sampled local communities can obscure effects of human impacts on local scale species richness change. If this sampling is representative of studies used in previous analyses, they do not represent the spread of human impacts affecting marine communities. 
-
-This long term perspective may 
-
-```{r, echo=FALSE}
-
-data_frame(parameter = rownames(impact_ne_w$b), 
-           `VW % change`  = round(as.vector(get_percent_change(impact_ne_w$b)), digits = 4), 
-           `VW p-value`  = round(impact_ne_w$pval, digits = 4), 
-           `UW % change`  = round(as.vector(get_percent_change(summary(impact_lme_ne)$coefficients[, 1])), digits = 4), 
-           `UW p-value`  = round(summary(impact_lme_ne)$coefficients[, 5], digits = 4)
-           ) %>%
-knitr::kable(., digits = 3, caption = '**Table 1.** Variance-weighted (VW) and unweighted (UW) meta-regression of the proportion of species richness change across a gradient of human impacts over time including the estimated percent change per unit of the driver and the corresponding model p-value. The percent change has been back-calculated from the estimated log ratio of the proportion of change in species richness.')
-
+```{r, impacts-var-weighted-intercept-coefficient-estimates-fig2, fig.cap='**Figure 2.** Coefficient estimates for the relationship of the log-proportion of change in species richness over time, as moderated by cumulative human impacts (Halpern et al 2015). Points represent coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
 ```
 
-```{r, echo=FALSE, fig.cap='**Figure 2.** Coefficient estimates for the relationship of the log-proportion of change in species richness over time, as moderated by cumulative human impacts (Halpern et al 2015). Points represent coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
-
-mk_rma_summary_df(impact_ne_w) %>%
-  mutate(driver = gsub("mean_imps", "Human Impact", driver)) %>%
-  filter(driver != 'intrcpt') %>% 
-  mutate(driver = factor(driver, levels = c('Duration:Human Impact', 'Duration', 'Human Impact'))) %>%
-  ggplot(data = ., aes(x = estimate, y = driver)) + 
-    theme_bw() +
-    geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
-    geom_point(size = 4) + 
-    geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
-    xlim(c(-0.12, 0.12)) + 
-    theme(axis.text.y = element_text(hjust = 1, size = 14), 
-          axis.text.x = element_text(size = 14), 
-          axis.title = element_text(size = 16)) + 
-    ylab("") + 
-    xlab('\nCoefficient estimate')
-
+```{r, impacts-var-weighted-prediction-plots-log-ratio-fig3, fig.height=6, fig.width=8.5, fig.cap='**Figure 3.** Observed log response ratios of proportion of species richness change over 41 years (left) and predicted log response ratios of species richness change over 15 years (right) as moderated by five quantiles of cumulative human impacts observed in our dataset: q0 = 0.89 (blue), q25 = 2.84 (green), q50 = 3.58 (yellow), q75 = 5.04 (orange), q100 = 8.95 (red). Predicted log response ratios are presented for only 15 years, because less than 15% of studies represent durations longer than 15 years (Fig. S2)'}
 ```
 
-```{r, include=FALSE}
-# Get range of durations used in impact_ne_w:
-no_event %>% 
-  filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
-  .$Duration %>% 
-  range(.)
-
-# Get minimum impact value used in impact_ne_w:
-no_event %>% 
-  filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
-  summarise(min = min(mean_imps), 
-            median = median(mean_imps), 
-            mean = mean(mean_imps), 
-            max = max(mean_imps), 
-            duration = max(Duration))
-
-# Get minimum impact value used in impact_ne_w:
-no_event %>% 
-  filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
-  .$mean_imps %>% 
-  quantile(.)
-
-q0_imps <- get_imp_predictions(rma_object = impact_ne_w, impact_value = 0.89, duration = 41)
-q25_imps <- get_imp_predictions(rma_object = impact_ne_w, impact_value = 2.84, duration = 41)
-q50_imps <- get_imp_predictions(rma_object = impact_ne_w, impact_value = 3.58, duration = 41)
-q75_imps <- get_imp_predictions(rma_object = impact_ne_w, impact_value = 5.04, duration = 41)
-q100_imps <- get_imp_predictions(rma_object = impact_ne_w, impact_value = 8.95, duration = 41)
-
-impact_predicted_log_ratio <- 
-  ggplot() + 
-    geom_line(data = q0_imps, aes(x = 1:41, y = pred), colour = 'blue') + 
-    geom_text(data = q0_imps[41, ], label = '0.89', aes(x = 44, y = pred, vjust = 0.25), colour = 'blue') +
-    geom_ribbon(data = q0_imps, aes(x = 1:41, ymin = ci.lb, ymax = ci.ub), fill = 'light blue', alpha = 0.4) + 
-    geom_line(data = q25_imps, aes(x = 1:41, y = pred), colour = 'green') + 
-    geom_text(data = q25_imps[41, ], label = '2.84', aes(x = 44, y = pred, vjust = 0.25), colour = 'green') +
-    geom_ribbon(data = q25_imps, aes(x = 1:41, ymin = ci.lb, ymax = ci.ub), fill = 'light green', alpha = 0.4) + 
-    geom_line(data = q50_imps, aes(x = 1:41, y = pred), colour = 'yellow') + 
-    geom_text(data = q50_imps[41, ], label = '3.58', aes(x = 44, y = pred, vjust = 0.25), colour = 'gold') +
-    geom_ribbon(data = q50_imps, aes(x = 1:41, ymin = ci.lb, ymax = ci.ub), fill = 'light goldenrod', alpha = 0.4) + 
-    geom_line(data = q75_imps, aes(x = 1:41, y = pred), colour = 'orange') + 
-    geom_text(data = q75_imps[41, ], label = '5.04', aes(x = 44, y = pred, vjust = 0.25), colour = 'orange') +
-    geom_ribbon(data = q75_imps, aes(x = 1:41, ymin = ci.lb, ymax = ci.ub), fill = 'moccasin', alpha = 0.4) + 
-    geom_line(data = q100_imps, aes(x = 1:41, y = pred), colour = 'red') + 
-    geom_text(data = q100_imps[41, ], label = '8.95', aes(x = 44, y = pred, vjust = 0.25), colour = 'red') +
-    geom_ribbon(data = q100_imps, aes(x = 1:41, ymin = ci.lb, ymax = ci.ub), fill = 'light coral', alpha = 0.4) + 
-    theme_minimal() + 
-    ylab('Predicted proportion of change') + 
-    xlab('Duration (years)')
-
-observed_log_ratio <- 
-  no_event %>% 
-    filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
-    ggplot(data = .) + 
-      geom_point(aes(x = Duration, y = yi_SppR_ROM, colour = Study.ID)) + 
-      theme_minimal() + 
-      theme(legend.position = 'none') + 
-      geom_hline(yintercept = 0, colour = 'black', size = 0.15) + 
-      geom_vline(xintercept = 0, colour = 'black', size = 0.15) + 
-      ylab('Percent change') + 
-      xlab('Duration (years)')
-
-impact_predicted_percent_change <- 
-  ggplot() + 
-    geom_line(data = q0_imps, aes(x = 1:41, y = get_percent_change(pred)), colour = 'blue') + 
-    geom_text(data = q0_imps[41, ], label = '0.89', aes(x = 44, y = get_percent_change(pred), vjust = 0.25), colour = 'blue') +
-    geom_ribbon(data = q0_imps, aes(x = 1:41, ymin = get_percent_change(ci.lb), ymax = get_percent_change(ci.ub)), fill = 'light blue', alpha = 0.4) + 
-    geom_line(data = q25_imps, aes(x = 1:41, y = get_percent_change(pred)), colour = 'green') + 
-    geom_text(data = q25_imps[41, ], label = '2.84', aes(x = 44, y = get_percent_change(pred), vjust = 0.25), colour = 'green') +
-    geom_ribbon(data = q25_imps, aes(x = 1:41, ymin = get_percent_change(ci.lb), ymax = get_percent_change(ci.ub)), fill = 'light green', alpha = 0.4) + 
-    geom_line(data = q50_imps, aes(x = 1:41, y = get_percent_change(pred)), colour = 'yellow') + 
-    geom_text(data = q50_imps[41, ], label = '3.58', aes(x = 44, y = get_percent_change(pred), vjust = 0.25), colour = 'gold') +
-    geom_ribbon(data = q50_imps, aes(x = 1:41, ymin = get_percent_change(ci.lb), ymax = get_percent_change(ci.ub)), fill = 'light goldenrod', alpha = 0.4) + 
-    geom_line(data = q75_imps, aes(x = 1:41, y = get_percent_change(pred)), colour = 'orange') + 
-    geom_text(data = q75_imps[41, ], label = '5.04', aes(x = 44, y = get_percent_change(pred), vjust = 0.25), colour = 'orange') +
-    geom_ribbon(data = q75_imps, aes(x = 1:41, ymin = get_percent_change(ci.lb), ymax = get_percent_change(ci.ub)), fill = 'moccasin', alpha = 0.4) + 
-    geom_line(data = q100_imps, aes(x = 1:41, y = get_percent_change(pred)), colour = 'red') + 
-    geom_text(data = q100_imps[41, ], label = '8.95', aes(x = 44, y = get_percent_change(pred), vjust = 0.25), colour = 'red') +
-    geom_ribbon(data = q100_imps, aes(x = 1:41, ymin = get_percent_change(ci.lb), ymax = get_percent_change(ci.ub)), fill = 'light coral', alpha = 0.4) + 
-    theme_minimal() + 
-    theme_minimal() + 
-    ylab('Predicted percent change\n') + 
-    xlab('\nDuration (years)') + 
-    geom_hline(yintercept = 0, colour = 'black', size = 0.15) + 
-    geom_vline(xintercept = 0, colour = 'black', size = 0.15) + 
-    scale_x_continuous(breaks = seq(from = 0, to = 41, by = 5))
-
-observed_percent_change <- 
-  no_event %>% 
-    filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
-    ggplot(data = .) + 
-      geom_point(aes(x = Duration, y = get_percent_change(yi_SppR_ROM), colour = Study.ID)) + 
-      theme_minimal() + 
-      theme(legend.position = 'none') + 
-      geom_hline(yintercept = 0, colour = 'black', size = 0.15) + 
-      geom_vline(xintercept = 0, colour = 'black', size = 0.15) + 
-      ylab('Percent change') + 
-      xlab('Duration (years)') + 
-      scale_x_continuous(breaks = seq(from = 0, to = 41, by = 5))
-
+```{r, impacts-var-weighted-prediction-plots-percent-change-fig4, fig.height=6, fig.width=8.5, fig.cap='**Figure 4.** Observed percent change in species richness over 41 years (left) and predicted percent change of species richness change over 15 years (right) as moderated by five quantiles of cumulative human impacts observed in our dataset: q0 = 0.89 (blue), q25 = 2.84 (green), q50 = 3.58 (yellow), q75 = 5.04 (orange), q100 = 8.95 (red). Predicted log response ratios are presented for only 15 years, because less than 15% of studies represent durations longer than 15 years (Fig. S2).'}
 ```
 
-```{r, echo=FALSE, fig.height=6, fig.width=8.5, fig.cap='**Figure 3.** Observed log response ratios of proportion of species richness change over 41 years (left) and predicted log response ratios of species richness change over 41 years (right) as moderated by five quantiles of cumulative human impacts observed in our dataset: q0 = 0.89 (blue), q25 = 2.84 (green), q50 = 3.58 (yellow), q75 = 5.04 (orange), q100 = 8.95 (red).'}
+#### Our results in the global context of cumulative human impacts
 
-grid.arrange(observed_log_ratio, impact_predicted_log_ratio, ncol = 2)
+Globally the impact values range from 0 to >15. In our analysis, these impact values ranged between `r no_event %>% filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% summarise(min(mean_imps))` - `r no_event %>% filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% summarise(max(mean_imps))`
 
+Fifty percent of our studies have cumulative human impact values between `r quantile(no_event$mean_imps, probs = c(0.25, 0.75), na.rm = TRUE)[[1]] %>% round(., digits = 1)` and `r quantile(no_event$mean_imps, probs = c(0.25, 0.75), na.rm = TRUE)[[2]] %>% round(., digits = 1)`. This analysis highlights how biases in our sampling of local communities can obscure effects of human impacts on local scale species richness change. If this sampling is representative of studies used in previous analyses, they do not represent the spread of human impacts affecting marine communities.
+
+```{r, cumulative-impacts-freq-dist-for-var-weighted-dataset-fig5, fig.cap='**Figure 5.** Frequency distribution of cumulative human impacts across the data used for the variance-weighted meta-regression'}
 ```
 
-```{r, echo=FALSE, fig.height=6, fig.width=8.5, fig.cap='**Figure 4.** Observed percent change in species richness over 41 years (left) and predicted percent change of species richness change over 41 years (right) as moderated by five quantiles of cumulative human impacts observed in our dataset: q0 = 0.89 (blue), q25 = 2.84 (green), q50 = 3.58 (yellow), q75 = 5.04 (orange), q100 = 8.95 (red)'}
-
-grid.arrange(observed_percent_change, impact_predicted_percent_change, ncol = 2)
-
-```
-
-```{r, echo=FALSE, fig.cap='**Figure 5.** Frequency distribution of cumulative human impacts across the data used for the variance-weighted meta-regression'}
-
-ggplot(data = no_event %>% filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)), 
-       aes(x = mean_imps)) + 
-  geom_histogram(binwidth = 1, colour = 'black', boundary = 0) + 
-  scale_x_continuous(breaks = 0:10) + 
-  theme_minimal() + 
-  xlab('\nCumulative human impact score') + 
-  ylab('Frequency\n')
-
+```{r}
+# global cumulative human impacts frequency distribution goes here to compare 
+# with what is in the data.
 ```
 
 ### Specific drivers model 
 
-The cumulative human impact values provide evidence that species richness changes are context dependent and suggest that sampling bias may help explain why recent synthese have observed no average change in local species richness (Vellend et al 2014, Dornelas et al 2015), the impact scores summarise 17(?) different human impacts in marine ecosystems. We ask whether direction and magnitude of local species richness change can be attributed more specifically to three primary global drivers. Temperature change, nutrient addition, and invasive species are three important drivers that are associated with changes in local communities (Murphy and Romanuk 2014?). 
+Accounting for cumulative human impact values suggests that, as expected, species richness changes are context dependent. These results suggest that human impacts moderate the rate at which species richness changes. However, the cumulative human impact values summarise 19 different human impacts in marine ecosystems (Halpern et al. 2015). We ask whether the direction and magnitude of local species richness change can be more specifically attributed to three primary global drivers of diversity change. In particular, temperature change, nutrient addition, and species invasions are three drivers that have been associated with changes in local communities (Murphy and Romanuk 2014, ...) and are three of the data layers that have been included in the calculation of cumulative human impact values. We have used the invasion potential (quantified using global shipping tonnage as a proxy for propagule pressure) and nutrient addition data layers aggregated by Halpern et al. (2015) in our analysis, in addition to the decadal rate of linear temperature change calculated using the Hadley Met Centre sea surface temperature data. 
+
+The inclusion of additional and specific drivers of global change show changes in species richness over time and show that these changes differ in both direction and magnitude depending on the driver and study duration (Table 3, Fig. 6). On average, there was a signal of species gains over time, at a rate of `r filter(drivers_mod_output_df, parameter == 'Duration') %>% select(4)` percent of starting richness per year (Table 3). Linear temperature change (5.33 % per ˚C / decade) and nutrient addition (1.3 % per tonne of nutrients / km^2 - this seems really really high) were also both correlated with gains in species richness in the short term (Table 3, Fig. 6). At the current decadal rate of sea surface temperature (`r 0.13 * (5 / 9)` ˚C / decade), this would be `r (filter(drivers_mod_output_df, parameter == 'Duration') %>% select(4)) * 0.13 * (5 / 9)` percent increase due to temperature change. 
+
+Over time, all three drivers affected the rate of local species richness change (Table 3, Fig. 6 left). Invasives increase the rate of species gains (0.12 % per thousand tonnes of shipping tonnage) while, unlike in the short term, linear temperature change and nutrient addition decreased species richness over time (Fig. 6 right). Figures 7, 8, and 9 demonstrate how these drivers affect species richness over 15 years, assuming that each driver is held constant at the median level observed in our data. 
 
 ```{r, include=FALSE}
-
-# Check for collinearity among the 4 proposed drivers. Collinearity was low for 
-# all variables except the decadal rate of linear temperature change and 
-# climate velocity (covariance = 0.87). Therefore only linear temperature change 
-# was used in the following analyses. 
-cov(no_event %>% 
-    filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
-           !is.na(mean_nuts) & !is.na(sliced_vocc) & !is.na(sliced_ltc)) %>% 
-    mutate(scaled_invs = scale(mean_invs * 10^-3), 
-           scaled_nuts = scale(mean_nuts), 
-           scaled_vocc = scale(sliced_vocc), 
-           scaled_ltc  = scale(sliced_ltc)) %>% 
-    select(scaled_invs, scaled_nuts, scaled_vocc, scaled_ltc)
-)
-
-# No interactions
-drivers <- 
-  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
-         random = ~ 1 | Study.ID, 
-         mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
-drivers
-
-drivers_unscaled <- 
-  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
-         random = ~ 1 | Study.ID, 
-         mods = ~ Duration * (scaled_invs + sliced_ltc + mean_nuts))
-drivers_unscaled
-
-
-drivers_uw <- 
-  lmer(yi_SppR_ROM ~ Duration * (scale(scaled_invs) + scale(sliced_vocc) + scale(mean_nuts)) + (1 | Study.ID), 
-       data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
-       na.action = na.omit)
-summary(drivers_uw)
-
+# URL to webpage that had current decadal rate of temperature change.
+# https://www3.epa.gov/climatechange/science/indicators/oceans/sea-surface-temp.html
 ```
 
-Once additional and specific drivers of global change are included in the analysis, there is a signal of species gains over time at a rate of 1.7% of species per year (Duration, p-value = 0.012; *Not sure what to make of this duration estimate being positive but the one from the cumulative human impacts is negative -- is this essentially 'leftover' change that is not accounted for by the specific drivers?*).  Over the short term, propagule pressure (invasives) was associated with declines in local species richness at a rate of -1.8% of species per 1000(*?*) units of increased propagule pressure, wherease nutrient addition was associated with species gains observed over the short term at a rate of 1.4% per unit of nutrient addition (p = 0.002, *this percentage seems too large*). Linear temperature change was a marginally significant predictor (p-value = 0.056) of species richness change in the short term and was also associated with species gains. 
-
-However, over the long term, these drivers show a reversed direction of effect on the rate of local species richness change. Studies that were longer in duration showed gains with increasing propgule pressure, but losses with higher rates of nutrient addition and linear temperature change. 
-
-
-```{r, echo=FALSE}
-
-data_frame(parameter = rownames(drivers_unscaled$b), 
-           `VW % change`  = round(as.vector(get_percent_change(drivers_unscaled$b)), digits = 4), 
-           `VW p-value`  = round(drivers_unscaled$pval, digits = 4), 
-           `UW % change`  = round(as.vector(get_percent_change(summary(drivers_uw)$coefficients[, 1])), digits = 4), 
-           `UW p-value`  = round(summary(drivers_uw)$coefficients[, 5], digits = 4)
-           ) %>%
-knitr::kable(., digits = 3, caption = '**Table 2.** Variance-weighted (VW) and unweighted (UW) meta-regression of the proportion of species richness change across a gradient of three drivers (raw coefficient estimates, except for invasives --> invs * 0.001) of global change over time including the estimated percent change per unit of the driver and the corresponding model p-value. The percent change has been back-calculated from the estimated log ratio of the proportion of change in species richness.')
-
+```{r, drivers-var-weighted-model-output-df-scaled-table3}
 ```
 
-```{r, include=FALSE}
-
-model_driver_vector <- 
-  c('Duration', 'Invasives', 'LTC', 'Nutrients', 'Duration*Invasives', 
-    'Duration*LTC', 'Duration*Nutrients')
-ordered_driver_vector <- 
-  c('Duration', 'Invasives', 'Nutrients', 'LTC', 'Duration*Invasives', 
-    'Duration*Nutrients', 'Duration*LTC')
-
-driver_summary_plot  <- 
-  mk_rma_summary_df(drivers) %>% 
-    filter(driver != 'intrcpt') %>% 
-    mutate(grouping = as.character(driver)) %>% 
-    mutate(grouping = factor(model_driver_vector, 
-                             levels = rev(ordered_driver_vector))) %>% 
-    ggplot(data = ., aes(x = estimate, y = grouping)) + 
-      theme_bw() +
-      geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
-      geom_point(size = 4) + 
-      geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
-      xlim(c(-3.5, 3.5)) + 
-      theme(axis.text.y = element_text(hjust = 1, size = 14), 
-            axis.text.x = element_text(size = 14), 
-            axis.title = element_text(size = 16)) + 
-      ylab("") + 
-      xlab('\nStandardised coefficient estimate')
-
+```{r, drivers-var-weighted-intercept-scaled-par-est-plot-short-long-breakdown-fig6, fig.height=6, fig.width=9, fig.cap = '**Figure 6.** The relationship of the log-proportion of change in species richness over time, as moderated by three drivers of global change, invasives (propagule pressure), nutrient addition, and LTC (the decadal rate of linear temperature change). Points represent standardised coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
 ```
 
-```{r, echo=FALSE, fig.height=6, fig.width=8.5, fig.cap='**Figure 6.** The relationship of the log-proportion of change in species richness over time, as moderated by three drivers of global change, invasives (propagule pressure), nutrient addition, and LTC (the decadal rate of linear temperature change). Points represent standardised coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
+--------------------------------------------------------------------------------
 
-driver_summary_plot
+#### Predictions from the multiple drivers model
+
+--------------------------------------------------------------------------------
+
+```{r, full-drivers-model-var-weighted-invasives-predictions-with-dists-fig7, fig.height=6.5, fig.width=8.5, fig.cap='**Figure 7.** Predicted change in the log-proportion of change in species richness over time as moderated by invasion potential over 15 years (Left). Predictions were obtained using a variance-weighted meta-regression from the full drivers model: LR ~ Duration * (invasion potential + nutrient addition + linear temperature change). Nutrient addition and linear temperature change were held constant at the median values of these two drivers found observed in our dataset. Shaded areas represent 95% confidence intervals. Cumulative frequency distributions (top right) and frequency histograms (bottom right) invasion potential values observed in the data used for the variance-weighted meta-regression. Shipping tonnage was used as a proxy for invasion potential.'}
 ```
 
+--------------------------------------------------------------------------------
 
 
-
-#### Specific drivers and their interactions
-
-Interactions between changing temperature and invasive species colonisation and changing temperature and nutrient addition have been predicted theoretically and are supported by observational (Sorte et al 2010 (invs), REFS) and experimental data (Binzer et al 2012 (nuts), REFS). We tested whether the effects of these interactions between temperature, propagule pressure, and nutrient addition were observed in our data. We did not observe an effect of these interactions in our data, however, this may be due to low power caused by the high parameterisation of the model. 
-
-```{r, include=FALSE}
-
-# Invasives * temperature (Sorte et al 2010, )
-# Nutrients * temperature (Binzer et al 2012)
-interactions <- 
-  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
-         random = ~ 1 | Study.ID, 
-         mods = ~ Duration * (scale(scaled_invs) * scale(sliced_ltc) + scale(sliced_ltc)*scale(mean_nuts)))
-
-interactions_uw <- 
-  lmer(yi_SppR_ROM ~ Duration * (scale(scaled_invs) * scale(sliced_ltc) + 
-         scale(sliced_ltc)*scale(mean_nuts)) + (1 | Study.ID), 
-       data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
-       na.action = na.omit)
-summary(interactions_uw)
-
+```{r, full-drivers-model-var-weighted-nutrients-predictions-with-dists-fig8, fig.height=6.5, fig.width=8.5, fig.cap='**Figure 8.** Predicted change in the log-proportion of change in species richness over time as moderated by nutrient addition over 15 years. Predictions were obtained using a variance-weighted meta-regression from the full drivers model: LR ~ Duration * (invasion potential + nutrient addition + linear temperature change). Invasion potential and linear temperature change were held constant at the median values of these two drivers found observed in our dataset. Shaded areas represent 95% confidence intervals. Cumulative frequency distributions (top right) and frequency histograms (bottom right) nutrient addition values observed in the data used for the variance-weighted meta-regression.'}
 ```
 
-```{r, echo=FALSE}
-
-data_frame(parameter = rownames(interactions$b), 
-           `VW % change` = round(as.vector(get_percent_change(interactions$b)), digits = 4), 
-           `VW p-value` = round(interactions$pval, digits = 4), 
-           `UW % change` = round(as.vector(get_percent_change(summary(interactions_uw)$coefficients[, 1])), digits = 4), 
-           `UW p-value` = round(summary(interactions_uw)$coefficients[, 5], digits = 4)
-           ) %>%
-knitr::kable(., digits = 3, caption = '**Table 3. - text incomplete** Variance-weighted (VW) and unweighted (UW) meta-regression of the proportion of species richness change where model includes interactions \nincluding the estimated percent change per unit of the driver and the corresponding model p-value. The percent change has been back-calculated from the estimated log ratio of the proportion of change in species richness.')
+--------------------------------------------------------------------------------
 
 
+```{r, full-drivers-model-var-weighted-ltc-predictions-with-dists-fig9, fig.height=6.5, fig.width=8.5, fig.cap='**Figure 9.** Predicted change in the log-proportion of change in species richness over time as moderated by nutrient addition over 15 years. Predictions were obtained using a variance-weighted meta-regression from the full drivers model: LR ~ Duration * (invasion potential + nutrient addition + linear temperature change). Invasion potential and nutrient addition were held constant at the median values of these two drivers found observed in our dataset. Shaded areas represent 95% confidence intervals. Cumulative frequency distributions (top right) and frequency histograms (bottom right) linear temperature change observed in the data used for the variance-weighted meta-regression.'}
 ```
 
 
 --------------------------------------------------------------------------------
-*Help - predictions of drivers model*
 
-```{r, include=FALSE}
+#### Driver interactions
 
-# Use LR ~ Duration * (scaled_invs + sliced_ltc + mean_nuts) model fitted to 
-# data to make predictions for the effects of three different drivers on 
-# species richness change over a given duration.
-#
-get_driver_predictions <- function(unscaled_rma_object, invs, nuts, temp, duration) {
-#browser()
-  # invasive values were scaled by 0.001 to make invasives data variance similar
-  # in magnitude to the other drivers 
-  invs <- invs * 10^-3
-#
-  mods = cbind(1:duration, rep(invs, duration), rep(nuts, duration), 
-               rep(temp, duration), invs*(1:duration), nuts*(1:duration), 
-               temp*(1:duration))
-  predictions <- predict(object = unscaled_rma_object, newmods = mods)
-  class(predictions) <- 'list'
-  predictions <- predictions[1:6]
-  predictions <- as_data_frame(predictions)
-  return(predictions)
-}
+Interactions between changing temperature and invasive species colonisation and changing temperature and nutrient addition have been predicted theoretically and are supported by observational (Sorte et al 2010 (invs), ...) and experimental data (Binzer et al 2012 (nuts), ...). We tested whether the effects of these interactions between temperature, propagule pressure, and nutrient addition were observed in our data. We did not observe an effect of these interactions in our data, however, this may be due to low power of using only studies (n = 24) that had sampling variances (Table 5). 
 
-# Get range of durations used in impact_ne_w:
-no_event %>% 
-  filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
-         !is.na(mean_nuts) & !is.na(sliced_ltc)) %>% 
-  .$Duration %>% 
-  range(.)
-
-# Get minimum impact value used in impact_ne_w:
-invs_quantiles <- 
-  no_event %>% 
-    filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
-           !is.na(mean_nuts) & !is.na(sliced_ltc)) %>% 
-    .$mean_invs %>% 
-    quantile(.) %>% 
-    as.list(.) %>% 
-    as_data_frame(.)
-
-nut_quantiles <- 
-  no_event %>% 
-    filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
-           !is.na(mean_nuts) & !is.na(sliced_ltc)) %>% 
-    .$mean_nuts %>% 
-    quantile(.) %>% 
-    as.list(.) %>% 
-    as_data_frame(.)
-
-ltc_quantiles <- 
-  no_event %>% 
-    filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
-           !is.na(mean_nuts) & !is.na(sliced_ltc)) %>% 
-    .$sliced_ltc %>% 
-    quantile(.) %>% 
-    as.list(.) %>% 
-    as_data_frame(.)
-
-invs_q0  <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = invs_quantiles$`0%`, 
-                                   nuts = 0, temp = 0, duration = 41) %>% 
-            mutate(driver = 'invasives', quantile = '0', 
-                   value = invs_quantiles$`0%`)
-invs_q25 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = invs_quantiles$`25%`, 
-                                   nuts = 0, temp = 0, duration = 41) %>% 
-            mutate(driver = 'invasives', quantile = '25', 
-                   value = invs_quantiles$`25%`)
-invs_q50 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = invs_quantiles$`50%`, 
-                                   nuts = 0, temp = 0, duration = 41) %>% 
-            mutate(driver = 'invasives', quantile = '50', 
-                   value = invs_quantiles$`50%`)
-invs_q75 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = invs_quantiles$`75%`,
-                                   nuts = 0, temp = 0, duration = 41) %>% 
-            mutate(driver = 'invasives', quantile = '75', 
-                   value = invs_quantiles$`75%`)
-invs_q100 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = invs_quantiles$`100%`, 
-                                   nuts = 0, temp = 0, duration = 41) %>% 
-            mutate(driver = 'invasives', quantile = '100', 
-                   value = invs_quantiles$`100%`)
-invs_predictions <- 
-  rbind_all(list(invs_q0, invs_q25, invs_q50, invs_q75, invs_q100))
-
-nuts_q0  <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = nutrient_quantiles$`0%`, 
-                                   temp = 0, duration = 41) %>% 
-            mutate(driver = 'nutrients', quantile = '0', 
-                   value = nut_quantiles$`0%`)
-nuts_q25 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = nut_quantiles$`25%`, 
-                                   temp = 0, duration = 41) %>% 
-            mutate(driver = 'nutrients', quantile = '25', 
-                   value = nut_quantiles$`25%`)
-nuts_q50 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = nut_quantiles$`50%`, 
-                                   temp = 0, duration = 41) %>% 
-            mutate(driver = 'nutrients', quantile = '50', 
-                   value = nut_quantiles$`50%`)
-nuts_q75 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = nut_quantiles$`75%`, 
-                                   temp = 0, duration = 41) %>% 
-            mutate(driver = 'nutrients', quantile = '75', 
-                   value = nut_quantiles$`75%`)
-nuts_q100 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = nut_quantiles$`100%`, 
-                                   temp = 0, duration = 41) %>% 
-            mutate(driver = 'nutrients', quantile = '100', 
-                   value = nut_quantiles$`100%`)
-nuts_predictions <- 
-  rbind_all(list(nuts_q0, nuts_q25, nuts_q50, nuts_q75, nuts_q100))
-
-ltc_q0  <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = 0, 
-                                   temp = ltc_quantiles$`0%`, duration = 41) %>%
-            mutate(driver = 'ltc', quantile = '0', value = ltc_quantiles$`0%`)
-ltc_q25 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = 0, 
-                                   temp = ltc_quantiles$`25%`, duration = 41) %>%
-            mutate(driver = 'ltc', quantile = '25', value = ltc_quantiles$`25%`)
-ltc_q50 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = 0, 
-                                   temp = ltc_quantiles$`50%`, duration = 41) %>%
-            mutate(driver = 'ltc', quantile = '50', value = ltc_quantiles$`50%`)
-ltc_q75 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = 0, 
-                                   temp = ltc_quantiles$`75%`, duration = 41) %>%
-            mutate(driver = 'ltc', quantile = '75', value = ltc_quantiles$`75%`)
-ltc_q100 <- get_driver_predictions(unscaled_rma_object = drivers_unscaled, 
-                                   invs = 0, nuts = 0, 
-                                   temp = ltc_quantiles$`100%`, duration = 41) %>%
-            mutate(driver = 'ltc', quantile = '100', value = ltc_quantiles$`100%`)
-ltc_predictions <- 
-  rbind_all(list(ltc_q0, ltc_q25, ltc_q50, ltc_q75, ltc_q100))
-
-
-ggplot(data = filter(invs_predictions, quantile == '100'), aes(x = 1:41, y = pred, by = quantile)) + 
- geom_line() + 
- geom_ribbon(aes(x = 1:41, ymin = ci.lb, ymax = ci.ub), alpha = 0.4)
-
-
+```{r, interactions-var-weighted-model-output-table4}
 ```
 
+--------------------------------------------------------------------------------
+
+#### Sample size weighted results summary
+
+Unfortunately, the results from the variance-weighted meta-analysis differ from the results of both the sample size-weighted analysis and the unweighted analysis. In these sample size-weighted analyses, the number of replicates for each site was used as a proxy for precision of the species richness change estimate. Therefore, sites with higher replication had higher weights in the analysis. We did this because there were many studies for which there were no variances provided, which limited our sample size in the variance-weighted analysis. We triple our sample size by using a sample-size meta-regression (Table 5).
+
+In the sample size-weighted meta-regressions, no trends in species richness change were observed ~~in the LR ~ Duration or LR ~ Duration\*Impact models (Tables 6 and 7). In the full drivers model (LR ~ Duration \* (I + N + LTC)), the only observed trend, was long term positive effect of invasive potential on the rate of species richness change (Table 8, Fig. 10). This same effect was observed in the variance-weighted meta-regression (Table 3, Fig. 6).~~ in any of the models (Tables 6-13, Figs. 10 & 11). (This was where I made the mistake in the code...)
+
+~~In the drivers interaction model, where linear temperature change interacted with invasion potential and nutrient addition, the variance-weighted meta-regression showed no significant trends (Table 4). However, in the sample size-weighted meta-regression, the invasion potential\*linear temperature change interaction was associated with species losses in the short term and the linear temperature change\*nutrient addition interaction was associated with species gains in the long term (Table 9).~~
+
+```{r, sample-size-diffs-based-on-mod-weighting-comparison-table5}
+
+```{r, duration-ss-weighted-model-output-df-table6}
+```
+
+```{r, impact-ss-weighted-model-output-df-table7}
+```
+
+```{r, drivers-ss-weighted-model-output-df-scaled-table8}
+```
+
+```{r, drivers-ss-weighted-intercept-scaled-par-est-plot-short-long-breakdown-fig10,  fig.height=6, fig.width=9, fig.cap = '**Figure 10.** The relationship of the log-proportion of change in species richness over time, as moderated by three drivers of global change, invasives (propagule pressure), nutrient addition, and LTC (the decadal rate of linear temperature change). Points represent standardised coefficient estimates and lines represent 95% CI obtained using a sample size-weighted meta-regression.'}
+```
+
+```{r, drivers-interactions-ss-weighted-model-output-df-scaled-table9}
+```
+
+```{r, drivers-ss-weighted-intercept-scaled-par-est-plot-short-long-breakdown-fig11,  fig.height=6, fig.width=9, fig.cap = '**Figure 11.** The relationship of the log-proportion of change in species richness over time, as moderated by three drivers and of global change, invasives (propagule pressure), nutrient addition, and LTC (the decadal rate of linear temperature change) and their interaction. Points represent standardised coefficient estimates and lines represent 95% CI obtained using a sample size-weighted meta-regression.'}
+```
+
+--------------------------------------------------------------------------------
 
 
+#### Unweighted results summary
 
-Next steps of output:
+```{r, duration-unweighted-model-output-df-table10}
+```
 
-* predicted distribution of local species richness change based on 
+```{r, impact-unweighted-model-output-df-table11}
+```
+
+```{r, drivers-unweighted-model-output-df-table12}
+```
+
+```{r, interactions-unweighted-model-output-df-table13}
+```
+--------------------------------------------------------------------------------
+

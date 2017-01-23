@@ -1,17 +1,171 @@
-#### The relationship of initial richness and log ratio is not biased
+```{r, include=FALSE}
 
-This simulation demonstrates the relationship between initial richness and the proportion of change when the average proportion of change is 
+library(knitr)
+read_chunk("no_event_caterpillar_plot.R")
+read_chunk("sensitivity_analyses.R")
+read_chunk("taxonomic_groups.R")
+read_chunk("meta_models.R")
+read_chunk("meta_models_no_diez.R")
+read_chunk("meta_models_no_smith.R")
+read_chunk("meta_models_lmer.R")
+read_chunk('site_map.R')
+read_chunk('driver_distributions.R')
 
-How much do we need to be concerned that the log ratio calculation includes SppR1? Does this matter if we are taking a predictive approach? Because if SppR1 is valuable as a predictor then the mechanism for why shouldn''t matter.
+knitr::opts_chunk$set(warning=FALSE, message = FALSE, echo=FALSE)
+knitr::opts_chunk$set(fig.height=7, fig.width=6.6)
+#knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r, site-map, echo=FALSE, fig.height=5.25, fig.width=10, fig.cap='**Figure S1.** Global distribution of sites (k = 144) included in the meta-analysis with unique studies (n = 35) indicated by colour.'}
+
+```
+
+--------------------------------------------------------------------------------
+
+```{r, echo=FALSE, fig.height=3.2, fig.width=5.6, fig.cap='**Figure S2.** The sample size - variance relationship indicates that sample size is an inappropriate substitution for use in a sample-size weighted meta-analysis. Sample size is a poor indicator of variance, where sites with low replication often had high precision.'}
+no_event %>%
+  filter(!is.na(vi_SppR_ROM)) %>% 
+ggplot(data = ., aes(x = n1, y = vi_SppR_ROM, colour = Study.ID)) + 
+  geom_point() + 
+  theme_bw() + 
+  guides(colour = FALSE) +
+  xlab('Sample size') + 
+  ylab('Variance')
+
+```
+
+--------------------------------------------------------------------------------
+
+### Unweighted analysis results
 
 ```{r}
-s_df <- data.frame(t1 = rpois(100, 30))
-s_df$change <- exp(rnorm(100, 0, 0.2))
-s_df$t2 <-  s_df$t1 * s_df$change
+<<unweighted-diffs-based-on-mod-weighting-comparison>>
 
-hist(s_df$change)
-plot(t2 ~ t1, data=s_df)
-
-
-plot(log(t2/t1) ~ t1, data=s_df)
+sample_size_diffs_df[1:3, ] %>%
+  rename(`un-w sites` = `samp-w sites`, `un-w studies` = `samp-w studies`) %>% 
+  knitr::kable(., caption = '**Table S1.** Comparison of sample sizes used for each of the three models of the log ratio of species richness change performed using: variance-weighted (var-w) meta-regression and unweighted (un-w) regression.')
 ```
+
+
+```{r, echo=FALSE}
+<<duration-unweighted-table>>
+<<impacts-unweighted-table>>
+<<drivers-unweighted-table>>
+#<<interactions-unweighted-table>>
+dur_lmer_df[2, c('model', 'k', 'n')] <- ''
+impacts_lmer_df[2:4, c('model', 'k', 'n')] <- ''
+drivers_lmer_df[2:8, c('model', 'k', 'n')] <- ''
+#interactions_lmer_df[2:12, c('model', 'k', 'n')] <- ''
+
+#bind_rows(dur_lmer_df, impacts_lmer_df, drivers_lmer_df, interactions_lmer_df) %>% 
+bind_rows(dur_lmer_df, impacts_lmer_df, drivers_lmer_df) %>%
+  mutate(parameter = gsub('intrcpt', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Duration', 'Dur', .$parameter)) %>% 
+  mutate(parameter = gsub('Impact', 'CHI', .$parameter)) %>% 
+  mutate(parameter = gsub('total_ltc', 'LTC', .$parameter)) %>% 
+  mutate(parameter = gsub('\\(Intercept', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Int)', 'Int', .$parameter)) %>% 
+  mutate(model = gsub('D', 'Dur', .$model)) %>%  
+  mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
+  mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
+  mutate(model = gsub('N', 'Nut', .$model)) %>%
+  mutate(`% change` = format(.$`% change`, digits = 1)) %>% 
+  mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
+         `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
+  select(model, n, k, parameter, estimate, `% change`, pval, `lower CI`, `upper CI`) %>% 
+  knitr::kable(., caption = '**Table S2.** Standardised parameter estimates from three unweighted regressions of the log ratio of the proportion of species richness change (LR). Table details are the same as in Table S1.')
+
+```
+
+```{r, echo=FALSE}
+<<duration-unweighted-table-vw-subset>>
+<<impacts-unweighted-table-vw-subset>>
+<<drivers-unweighted-table-vw-subset>>
+#<<interactions-unweighted-table-vw-subset>>
+dur_lmer_df_vws[2, c('model', 'k', 'n')] <- ''
+impacts_lmer_df_vws[2:4, c('model', 'k', 'n')] <- ''
+drivers_lmer_df_vws[2:8, c('model', 'k', 'n')] <- ''
+#interactions_lmer_df_vws[2:12, c('model', 'k', 'n')] <- ''
+
+#bind_rows(dur_lmer_df_vws, impacts_lmer_df_vws, drivers_lmer_df_vws, interactions_lmer_df_vws) %>% 
+bind_rows(dur_lmer_df_vws, impacts_lmer_df_vws, drivers_lmer_df_vws) %>%
+  mutate(parameter = gsub('intrcpt', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Duration', 'Dur', .$parameter)) %>% 
+  mutate(parameter = gsub('Impact', 'CHI', .$parameter)) %>% 
+  mutate(parameter = gsub('total_ltc', 'LTC', .$parameter)) %>% 
+  mutate(parameter = gsub('\\(Intercept', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Int)', 'Int', .$parameter)) %>% 
+  mutate(model = gsub('D', 'Dur', .$model)) %>%  
+  mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
+  mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
+  mutate(model = gsub('N', 'Nut', .$model)) %>%
+  mutate(`% change` = format(.$`% change`, digits = 1)) %>% 
+  mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
+         `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
+  select(model, n, k, parameter, estimate, `% change`, pval, `lower CI`, `upper CI`) %>% 
+  knitr::kable(., caption = '**Table S3.** Standardised parameter estimates from three unweighted regressions of the log ratio of the proportion of species richness change (LR) performed on the same subset of data used in the variance-weighted analysis. Table details are the same as in Table S1.')
+
+```
+
+--------------------------------------------------------------------------------
+
+### Sensitivity analyses
+
+```{r, impacts-leave-1-out-study-nutrients-3-panel, fig.height=6, fig.width=13, fig.cap='**Figure S3.** Jackknife plots evaluating the influence of studies on the coefficient estimates from the LR ~ Duration + Impacts + Duration:Impacts variance-weighted meta-regression.'}
+
+```
+
+```{r, drivers-leave-1-out-study-nutrients-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S5.** Jackknife plots evaluating the influence of studies on the coefficient estimation of nutrients alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
+
+```
+
+```{r, drivers-leave-1-out-study-invasives-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S6.** Jackknife plots evaluating the influence of studies on the coefficient estimation of invasives alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
+
+```
+
+```{r, drivers-leave-1-out-study-LTC-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S6.** Jackknife plots evaluating the influence of studies on the coefficient estimation of linear temperature change alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
+
+```
+
+
+```{r, echo=FALSE}
+<<duration-var-weighted-model-output-no-diez>>
+<<impact-var-weighted-model-output-no-diez>>
+<<drivers-var-weighted-model-output-df-scaled-no-diez>>
+#<<interactions-var-weighted-model-output-no-diez>>
+
+mod1_output_df_nd[2, c('model', 'k', 'n')] <- ''
+imp_mod_output_df_nd[2:4, c('model', 'k', 'n')] <- ''
+drivers_mod_output_df_nd[2:8, c('model', 'k', 'n')] <- ''
+#interactions_output_df_nd[2:12, c('model', 'k', 'n')] <- ''
+
+#bind_rows(mod1_output_df_nd, imp_mod_output_df_nd, drivers_mod_output_df_nd, interactions_output_df_nd) %>% 
+bind_rows(mod1_output_df_nd, imp_mod_output_df_nd, drivers_mod_output_df_nd) %>%
+  mutate(parameter = gsub('intrcpt', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Duration', 'Dur', .$parameter)) %>% 
+  mutate(parameter = gsub('Impact', 'CHI', .$parameter)) %>% 
+  mutate(parameter = gsub('total_ltc', 'LTC', .$parameter)) %>% 
+  mutate(model = gsub('D', 'Dur', .$model)) %>%  
+  mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
+  mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
+  mutate(model = gsub('N', 'Nut', .$model)) %>%
+  mutate(`% change` = format(.$`% change`, digits = 1)) %>% 
+  mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
+         `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
+  select(model, n, k, parameter, estimate, `% change`, pval, `lower CI`, `upper CI`) %>% 
+  knitr::kable(., caption = '**Table S4** Standardised parameter estimates from three variance-weighted meta-regressions of the log ratio of the proportion of species richness change (LR) that excluded the influential study Diez *et al.* 2011. For each parameter estimate the number of studies (n), number of sites (k), p-value (pval), lower and upper 95% confidence intervals are included. The percent change (% change) has been back-calculated from the estimated log ratio of the proportion of change in species richness. Each study could contain multiple sites and therefore studies were modeled as random effects.')
+
+```
+
+```{r, drivers-var-weighted-int-scaled-par-est-plot-short-long-breakdown-no-diez, echo=FALSE, fig.height=6, fig.width=9, fig.cap='**Figure S7.** The effect, when the influential study Diez *et al.* 2011 was excluded, of three global drivers: propagule pressure (Invasives), decadal rate of linear temperature change (LTC), and nutrient addition (Nutrients) on (a) the log-proportion of change in species richness in the short term and (b) the effect of these drivers on the rate of change in the log-proportion of change in species richness over time. Points represent standardised coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
+
+```
+
+----------------------------------------------------------------------
+
+### Distribution of drivers in a global context
+
+```{r, global-vs-analysis-data-coverage-drivers-plot, echo=FALSE, fig.height=3.2, fig.width=11, fig.cap='**Figure S8.** The global distribution of drivers (blue) compared to the distribution of drivers observed in our dataset (red) for (a) nutrient addition, (b) propagule pressure, and (c) rate of linear temperature (degree C / year). Values of nutrient addition and propagule pressure were log-transformed to improve visualisation of extreme values. Due to idiosyncrasies in the data layers and because large expanses of coastal areas had no nutrient addition or propagule pressure values greater than zero, zero values in the global drivers were excluded, therefore are under-represented here. To include zero values that were observed in our dataset we added either 0.1 or 1 to the driver values before log-transforming them.'}
+
+```
+

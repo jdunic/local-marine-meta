@@ -21,13 +21,13 @@ proj4string(e) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 e <- spTransform(e, CRS("+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"))
 
 crop_inv <- crop(invasives, e)
-crop_fert <- crop(fertilizers, e)
-crop_pest <- crop(pesticides, e)
+crop_nut <- crop(nuts, e)
+#crop_pest <- crop(pesticides, e)
 
-par(mfrow = c(1, 3))
+par(mfrow = c(1, 2))
 plot(crop_inv)
-plot(crop_fert)
-plot(crop_pest)
+plot(crop_nut)
+#plot(crop_pest)
 
 
 e <- spTransform(e, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"))
@@ -60,6 +60,8 @@ y <- apply(x, MARGIN = c(1, 2), FUN = switch_NA_zero)
 
 z <- raster(x = y, template = crop_inv)
 plot(z)
+
+plot(z, xlim = c(-5931008, -5576475), ylim = c(4883911, 5173388)) 
 
 crop_inv2 <- z
 
@@ -134,32 +136,11 @@ plot(predict1_percent, col = heat.colors(3))
 
 plot(predict1_percent, col = rainbow(255))
 
-```
 
-
-
-
-The log ratio is the log of the proportion of change in species richness over time. If the log ratio = 0.1, 
-
-log(SppR2 / SppR1) = LR
-
-LR ^ e = SppR2 / SppR1
-
-> exp(-0.13)
-[1] 0.8780954
-
-> exp(-0.14)
-[1] 0.8693582
-
-
-exp(0.13) - 1
-
-exp(-0.13) - 1
 
 predict1_percent <- exp(predict1) - 1
 
 
-```{r}
 # Create raster layers for different durations 
 time_map1 <- imp_map > 0
 names(time_map1) <- 'Duration'
@@ -187,5 +168,3 @@ predict1 <- predict(imp_preds, global_lme, fun = lme4:::predict.merMod, re.form=
 
 plot(predict1)
 
-
-```

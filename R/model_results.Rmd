@@ -1,20 +1,25 @@
 ```{r, echo = FALSE, warning=FALSE, message=FALSE}
+
 library(raster)
 library(dplyr)
 library(ggplot2)
 library(metafor)
-library(nlme)
+library(lme4)
+library(lmerTest)
 library(gridExtra)
 library(broom)
 library(knitr)
 library(pander)
 
-pander::panderOptions('table.split.table', 150)
-options(width = 150)
+pander::panderOptions('table.split.table', 100)
+options(width = 100)
 
 source('R/02_functions.R')
 
-fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv")
+fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv") %>% 
+  mutate(Study.ID = factor(Study.ID))
+
+#fl_combined <- mutate(fl_combined, mean_invs = replace(mean_invs, is.na(mean_invs) & mean_nuts >= 0, 0))
 
 event <- filter(fl_combined, Event == 'Yes')
 no_event <- filter(fl_combined, Event != 'Yes')
@@ -48,25 +53,27 @@ To test whether local marine species richness has changed over time, we have per
 In the both the weighted and unweighted analyses, species richness did not change on average (mod1, mod2), nor was there a relationship between change in species richness and duration (mod1).
 
 ```{r}
+
 # Weighted analysis - and naive model plot
 mod1 <- 
-  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
-         data = filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                       vi.SppR.ROM > 0),
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & 
+                       vi_SppR_ROM > 0),
          random = ~ 1 | as.factor(Study.ID), 
          mods = ~ Duration)
 mod1
 
 mod2 <- 
-  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
-         data = filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                       vi.SppR.ROM > 0),
-          random = ~ 1 | as.factor(Study.ID))
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & 
+                       vi_SppR_ROM > 0),
+          random = ~ 1 | as.factor(Study.ID), 
+          mods = ~Duration)
 mod2
 
 # Unweighted analysis that includes all of the log ratios that do not have 
 # variance associated with them. 
-lme1 <- lme(yi.SppR.ROM ~ Duration, random = ~ 1 | factor(Study.ID), 
+lme1 <- lme(yi_SppR_ROM ~ Duration, random = ~ 1 | factor(Study.ID), 
             data = fl_combined, na.action = na.omit)
 summary(lme1)
 ```
@@ -87,8 +94,8 @@ ggplot(data = rr.order, aes(x = Study.ID, y = `(Intercept)`)) +
 
 ```{r, fig.height=7.5, fig.width=6.7}
 duration_w <- 
-filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & vi.SppR.ROM > 0) %>%
-ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
+filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & vi_SppR_ROM > 0) %>%
+ggplot(data = ., aes(x = Duration, y = yi_SppR_ROM, colour = as.factor(Study.ID))) +
   geom_point(size = 1) + 
   ylab('Log Ratio') +
   theme_bw() +
@@ -99,8 +106,8 @@ ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID)
   #ylim(-2, 2)
 
 duration_uw <- 
-filter(fl_combined, !is.na(yi.SppR.ROM)) %>%
-ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID))) +
+filter(fl_combined, !is.na(yi_SppR_ROM)) %>%
+ggplot(data = ., aes(x = Duration, y = yi_SppR_ROM, colour = as.factor(Study.ID))) +
   geom_point(size = 1) + 
   ylab('Log Ratio') +
   theme_bw() +
@@ -111,7 +118,6 @@ ggplot(data = ., aes(x = Duration, y = yi.SppR.ROM, colour = as.factor(Study.ID)
   #ylim(-3, 3)
 
 grid.arrange(duration_w, duration_uw, nrow = 2)
-
 ```
 
 Both the weighted and unweighted naive models, where duration is the only predictor, show no significant change in species richness on average.  
@@ -130,44 +136,58 @@ In the unweighted analysis of both the event and no event data, short term studi
 ```{r}
 
 impact_ne_w <- 
-  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
          data = no_event,
          random = ~ 1 | factor(Study.ID), 
          mods = ~ Duration * mean_imps)
 impact_ne_w
 
 impact_all_w <- 
-  rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM, 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
          data = fl_combined,
          random = ~ 1 | factor(Study.ID), 
          mods = ~ Duration * mean_imps)
 impact_all_w
 
-
 impact_lme_ne <- 
-  lme(yi.SppR.ROM ~ Duration * mean_imps, random = ~ 1 | factor(Study.ID),
+  lmer(yi_SppR_ROM ~ Duration * mean_imps + (1 | Study.ID),
       data = no_event, na.action = na.omit)
 summary(impact_lme_ne)
 
 impact_lme_all <- 
-  lme(yi.SppR.ROM ~ Duration * mean_imps, random = ~ 1 | factor(Study.ID),
+  lmer(yi_SppR_ROM ~ Duration * mean_imps + (1 | Study.ID),
       data = fl_combined, na.action = na.omit)
+summary(impact_lme_all)
 
 data_frame(parameter = rownames(impact_ne_w$b), 
-           ne_rma_per_change  = round(as.vector(get_percent_change(impact_ne_w$b)), digits = 4), 
+           ne_rma_change  = round(as.vector(get_percent_change(impact_ne_w$b)), digits = 4), 
            ne_rma_pval  = round(impact_ne_w$pval, digits = 4), 
-           all_rma_per_change = round(as.vector(get_percent_change(impact_all_w$b)), digits = 4), 
-           all_rma_pval = round(impact_all_w$pval, digits = 4), 
-           #parameter_lme = rownames(summary(impact_lme_ne)$tTable), 
-           lme_ne_per_change  = round(as.vector(get_percent_change(summary(impact_lme_ne)$tTable[, 1])), digits = 4), 
-(       round    lme_ne_pval  = summary(impact_lme_ne)$tTable[, 5], ), digits = 4
-           lme_all_per_change = round(as.vector(get_percent_change(summary(impact_lme_all)$tTable[, 1])), digits = 4), 
-           lme_all_pvalround (= summary(impact_lme_all)$tTable[, 5], digits = 4
-            )          ) %>%
+           all_rma_change = round(as.vector(get_percent_change(impact_all_w$b)), digits = 4), 
+           all_rma_pval = round(impact_all_w$pval, digits = 4)
+           ) %>%
 pandoc.table(.)
 
+data_frame(parameter = rownames(summary(impact_lme_ne)$coefficients), 
+           lme_ne_change  = round(as.vector(get_percent_change(summary(impact_lme_ne)$coefficients[, 1])), digits = 4), 
+           lme_ne_pval  = round(summary(impact_lme_ne)$coefficients[, 5], digits = 4), 
+           lme_all_per_change = round(as.vector(get_percent_change(summary(impact_lme_all)$coefficients[, 1])), digits = 4), 
+           lme_all_pval = round(summary(impact_lme_all)$coefficients[, 5], digits = 4)
+) %>%
+pandoc.table(.)
 ```
 
+#### Checking assumptions of the impact data model
+
+```{r}
+filter(no_event, !na.omit(Duration) & !na.omit(mean_imps)) %>%
+  select(Duration, mean_imps) %>% cov(.)
+
+#options(na.action = "na.pass")
+plot(fitted(impact_ne_w), rstandard(impact_ne_w)$z, pch=19)
+
+
+
+```
 
 
 ### Specific driver model selection (study specific time slices)
@@ -177,34 +197,47 @@ Duration*(I + V + I*L + LTC - N +I*N + L*N + VOCC)
 (with both vocc and ltc, with just vocc, and with just ltc)  
 - Use AIC for model selection
 
+```{r}
+#Interaction model
+rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+       data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+       random = ~ 1 | Study.ID, 
+       mods = ~ Duration * (scale(scaled_invs) * scale(sliced_ltc) + scale(sliced_ltc)*scale(mean_nuts))
+
+
+# Invasives * temperature (Sorte et al 2010, )
+# Nutrients * temperature (Binzer et al 2012)
+```
+
 
 #### Weighted analyses using the no event data
 
 ```{r}
 # Simplest model with all drivers
 global_ne_all_drivers <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = no_event, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = no_event %>% mutate(scaled_invs = (mean_invs * 10^-3)), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_vocc + mean_lin_change + mean_nuts)
+          mods = ~ Duration * (scale(scaled_invs) + scale(sliced_vocc) + scale(sliced_ltc) + scale(mean_nuts))
 )
 global_ne_all_drivers
 
 global_ne_no_vocc <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = no_event, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = no_event %>% mutate(scaled_invs = (mean_invs * 10^-3)), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_lin_change + mean_nuts)
+          mods = ~ Duration * (scaled_invs + sliced_ltc + mean_nuts)
 )
 global_ne_no_vocc
 
 global_ne_no_ltc <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = no_event, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = no_event %>% mutate(scaled_invs = (mean_invs * 10^-3)), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_vocc + mean_nuts)
+          mods = ~ Duration * (scaled_invs + sliced_vocc + mean_nuts)
 )
 global_ne_no_ltc
+
 
 data_frame(parameter = rownames(global_ne_all_drivers$b), 
            all_drivers_percent  = round(as.vector(get_percent_change(global_ne_all_drivers$b)), digits = 4), 
@@ -223,38 +256,33 @@ pandoc.table(.)
 #### Weighted analyses using the full dataset
 
 ```{r}
-# Simplest model with all drivers
-global_full_all_drivers <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = fl_combined, 
-          random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_vocc + mean_lin_change + mean_nuts)
-)
-global_full_all_drivers
+# Check covariance matrix - reveals that vocc and ltc are colinear (0.8)
+cor(dplyr::select(fl_combined, mean_invs, sliced_vocc, sliced_ltc, mean_nuts), use = 'complete.obs')
+
+filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(SppR1) & !is.na(mean_invs) & !is.na(sliced_ltc) & !is.na(mean_nuts)) %>% mutate(scaled_invs = (mean_invs * 10^-3)) %>% select(Duration, SppR1, scaled_invs, mean_nuts, sliced_ltc) %>% cov(., use = 'complete.obs')
+
+filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(SppR1) & !is.na(mean_invs) & !is.na(sliced_ltc) & !is.na(sliced_vocc) & !is.na(mean_nuts)) %>% mutate(scaled_invs = (mean_invs * 10^-3)) %>% select(Duration, SppR1, scaled_invs, mean_nuts, sliced_ltc, sliced_vocc) %>% cor(., use = 'complete.obs')
+
 
 global_full_no_vocc <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = fl_combined, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = fl_combined %>% mutate(scaled_invs = (mean_invs * 10^-3)), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_lin_change + mean_nuts)
+          mods = ~ Duration * (scaled_invs*sliced_ltc + mean_nuts)
 )
 global_full_no_vocc
 
 global_full_no_ltc <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = fl_combined, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = fl_combined %>% mutate(scaled_invs = (mean_invs * 10^-3)), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_vocc + mean_nuts)
+          mods = ~ Duration * (scaled_invs + sliced_vocc + mean_nuts)
 )
 global_full_no_ltc
 
-data_frame(parameter = rownames(global_full_all_drivers$b), 
-           all_drivers_percent  = round(as.vector(get_percent_change(global_full_all_drivers$b)), digits = 4), 
-           all_drivers_pval  = round(global_full_all_drivers$pval, digits = 4)
-           ) %>% 
-  left_join(., data_frame(parameter = rownames(global_full_no_vocc$b), 
-                         no_vocc_percent = round(as.vector(get_percent_change(global_full_no_vocc$b)), digits = 4), 
-                         no_vocc_pval = round(global_full_no_vocc$pval, digits = 4))) %>%
+data_frame(parameter = rownames(global_full_no_vocc$b), 
+           no_vocc_percent = round(as.vector(get_percent_change(global_full_no_vocc$b)), digits = 4), 
+           no_vocc_pval = round(global_full_no_vocc$pval, digits = 4))) %>%
   left_join(., data_frame(parameter = rownames(global_full_no_ltc$b), 
                          no_ltc_percent = round(as.vector(get_percent_change(global_full_no_ltc$b)), digits = 4), 
                          no_ltc_pval = round(global_full_no_ltc$pval, digits = 4))) %>%
@@ -268,46 +296,50 @@ pandoc.table(.)
 The full interaction models do not converge when we use the weighted meta-regression. They do converge for the full model 
 
 ```{r, eval = FALSE}
+
 global_ne_all_interactions <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = no_event, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = no_event %>% mutate(scaled_invs = (mean_invs * 10^-3)), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts)
+          mods = ~ Duration * (scaled_invs + scaled_invs*sliced_ltc + sliced_ltc + mean_nuts + scaled_invs*mean_nuts + sliced_ltc*mean_nuts)
 )
+global_ne_all_interactions
 
 global_all_interactions <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = fl_combined, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts)
+          mods = ~ Duration * (scaled_invs + scaled_invs*sliced_ltc + sliced_ltc + mean_nuts + scaled_invs*mean_nuts + sliced_ltc*mean_nuts)
 )
+global_all_interactions
+
 ```
 
 ```{r}
+
 global_all_invs_ltc_interaction <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = fl_combined, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_invs + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_vocc)
+          mods = ~ Duration * (scaled_invs + scaled_invs*sliced_ltc + sliced_ltc + mean_nuts)
 )
 global_all_invs_ltc_interaction
 
 
 global_ne_all_interactions_lme <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts), 
-      random = ~ 1 | factor(Study.ID),
-      data = no_event, na.action = na.omit)
+  lmer(yi_SppR_ROM ~ Duration * (scaled_invs + sliced_vocc + scaled_invs*sliced_ltc + sliced_ltc + mean_nuts + scaled_invs*mean_nuts + sliced_ltc*mean_nuts) + (1 | Study.ID),
+      data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), na.action = na.omit)
 summary(global_ne_all_interactions_lme)
 
 global_all_interactions_lme <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts), 
+  lme(yi_SppR_ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts + mean_invs*mean_nuts + mean_lin_change*mean_nuts), 
       random = ~ 1 | factor(Study.ID),
       data = fl_combined, na.action = na.omit)
 summary(global_all_interactions_lme)
 
 
 global_all_invs_ltc_interaction_lme <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts), 
+  lme(yi_SppR_ROM ~ Duration * (mean_invs + mean_vocc + mean_invs*mean_lin_change + mean_lin_change + mean_nuts), 
       random = ~ 1 | factor(Study.ID),
       data = fl_combined, na.action = na.omit)
 summary(global_all_invs_ltc_interaction_lme)
@@ -356,33 +388,52 @@ How much do we need to be concerned that the log ratio calculation includes SppR
 
 
 ```{r}
+
 initial_richness_ne <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = no_event, 
+
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration
+    #      control=list(verbose = TRUE),
+          mods = ~ Duration * (scaled_invs + sliced_ltc + mean_nuts) * SppR1
 )
+
 initial_richness_ne
 
 initial_richness_all <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
-          data = fl_combined, 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3), 
           random = ~ 1 | Study.ID, 
-          mods = ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration
+          control=list(verbose = TRUE),
+          mods = ~ Duration * (sliced_vocc + mean_nuts + scaled_invs) * SppR1
 )
 initial_richness_all
 
+initial_richness_all <- 
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
+          data = fl_combined, 
+          random = ~ 1 | Study.ID, 
+          mods = ~ Duration * (sliced_ltc + mean_nuts + mean_invs) * SppR1
+)
+initial_richness_all
+
+
+
 # Unweighted analysis
+initial_richness_all_lme <-
+lmer(yi_SppR_ROM ~ Duration * SppR1 * (sliced_vocc + mean_nuts + scaled_invs) + (1 | Study.ID), data = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3) %>% mutate(Study.ID = as.factor(Study.ID)), na.action = 'na.omit')
+summary(initial_richness_all_lme)
+
 initial_richness_ne_lme <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration, 
+  lme(yi_SppR_ROM ~ Duration * SppR1 * (sliced_vocc + mean_nuts + mean_invs), 
       random = ~ 1 | factor(Study.ID),
       data = no_event, na.action = na.omit)
 summary(initial_richness_ne_lme)
 
 initial_richness_all_lme <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_lin_change + mean_nuts) * SppR1 + mean_invs*Duration, 
+  lme(yi_SppR_ROM ~ Duration * SppR1 * (sliced_vocc + sliced_ltc + mean_nuts + scaled_invs), 
       random = ~ 1 | factor(Study.ID),
-      data = fl_combined, na.action = na.omit)
+      data = fl_combined %>% mutate(scaled_invs = mean_invs * 10^-3), na.action = na.omit)
 summary(initial_richness_all_lme)
 
 ```
@@ -411,7 +462,7 @@ There is no effect of velocity of climate change in the subset of the data that 
 ```{r}
 
 global_ne <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
           data = no_event, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (SppR1*mean_vocc + mean_lin_change + mean_invs +  mean_nuts)
@@ -419,7 +470,7 @@ global_ne <-
 global_ne
 
 global_all <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
           data = fl_combined, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (mean_vocc + mean_invs +  mean_nuts)
@@ -431,12 +482,12 @@ The unweighted analyses of velocity of climate change, invasives, and nutrients 
 
 ```{r}
 global_lme_ne <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+  lme(yi_SppR_ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
       data = no_event, na.action = na.omit)
 summary(global_lme_ne)
 
 global_lme3 <- 
-  lme(yi.SppR.ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+  lme(yi_SppR_ROM ~ Duration * (mean_vocc + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
       data = fl_combined, na.action = na.omit)
 summary(global_lme3)
 ```
@@ -447,9 +498,9 @@ Study specific slices using rma() and the linear change fails.
 ```{r, eval=FALSE}
 # optimization error - unclear why this is happening
 global4 <- 
-filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & 
+                     vi_SppR_ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
           data = ., 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
@@ -457,7 +508,7 @@ filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) &
 global4
 
 global4 <- 
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
           data = no_event, 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (single_lin_change + mean_invs +  mean_nuts)
@@ -471,24 +522,24 @@ However, the unweighted analyses for linear temperature change do not fail, but 
 # Unweighted
 # Linear temperature change
 global_lme_ne <- 
-  lme(yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+  lme(yi_SppR_ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
       data = no_event, na.action = na.omit)
 summary(global_lme_ne)
 
 global_lme_all <- 
-  lme(yi.SppR.ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+  lme(yi_SppR_ROM ~ Duration * (single_lin_change + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
       data = fl_combined, na.action = na.omit)
 summary(global_lme_all)
 
 # Unweighted
 # VOCC
 global_lme_ne <- 
-  lme(yi.SppR.ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+  lme(yi_SppR_ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
       data = no_event, na.action = na.omit)
 summary(global_lme_ne)
 
 global_lme_all <- 
-  lme(yi.SppR.ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
+  lme(yi_SppR_ROM ~ Duration * (single_vel + mean_invs +  mean_nuts), random = ~ 1 | factor(Study.ID),
       data = fl_combined, na.action = na.omit)
 summary(global_lme_all)
 
@@ -500,9 +551,9 @@ But looking at the climate velocities instead of linear temperature change, the 
 
 ```{r}
 global_ne <- 
-filter(no_event, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+filter(no_event, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & 
+                     vi_SppR_ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
           data = ., 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)
@@ -511,9 +562,9 @@ global_ne
 
 
 global_all <- 
-filter(fl_combined, !is.na(yi.SppR.ROM) & !is.na(vi.SppR.ROM) & 
-                     vi.SppR.ROM > 0 & !is.na(mean_imps)) %>%
-    rma.mv(yi = yi.SppR.ROM, V = vi.SppR.ROM,
+filter(fl_combined, !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & 
+                     vi_SppR_ROM > 0 & !is.na(mean_imps)) %>%
+    rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM,
           data = ., 
           random = ~ 1 | Study.ID, 
           mods = ~ Duration * (single_vel + mean_invs +  mean_nuts)

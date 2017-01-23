@@ -1,0 +1,296 @@
+```{r, include=FALSE}
+library(googleVis)
+library(readr)
+
+knitr::opts_chunk$set(warning=FALSE, message = FALSE)
+
+source('meta_models.R')
+source('driver_extraction_functions.R')
+
+# Just a tabular look at how replication is distributed across taxa
+no_event %>% 
+  #filter(!is.na(vi_SppR_ROM)) %>% 
+  select(Study.ID, Site, Reference, Descriptor.of.Taxa.Sampled, taxa, n1, vi_SppR_ROM, PlotSize, PlotSizeUnits) %>% 
+  distinct() %>% 
+  arrange(n1) %>% 
+  gvisTable(.) %>% 
+  plot(.)
+
+# Calculte some maximim distances between replicates
+spatial <- semi_join(read_sp_data('../master_data/SiteSpatialData.csv'), no_event, by = c('Study.ID', 'Site'))
+
+# Get the min and max lat long values (so that I don't need all the pieces in between)
+corners <- 
+  spatial %>% 
+    group_by(Study.ID, Site) %>% 
+    slice(c(which.min(Start_Lat), which.min(Start_Long), 
+            which.max(Start_Lat), which.max(Start_Long))) %>% 
+    ungroup() %>% 
+    mutate(study_site = paste0(Study.ID, '__', Site))
+
+corners_list <- split(corners, corners$study_site)
+
+study_site_sp_points <- lapply(corners_list, function(study_site_df) {
+  coordinates(study_site_df) <- ~Start_Long + Start_Lat
+  projection(study_site_df) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+  return(study_site_df)
+  #sp_polygon <- Polygon(study_site_df)
+  #return(sp_polygon)
+})
+
+# Calculate and tabulate the maximum distances between replicates in studies.
+max_dists <- lapply(study_site_sp_points, function(sp_points_df) {
+  max_dist <- geosphere::distm(sp_points_df) %>% max(.)
+  return(max_dist)
+}) %>% 
+  bind_rows(.) %>% 
+  gather(key = study_site, value = max_dist) %>% 
+  separate(study_site, into = c('Study.ID', 'Site'), sep = '__')
+
+no_event <- left_join(no_event, max_dists)
+
+filter(no_event, !is.na(vi_SppR_ROM)) %>% mutate(max_dist_km = max_dist / 1000) %>%select(Study.ID, Reference, Descriptor.of.Taxa.Sampled, taxa, n1, max_dist_km) %>% arrange(desc(max_dist_km)) %>% gvisTable(.) %>% plot(.)
+
+
+ggplot(data = no_event %>% filter(!is.na(vi_SppR_ROM), Study.ID != 172), aes(x = n1, y = max_dist, colour = taxa)) + 
+  geom_jitter() +
+  geom_text(aes(label = Study.ID), colour = 'black', size = 2) +
+  xlim(c(0, 100))
+
+z <- filter(spatial, Study.ID == 463, Site == 'Non-dredged')
+```
+
+The relationship between sample size and variance does not seem to differ across the different taxonomic groups. The variance of this relationship changes as number of samples decreases. I think most critically, these plots demonstrate that it is possible for sites with low replication to have high precision of richness estimates.
+
+```{r, echo=FALSE}
+no_event %>%
+  mutate(taxa_combined = taxa) %>% 
+  mutate(taxa_combined = gsub('phytoplankton|zooplankton', 'plankton', .$taxa_combined)) %>% 
+  mutate(taxa_combined = gsub('mobile inverts|sessile inverts', 'inverts', .$taxa_combined)) %>%
+  filter(!is.na(vi_SppR_ROM)) %>% 
+ggplot(data = ., aes(x = n1, y = vi_SppR_ROM, colour = taxa_combined)) + 
+  geom_point() + 
+  facet_wrap(~ taxa_combined, scales = 'free')
+```
+
+Measured variance does not seem to be a function of maximum linear distance between replicates surveyed. 
+
+```{r, echo=FALSE, fig.cap='**Figure 1.** Relationship between variance and maximum distance across taxa.'}
+no_event %>%
+  mutate(taxa_combined = taxa) %>% 
+  mutate(taxa_combined = gsub('phytoplankton|zooplankton', 'plankton', .$taxa_combined)) %>% 
+  mutate(taxa_combined = gsub('mobile inverts|sessile inverts', 'inverts', .$taxa_combined)) %>%
+  filter(!(taxa_combined %in% c('marine mammals', 'plant'))) %>% 
+  filter(!is.na(vi_SppR_ROM)) %>% 
+ggplot(data = ., aes(x = max_dist / 1000, y = vi_SppR_ROM)) + 
+  geom_point(aes(colour = Study.ID), alpha = 0.5) + 
+  stat_smooth(method = 'lm') + 
+  guides(colour = FALSE) + 
+  xlab('max linear distance between replicates (km)') + 
+  facet_wrap(~ taxa_combined, scales = 'free')
+
+```
+
+Weak or no relationship between sample size (number of replicates) and maximum linear distance between replicates surveyed. 
+
+```{r, echo=FALSE, fig.cap='**Figure 2.** Relationship between sample size and maximum distance across taxa. Triangles indicate studies that do not have variance values, circles indicate studies that do.'}
+no_event %>%
+  mutate(taxa_combined = taxa) %>% 
+  mutate(taxa_combined = gsub('phytoplankton|zooplankton', 'plankton', .$taxa_combined)) %>% 
+  mutate(taxa_combined = gsub('mobile inverts|sessile inverts', 'inverts', .$taxa_combined)) %>%
+  #filter(!(taxa_combined %in% c('marine mammals', 'plant'))) %>% 
+ggplot(data = ., aes(x = max_dist / 1000, y = n1)) + 
+  geom_point(aes(colour = Study.ID, shape = is.na(vi_SppR_ROM)), alpha = 0.5) + 
+  stat_smooth(method = 'lm') + 
+  guides(colour = FALSE) + 
+  xlab('max linear distance between replicates (km)') + 
+  facet_wrap(~ taxa_combined, scales = 'free')
+```
+
+While fish do have the most studies with high numbers of replicates, they also have many studies with low replication. As seen above, fish don't have a strong relationship with sample size and maximum linear distance (other than what seems to be driven by a single data point), suggesting that the studies with the high number of replicates are not just the studies that had a large spatial extent.  
+
+```{r, echo=FALSE}
+no_event %>%
+  mutate(taxa_combined = taxa) %>% 
+  mutate(taxa_combined = gsub('phytoplankton|zooplankton', 'plankton', .$taxa_combined)) %>% 
+  mutate(taxa_combined = gsub('mobile inverts|sessile inverts', 'inverts', .$taxa_combined)) %>%
+  group_by(taxa_combined, n1) %>% 
+  summarise(count = n()) %>% 
+ggplot(data = ., aes(x = n1, y = count)) + 
+  geom_bar(stat = 'identity') +
+  xlim(c(0, 100)) +
+  facet_wrap(~ taxa_combined, scales = 'free')
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+
+## @knitr duration-var-weighted-intercept
+dist_mod1 <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = no_event %>% filter(!is.na(yi_SppR_ROM), max_dist / 1000 < 10), 
+         random = ~ 1 | as.factor(Study.ID), 
+         mods = ~ Duration)
+dist_mod1
+
+
+## @knitr duration-var-weighted-intercept
+impact_mod1 <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = nno_event %>% filter(!is.na(mean_imps) & !is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM))
+         random = ~ 1 | as.factor(Study.ID), 
+         mods = ~ Duration*mean_imps)
+impact_mod1
+
+## @knitr duration-var-weighted-intercept
+drivers_scaled_mod1 <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = no_event %>% filter(!is.na(vi_SppR_ROM)) %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs), max_dist / 1000 < 10),
+         random = ~ 1 | as.factor(Study.ID), 
+         mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
+drivers_scaled_mod1
+
+<10
+Duration = +
+invs = marginally -, pval = 0.0572
+nuts = NS
+temp = +
+Dur*invs = +
+Dur*nuts = NS
+Dur*temp = marginally -, pval = 0.067
+
+<25
+Duration = +
+invs = NS
+temp = +
+nuts = marginally +, pval = 0.0929
+Dur*invs = NS
+Dur*temp = -
+Dur*nuts = -
+
+
+
+## @knitr duration-var-weighted-intercept
+dist_mod_ss <- 
+  rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
+         data = no_event %>% filter(!is.na(yi_SppR_ROM), max_dist / 1000 < 10), 
+         random = ~ 1 | as.factor(Study.ID), 
+         mods = ~ Duration)
+dist_mod_ss
+dist_mod_ss_robust <- robust(dist_mod_ss, cluster=1:dist_mod_ss$k)
+dist_mod_ss_robust
+
+
+## @knitr duration-var-weighted-intercept
+dist_impact_mod1_ss <- 
+  rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
+         data = no_event %>% filter(!is.na(yi_SppR_ROM), !is.na(mean_imps), max_dist / 1000 < 10),
+         random = ~ 1 | as.factor(Study.ID), 
+         mods = ~ Duration*mean_imps)
+dist_impact_mod1_ss
+dist_impact_mod1_ss_robust <- robust(dist_impact_mod1_ss, cluster=1:dist_impact_mod1_ss$k)
+dist_impact_mod1_ss_robust
+
+## @knitr drivers-samp-size-weighted-model-output-scaled
+dist_drivers_scaled_ss <- 
+  rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
+         data = no_event %>% filter(!is.na(vi_SppR_ROM)) %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs), max_dist / 1000 < 10), 
+         #data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+         random = ~ 1 | Study.ID, 
+         mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
+#dist_drivers_scaled_ss
+dist_drivers_scaled_ss_robust <- robust(dist_drivers_scaled_ss, cluster=1:dist_drivers_scaled_ss$k)
+dist_drivers_scaled_ss_robust
+
+## @knitr drivers-var-weighted-intercept-scaled-par-est-plot-no-facets
+model_driver_vector <- 
+  c('Duration', 'Invasives', 'LTC', 'Nutrients', 'Duration*Invasives', 
+    'Duration*LTC', 'Duration*Nutrients')
+ordered_driver_vector <- 
+  c('Duration', 'Invasives', 'Nutrients', 'LTC', 'Duration*Invasives', 
+    'Duration*Nutrients', 'Duration*LTC')
+
+driver_summary_plot <- 
+  mk_rma_summary_df(drivers_scaled) %>% 
+    filter(driver != 'intrcpt') %>% 
+    mutate(grouping = as.character(driver)) %>% 
+    mutate(grouping = factor(model_driver_vector, 
+                             levels = rev(ordered_driver_vector))) %>% 
+    ggplot(data = ., aes(x = estimate, y = grouping)) + 
+      theme_bw() +
+      geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+      geom_point(size = 4) + 
+      geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+      xlim(c(-2, 2)) + 
+      theme(axis.text.y = element_text(hjust = 1, size = 14), 
+            axis.text.x = element_text(size = 14), 
+            axis.title = element_text(size = 16)) + 
+      ylab("") + 
+      xlab('\nStandardised coefficient estimate')
+
+driver_summary_plot
+
+## @knitr drivers-var-weighted-intercept-scaled-par-est-plot-short-long-breakdown-fig6
+model_driver_vector <- 
+  c('Duration', 'Invasives', 'LTC', 'Nutrients', 'Duration*Invasives', 
+    'Duration*LTC', 'Duration*Nutrients')
+ordered_driver_vector <- 
+  c('Duration', 'Invasives', 'Nutrients', 'LTC', 'Duration*Invasives', 
+    'Duration*Nutrients', 'Duration*LTC')
+
+driver_summary_plot_short  <- 
+  mk_rma_summary_df(drivers_scaled) %>% 
+    filter(driver != 'intrcpt') %>% 
+    mutate(grouping = as.character(driver)) %>% 
+    mutate(grouping = factor(model_driver_vector, 
+                             levels = rev(ordered_driver_vector))) %>% 
+    mutate(interaction = c('no', 'no', 'no', 'no', 'yes', 'yes', 'yes')) %>%
+    filter(interaction == 'no') %>%
+    ggplot(data = ., aes(x = estimate, y = grouping)) + 
+      theme_bw() +
+      geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+      geom_point(size = 4) + 
+      geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+      xlim(c(-3.5, 3.5)) + 
+      theme(axis.text.y = element_text(hjust = 1, size = 13), 
+            axis.text.x = element_text(size = 13), 
+            axis.title = element_text(size = 13)) + 
+      ylab("") + 
+      xlab('\nStandardised coefficient estimate')
+#driver_summary_plot_short
+
+driver_summary_plot_long  <- 
+  mk_rma_summary_df(drivers_scaled) %>% 
+    filter(driver != 'intrcpt') %>% 
+    mutate(grouping = as.character(driver)) %>% 
+    mutate(grouping = factor(model_driver_vector, 
+                             levels = rev(ordered_driver_vector))) %>% 
+    mutate(interaction = c('no', 'no', 'no', 'no', 'yes', 'yes', 'yes')) %>%
+    filter(interaction == 'yes') %>%
+    ggplot(data = ., aes(x = estimate, y = grouping)) + 
+      theme_bw() +
+      geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
+      geom_point(size = 4) + 
+      geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
+      xlim(c(-0.3, 0.3)) + 
+      theme(axis.text.y = element_text(hjust = 1, size = 13), 
+            axis.text.x = element_text(size = 13), 
+            axis.title = element_text(size = 13)) + 
+      ylab("") + 
+      xlab('\nStandardised coefficient estimate')
+#driver_summary_plot_long
+
+grid.arrange(driver_summary_plot_short, driver_summary_plot_long, ncol = 2)
+
+
+## @knitr drivers-var-weighted-intercept
+drivers_scaled <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = no_event %>% 
+                filter(max_dist < 150000) %>% 
+                mutate(scaled_invs = mean_invs * 10^-3), 
+         random = ~ 1 | Study.ID, 
+         mods = ~ Duration * (scale(scaled_invs) + scale(total_ltc) + scale(mean_nuts)))
+drivers_scaled
+
+```
