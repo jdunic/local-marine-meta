@@ -161,7 +161,7 @@ cbdata %>%
 
 cbdata <- rbind_all(split_dates_list)
 
-# Using the new date functions in 02_functions.R
+# Using the new date functions in 00_functions.R
 cb_firstSampleFilteredData <- 
   cbdata %>% 
     group_by(subSiteID) %>%

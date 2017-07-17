@@ -28,7 +28,7 @@ library(datamart) # datamart MUST be loaded after dplyr because otherwise 'query
 library(stringr)
 library(beepr)
 
-source('R/02_functions.R')
+source('R/00_functions.R')
 
 ###########
 ## Data Loading and Cleaning
@@ -428,7 +428,7 @@ richData$date1 <- make_date_col(year = richData$T1, month = richData$T1m)
 richData$date2 <- make_date_col(year = richData$T2, month = richData$T2m)
 
 
-# Using the new date functions in 02_functions.R
+# Using the new date functions in 00_functions.R
 firstSampleFilteredData <- 
   richData %>% 
     group_by(Study.ID, Reference, Sys, taxa, samp_method, 

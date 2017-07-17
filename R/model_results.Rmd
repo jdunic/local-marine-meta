@@ -14,7 +14,7 @@ library(pander)
 pander::panderOptions('table.split.table', 100)
 options(width = 100)
 
-source('R/02_functions.R')
+source('R/00_functions.R')
 
 fl_combined <- readr::read_csv("Data_outputs/fl_combined.csv") %>% 
   mutate(Study.ID = factor(Study.ID))

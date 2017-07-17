@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(metafor)
 
-source('02_functions.R')
+source('00_functions.R')
 
 data <- read.csv("Data/full_data_with_impacts_velocity_invasives20150603.csv")
 # No need for the different taxonomic 1/0 categories:

@@ -5,7 +5,7 @@ library(metafor)
 library(gridExtra)
 library(ggplot2)
 
-source('02_functions.R')
+source('00_functions.R')
 
 fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>% 
   mutate(Study.ID = factor(Study.ID)) %>% 

@@ -14,7 +14,7 @@ library(gridExtra)
 library(knitr)
 library(beepr)
 
-source('02_functions.R')
+source('00_functions.R')
 
 fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>% 
   mutate(Study.ID = factor(Study.ID)) %>% 
@@ -147,7 +147,7 @@ duration_w <-
 filter(no_event, !is.na(yi_SppR_ROM), !is.na(vi_SppR_ROM)) %>%
 ggplot(data = .) +
   geom_point(aes(x = Duration, y = yi_SppR_ROM, colour = as.factor(Study.ID)), size = 1) + 
-  ylab('Change in richness (LRR)') +
+  ylab('Change in species richness (LRR)') +
   theme_bw() +
   theme(legend.position = 'none') +
   geom_hline(yintercept = 0, colour = 'red', linetype = 'dashed') +
