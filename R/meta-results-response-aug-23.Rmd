@@ -1,0 +1,107 @@
+---
+output: html_document
+---
+
+```{r, include=FALSE}
+library(knitr)
+
+read_chunk("taxonomic_groups.R")
+
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+#####Exclusion of no event data  
+
+We excluded the event data because while we have knowledge of 'events' occurring, we do not know where in the disturbance/recovery state our initial and final time points are occurring. Not knowing where in this recovery trajectory we are complicates the interpretation of local richness change with respect to specific drivers. Although there are likely 'recoveries' occurring even in the no event data that we are likely unaware of, given the explicit knowledge that we have of studies with events, we thought it was best to exclude these studies. (See Gonzales et al. 2016 - Estimating local biodiversity change: a critique of papers claiming no net loss of local diversity)
+
+--------------------------------------------------------------------------------
+
+##### Differences between variance-weighted and sample size weighted analyses  
+
+So first update - I made a mistake in the code, which meant that the sample size weighted analyses actually showed no effects of the different drivers (even in the full interaction model) on local richness change. I think this makes the interpretation a bit trickier. But Robin, you brought up a good point that the datasets used are different. Going back and looking at just the subset of data that was used in the variance weighted analysis, we see:
+
+1. Still see gains ~ 1% over time when no drivers are considered
+2. Nothing is seen in the cumulative impact model
+3. The estimate for temperature change over the long term (Dur \* LTC) is positive (p = 0.03, $b_{Dur*LTC}$ = 0.0645, 95% CI: 0.0061, 0.1228). This is the opposite of the estimate from the variance-weighted analysis (p = 0.059, $b_{Dur*LTC}$ = -0.0589, 95%CI: -0.1200, 0.0022). And again, different from the sample size weighted analysis using the full dataset where the effect of Dur*LTC was estimated to be zero.
+
+My biggest concern is that we see opposite results depending on variance weighting or sample size weighting - looking at the leave one out analysis (Figure 1). I don't know what to make of this result. To take make a consensus between the variance weighted and sample size weighted analysis, does this suggest that the actual effect of duration*temperature is too variable across studies to make a clear inference? Would this change your interpretation of the other results? The sample-size weighted driver model on the full dataset estimates no effect of driver on local richness change. Because it is zero rather than opposite do you believe that the true effect is somewhere between no change and the estimates that come from the variance-weighted analyses?
+
+I've also included the sensitivity analyses for the leave-1-out analyses of the sample size weighted analysis.
+
+1. LR ~ Duration (Fig. 2)
+
+    i. Duration effect size estimates: order of magnitude smaller than var-weighted 
+        
+        a. Smith et al 2006 - mussel bed invertebrate richness decreased between 70's and early 2000's
+
+2. LR ~ Duration * Impacts (Figs 3 - 5)
+
+    i. Duration estimate: not different from var-weighted
+
+    ii. Impacts estimate: in general regardless of model, impact effect size estimates were zero
+
+    iii. Duration*Impacts - comparable to weighted leave one out, except with larger confidence intervals
+
+    Notable leave-1-out studies (sample size weighted)
+
+        a. Smith et al 2006 - mussel bed invertebrate richness decreased between 70's and early 2000's
+
+        b. Husa et al - multiple sites from 1955 - ~2008 - algae in Norwegian kelp beds had gains.
+
+
+
+3. LR ~ Duration * (Invasives + Nutrients + LTC) (Figs 6-12)
+    i. Drivers effect estimates - Duration: similar direction, but small effect sizes
+    ii. Invasives - Opposite direction but essentially zero effect size
+    iii. Nutrients - Opposite direction but essentially zero effect size
+    iv. LTC - Opposite direction but essentially zero effect size
+    v. Duration*Invasives - Opposite direction but essentially zero effect size
+    vi. Duration*Nutrients - Opposite direction but essentially zero effect size
+    vii. Duration*LTC - Opposite direction, similarly sized effect size, but large confidence intervals
+
+--------------------------------------------------------------------------------
+
+##### Differences in distribution of drivers between variance weighted and sample size weighted analyses
+
+For the most part the distribution of drivers between the variance weighted and sample sized weighted analyses are similar shapes and spread, just with the sample size having more data. The most notable difference is probably that the in the sample size weighted analysis there are a few more studies that were included that had temperature increases over the time points considered (Figs 14 - 16).  
+
+*Note I've scaled linear temperature change to be the annual change to make that -15C change look less glaring since it just translates to at decrease in -1.5C over a year - Also this study Hagan and Able, 2010 although short and with the largest temperature changes does not have a disproportionate effect on the estimates of temperature effects - Figs S10 & S13 (from first set of results)*
+
+--------------------------------------------------------------------------------
+
+**Taxonomic groupings**  
+
+Table of taxonomic groups - just to see what might be different between subsets.
+
+```{r, taxonomic-groups-by-study/site-var-weighted-data}
+```
+
+```{r, taxonomic-groups-by-study/site-ss-weighted-data}
+```
+
+##### Cumulative human impacts
+
+I agree that the focus should not be on the cumulative human impacts but I think they are interesting to keep in for two reasons. The first is because as controversial as the model may be, it does give us a coarse proxy for whether our data come from more or less pristine sampling locations and that keeps coming up in discussion of these syntheses. The second, like Marc and Jarrett point out, I think it is worthwhile to point out that we tried it with this aggregate measure of human impacts, but actually because of conflicting individual drivers are better it is better to only consider individual drivers moving forward. I would be in favour of moving it to the SM but commenting on these two points in the MS.
+
+--------------------------------------------------------------------------------
+
+##### Additional comments/answers
+
+@RE: The strongest collinearity is between invasives and nutrients and it is 0.43.
+
+@RE: The Diez study does mention in their discussion that they do see gains due to non-native species (mostly red algae).
+
+@MH: Circle sizes in Fig. S1 (big caterpillar plot) are proportional to 1 / variance (so the weighting it was given in the regression). 
+
+@MO: great point about prediction, I think that most of us think that after the last few syntheses we don't like the idea of taking the predictions beyond the scope of the data. I think even within the bounds of the dataset that we're using, the trajectories of change are still taken from only a few data points. Which, while they seem like valid data points, are still a small sample size. But pointing out how we have to be careful about talking about 'predictions' will be important.
+
+@MO/PK: Yes, the 40 year effect size is not the only study/site driving the duration effect (show evidence with that study removed). Even when the two longest duration studies are excluded from the analysis, the basic model result (LR ~ Duration, var-weighted) remain unchanged.
+
+@MO: We don't have species abundance matrices, so the best we can do is variance or sample size weighting.
+
+@JB: I've included the multipanel plot of the driver predictions 
+
+
+It is quite interesting that we can make biological sense of the outliers quite readily with the local context. Further supporting this idea that in order to discern meaningful patterns of biodiversity change, we must have some knowledge of local context (e.g., focal taxonomic group, recent disturbances, geographic position and context of human impacts). Not that this is new, but I think it's neat to have the data to show it. 
+
+

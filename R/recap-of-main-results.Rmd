@@ -1,0 +1,36 @@
+```{r, include=FALSE}
+
+library(knitr)
+read_chunk('meta_models.R')
+#read_chunk("taxonomic_groups.R")
+read_chunk("discussion_question_responses_aug18.R")
+
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(fig.height=9, fig.width=10)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+
+Similar to recent syntheses we observed increases in local species richness over time. 
+
+```{r, no-event-data-plotted-with-duration-var-weighted-fig1, echo=FALSE, fig.height=6, fig.width=8.5, fig.cap='**Figure 1.** Variance-weighted meta-regression shows an increase in the log ratio of species richness change over time at a rate of species richness gain of 1% per year. Studies could contain data from multiple sites and so studies were modelled as random effects.'}
+```
+
+Sites with higher cumulative human impact values tend to be associated with richness gains.
+
+```{r, impacts-var-weighted-intercept-coefficient-estimates-fig2, fig.cap='**Figure 2.** Coefficient estimates for the relationship of the log-proportion of change in species richness over time, as moderated by cumulative human impacts (Halpern et al 2015). Points represent coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
+```
+
+While we observed gains associated with more impacted areas, as indicated by the cumulative human impacts, further investigation into specific drivers suggests that considering human impacts at an aggregate level of impacts is inappropriate because different drivers moderate the rate of change of local richness.  
+
+Linear temperature change (5.33 % per C / decade) and nutrient addition (1.3 % per tonne of nutrients / km^2) were also both correlated with gains in species richness in the short term. Over time however, all three drivers affected the rate of local species richness change. Invasives increased the rate of species gains (0.12 % per thousand tonnes of shipping tonnage) while, unlike in the short term, linear temperature change and nutrient addition decreased species richness over time.
+
+Within our dataset, it is possible that the positive effect of cumulative impacts on local richness change may be driven by invasion potential. (?)
+
+
+```{r, drivers-var-weighted-intercept-scaled-par-est-plot-short-long-breakdown-fig6, fig.height=6, fig.width=9, fig.cap = '**Figure 3.** The relationship of the log-proportion of change in species richness over time, as moderated by three drivers of global change, invasives (propagule pressure), nutrient addition, and LTC (the decadal rate of linear temperature change). Points represent standardised coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
+```
+
+Example of the multipanel plot, not sure that this is the best way to show the effect of the drivers, but maybe it is just representative of the limited range of variation we have in the drivers in our dataset. 
+
+```{r, drivers-predictions-driver-facets, fig.height=6, fig.width=9, fig.cap='**Figure 4.** Demonstration of expected change in the log-proportion of change in species richness over 15 years as moderated by three global drivers (nutrient addition, invasion potential, and linear temperature change) at the 25th and 75th quantiles observed in our data. Predicted values were obtained using a variance-weighted meta-regression from the full drivers model: LR ~ Duration * (invasion potential + nutrient addition + linear temperature change).'}

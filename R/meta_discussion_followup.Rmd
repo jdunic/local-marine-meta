@@ -1,0 +1,74 @@
+
+Response to Mary:
+
+Notes for writing:
+- point out the possible roles of geographic + taxonomic over/under representation
+- bring up uncertainties and how what we've shown helps us begin to better understand these uncertainties and why we see some of the variability that we see
+- need to explain drivers relationship with richness change
+
+"We might, though, use this analysis and model to explain what has happened historically in these datasets, and then discuss what we think are the implications for research needs as well as an understanding of biodiversity change. What do you all think of that?"
+
+Take home:
+- we can start to explain some of the variability when we contextualise the data
+- 
+
+
+Response points:
+- great point about prediction, I think that most of us think that after the last few syntheses we don't like the idea of taking the predictions beyond the scope of the data. I think even within the bounds of the dataset that we're using, the trajectories of change are still taken from only a few data points. Which, while they seem like valid data points, are still a small sample size. But pointing out how we have to be careful about talking about 'predictions' will be important.
+
+- Yeah, the 40 year effect size is not the only study/site driving the duration effect (show evidence with that study removed). Even when the two longest duration studies are excluded from the analysis, the basic model result (LR ~ Duration, var-weighted) remain unchanged.
+
+We don't have species abundance matrices, so the best we can do is having the 
+
+*Cumulative human impacts - what to do with them.
+
+MO: thinks we should leave them out
+RE: thinks we should leave them out
+MH: thinks we should leave them in
+JB: thinks we should leave them in SM
+JD: I agree that the focus should not be in the cumulative human impacts. However I think that they are interesting to keep in for these reasons:
+- while yes they are controversial, I suspect that most people would agree that they provide a somewhat reasonable quantification of more highly impacted areas to less impacted areas. Whether they are useful predictors for any model, or for our models at the scales we are looking at given the magic that goes into creating them, it does give us a start at understanding what the global sampling pattern across human impacts might be in our dataset
+- I also think that it is a worthwhile message that it's worth it to say that we tried this and we don't think it's very good because it's counter to expectation - not that that alone is reason to say that they aren't good, but to say, why do we see that, well when we look at individual drivers we actually see patterns that match our expectations. 
+- I would be in favour of moving it to the SM but commenting on these two points in the MS.
+
+Variance weighted vs sample size weighted:
+What are some of the differences
+taxonomic, geographic, drivers
+
+Table of taxonomic groups - just to see what might be different between subsets.
+
+Here are histograms showing how the distribution of drivers changed between the subset of the data used for the variance-weighted analysis and the sample size weighted analysis. 
+
+
+```{r, sample-size-variance-relationship-scatterplot}
+```
+
+```{r, var-weighted-vs-ss-weighted-impact-score-hist}
+```
+
+```{r, var-weighted-vs-ss-weighted-annual-temp-change-score-hist}
+```
+
+```{r, var-weighted-vs-ss-weighted-nutrients-score-hist}
+```
+
+```{r, var-weighted-vs-ss-weighted-invasives-score-hist}
+```
+
+I've included the leave one out analyses for the sample size weighted analysis. 
+
+
+What do I see? 
+
+- most of the relationships in the sample size weighted analysis, even in the sensitivity analysis show that when effect sizes are 
+- 
+- 
+
+
+
+
+
+
+I've also included the sensitivity analyses for the sample size weighted analyses.
+
+It is interesting that Smith et al 2009 actually heavily pulls the estimate towards a lower rate of change. This is likely because multiple sites (n = 22) were sampled, and on average species richness (of mussel bed invertebrates) declined over time. 

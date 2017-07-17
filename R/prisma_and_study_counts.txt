@@ -1,0 +1,48 @@
+Web of Science
+1900 - 2014
+n = 4029
+
+Aquatic Commons
+1769 - 2014
+n = 78?
+
+Elahi et al 2015
+56 (36 duplicates)
+
+Records after duplicates removed
+n = 4112
+
+Inclusion/Exclusion
+Criteria Applied
+- marine 
+- samples biodiversity
+- study duration >= 1 year
+- no bacterial diversity
+
+
+ Articles Excluded
+After Title/Abstract Screen
+3362
+
+
+ Articles Retrieved
+ 745
+
+ Inclusion/Exclusion
+Criteria Applied
+- consistent sampling methods
+- no events documented
+- rare species not excluded
+- species richness values recorded with error
+
+
+ Articles Excluded
+After Full Text Screen
+589
+
+ Articles Excluded
+During Data Extraction
+121
+
+Articles included
+35

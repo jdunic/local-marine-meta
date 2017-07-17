@@ -1,0 +1,62 @@
+---
+output: word_document
+---
+
+
+
+
+```{r, include=FALSE}
+
+library(knitr)
+read_chunk('meta_models.R')
+read_chunk("taxonomic_groups.R")
+read_chunk("meta_models_no_diez.R")
+read_chunk('driver_prediction_plots.R')
+read_chunk('site_map.R')
+read_chunk('AICc-table.R')
+
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(fig.height=9, fig.width=10)
+#knitr::opts_chunk$set(cache=TRUE)
+
+options(scipen=999)
+```
+
+```{r, echo=FALSE}
+<<AICc-table>>
+
+aic_tab %>% 
+  mutate(order = c(1, 2, 3)) %>% 
+  arrange(order) %>% 
+  select(-order) %>% 
+  knitr::kable(., digits=2, caption='**Table 1.** AICc scores (corrected for small sample sizes) calculated for three variance-weighted meta-regressions of the log ratio of the proportion of species richness change (LR). The model which included three specific drivers: invasion potential (Inv), nutrient addition (Nut), and rate of linear temperature change (LTC) and the model that included cumulative human impacts (CHI) both performed better than the model that did not include any form of human impacts.')
+
+```
+
+
+
+```{r, fig.height=3.3, fig.width=8.2, fig.cap='**Figure 1.** (a) With increasing study duration, variance-weighted meta-regression shows that the log ratio of species richness at a rate equivalent to species richness gains of 1% per year. Studies, represented by different colours, could contain data from multiple sites and so studies were modelled as random effects. (b) Coefficient estimates for the relationship of the log-proportion of change in species richness as a function of study duration (Duration), short-term cumulative human impacts (CHI; Halpern *et al.* 2015), and long-term effects of cumulative human impacts (Duration*CHI). Points represent coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
+<<no-event-data-plotted-with-duration-var-weighted-fig1>>
+<<impacts-var-weighted-intercept-coefficient-estimates-fig2>>
+
+
+text_a <- textGrob('a)', vjust = -11, hjust = -0.2)
+text_b <- textGrob('b)', vjust = -11, hjust = -0.2)
+grid.arrange(text_a, duration_w, text_b, impact_coefs_plot, widths = c(0.1, 1, 0.1, 1.2))
+
+```
+
+```{r, drivers-var-weighted-intercept-scaled-par-est-plot-short-long-breakdown, fig.height=6, fig.width=9, fig.cap='**Figure 2.** The standardised coefficient estimates of the effect of three global drivers: nutrient addition (Nutrients), invasion potential (Invasives), and the decadal rate of linear rate of temperature change (LTC) on (a) the log-proportion of change in species richness in the short-term and (b) the effect of these drivers on the rate of change in the log-proportion of change in species richness over time. Points represent standardised coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
+
+```
+
+
+```{r, driver-prediction-plots-0-max-in-dataset, fig.height=3.5, fig.width=11, fig.cap='**Figure 3.** The predicted change in the log-proportion of change in species richness over study durations up to 20 years as moderated by each of the three drivers (a) nutrient addition, (b) invasion potential, (c) rate of linear temperature change when each is set to the maximum value observed in our dataset and the others are set to zero. The final plot (d) demonstrates the overall effect on the log ratio of local richness change when all three drivers are the maximum values observed in our dataset. Effects of drivers on predicted richness change (blue) are compared to the predicted change when all drivers are set to zero (grey). Predicted values regression lines and confidence intervals were obtained using a variance-weighted meta-regression from the full drivers model: LRR ~ Duration * (nutrient addition + invasion potential + linear rate of temperature change).'}
+
+```
+
+
+```{r, rate-of-change-by-taxa-vw-plot, fig.height=3.25, fig.width=8.5, fig.cap='**Figure 4.** Coefficient estimates of the log-proportion of species richness change in the five most sampled taxonomic groups (*k*, sites; *n*, studies) for the model containing study duration only. Points represent coefficient estimates and lines represent 95% confidence intervals using variance-weighted meta-regressions.'}
+
+```
+

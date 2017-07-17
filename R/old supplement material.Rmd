@@ -1,0 +1,296 @@
+old supplement material
+
+
+
+### Raw data broken down by taxonomic group
+
+```{r, taxa-mixed-vw-plot, echo=FALSE, fig.cap='**Figure S3.** Caterpillar plot of data from mixed taxonomic assemblages used in the variance-weighted meta-analysis of proportion of change in species richness over time. Points are site-level mean richness observations, where point size indicates precision (1 / variance) and error bars are 95% confidence intervals.'}
+```
+
+```{r, taxa-algae-vw-plot, echo=FALSE, fig.cap='**Figure S4.** Caterpillar plot of data from algal assemblages used in the variance-weighted meta-analysis of proportion of change in species richness over time. Points are site-level mean richness observations, where point size indicates precision (1 / variance) and error bars are 95% confidence intervals.'}
+```
+
+```{r, taxa-inverts-vw-plot, echo=FALSE, fig.cap='**Figure S5.** Caterpillar plot of data from invertebrate assemblages used in the unweighted analysis of proportion of change in species richness over time. Points are site-level mean richness observations, where point size indicates the number of replicates used in a study.'}
+```
+
+```{r, taxa-zooplankton-vw-plot, echo=FALSE, fig.cap='**Figure S6.** Caterpillar plot of data from invertebrate assemblages used in the unweighted analysis of proportion of change in species richness over time. Points are site-level mean richness observations, where point size indicates the number of replicates used in a study.'}
+```
+
+### Unweighted analysis on variance weighted subset
+
+```{r, rate-of-change-by-taxa-vw-uw-plot-vw-subset, echo=FALSE, fig.height=3.2, fig.width=5.6, fig.cap='**Figure S7.** Coefficient estimates for the relationship of the log-proportion of change in species richness over time estimated using unweighted regression on subset of data used in the variance-weighted analysis. Points represent coefficient estimates and lines represent 95% confidence intervals.'}
+```
+
+```{r, echo=FALSE}
+
+<<taxa-vw-uw-results-table-vw-subset>>
+
+taxa_results_vws %>% 
+  mutate(ci_lb_p = get_percent_change(ci_lb), 
+         ci_ub_p = get_percent_change(ci_ub)) %>% 
+  select(taxa, analysis, `percent change`, pval, sig_stars, ci_lb_p, ci_ub_p, n, k) %>% 
+  kable(., digits = 3, caption='**Table S5.** Testing the robustness of coefficient estimates of the annual rate of percent change in the number of species richness across the three most sampled taxonomic groups using an unweighted regression. The table includes the number of unique studies (n), sites (k), and duration of the longest running study. Raw data for each taxonomic analysis is shown in Figs S3-S7.')
+
+```
+
+
+--------------------------------------------------------------------------------
+
+### Justification against sample size weighting
+
+#### (I don't think this actually fits anywhere)
+
+We believe that a sample-size weighted analysis is an inappropriate substitution for variance weighting because the relationship between sample size and variance is non-linear. When we examined this relationship over the different taxonomic groups, under the assumption that sampling effort may in part reflect taxonomic group studied, we still found that sample-size was a poor indicator of variance in local richness estimates. These analyses demonsrate that it is possible for sites with low replication to have high precision in richness estimates and vice versa, which highlights the high variability and difficulty in precisely estimate local richness. 
+
+
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+### Comparison of the different parameter estimates from different weighting and data subsets
+
+- this is just a summary of the above tables you can skip them.
+
+#### LR ~ DURATION analysis/dataset comparison
+
+```{r}
+<<duration-var-weighted-model-output-table1>>
+<<duration-var-weighted-model-output-no-diez>>
+#<<duration-ss-weighted-model-output-df>>
+#<<duration-ss-weighted-model-output-df-no-smith>>
+#<<duration-ss-weighted-model-output-df-vw-subset>>
+<<duration-unweighted-table>>
+<<duration-unweighted-table-vw-subset>>
+
+#bind_rows(mod1_output_df, mod1_output_df_nd, mod1_ss_output_df, mod1_ss_output_df_ns, mod1_ss_output_df_vws, dur_lmer_df, dur_lmer_df_vws) %>% 
+bind_rows(mod1_output_df, mod1_output_df_nd, dur_lmer_df, dur_lmer_df_vws) %>% 
+  mutate(parameter = gsub('intrcpt', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('\\(Intercept\\)', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Duration', 'Dur', .$parameter)) %>% 
+  mutate(parameter = gsub('Impact', 'CHI', .$parameter)) %>% 
+  mutate(parameter = gsub('total_ltc', 'LTC', .$parameter)) %>% 
+  mutate(model = gsub('D', 'Dur', .$model)) %>%  
+  mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
+  mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
+  mutate(model = gsub('N', 'Nut', .$model)) %>%
+  mutate(`% change` = format(.$`% change`, digits = 1)) %>% 
+  mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
+         `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
+  mutate(sig = ifelse(pval <= 0.001, '***', 
+                        ifelse(pval <= 0.01, '**', 
+                          ifelse(pval <= 0.05, '*', 
+                            ifelse(pval <= 0.1, '.', 
+                              ifelse(pval <= 1, ' ')))))) %>% 
+  filter(parameter != 'Int') %>% 
+  mutate(analysis = c('vw', 'vw', 'uw', 'uw'), 
+         subset = c('vw subset', 'no diez', 'all', 'vw subset')) %>% 
+  #mutate(analysis = c('vw', 'vw', 'ss', 'ss', 'ss', 'uw', 'uw'), 
+  #       subset   = c('vw subset', 'no diez', 'all', 'no smith', 'vw subset', 
+  #                    'all', 'vw subset')) %>% 
+  select(analysis, subset, n, k, parameter, estimate, `% change`, pval, sig) %>% 
+    knitr::kable(., caption = '**Table SX.** LR ~ DUR model - comparison across analysis types and data subsets')
+
+```
+
+
+
+#### LR ~ DURATION \* CHI analysis/dataset comparison
+
+```{r}
+<<impact-var-weighted-model-output-table2>>
+<<impact-var-weighted-model-output-no-diez>>
+#<<impact-ss-weighted-model-output-df>>
+#<<impact-ss-weighted-model-output-df-no-smith>>
+#<<impact-ss-weighted-model-output-df-vw-subset>>
+<<impacts-unweighted-table>>
+<<impacts-unweighted-table-vw-subset>>
+
+#bind_rows(imp_mod_output_df, imp_mod_output_df_nd, imp_mod_ss_output_df, imp_mod_ss_output_df_ns, imp_mod_ss_output_df_vws, impacts_lmer_df, impacts_lmer_df_vws) %>% 
+bind_rows(imp_mod_output_df, imp_mod_output_df_nd, impacts_lmer_df, impacts_lmer_df_vws) %>% 
+  mutate(parameter = gsub('intrcpt', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('(\\(Intercept)', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Duration', 'Dur', .$parameter)) %>% 
+  mutate(parameter = gsub('Impact', 'CHI', .$parameter)) %>% 
+  mutate(parameter = gsub('total_ltc', 'LTC', .$parameter)) %>% 
+  mutate(model = gsub('D', 'Dur', .$model)) %>%  
+  mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
+  mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
+  mutate(model = gsub('N', 'Nut', .$model)) %>%
+  mutate(`% change` = format(.$`% change`, digits = 1)) %>% 
+  mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
+         `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
+  mutate(sig = ifelse(pval <= 0.001, '***', 
+                        ifelse(pval <= 0.01, '**', 
+                          ifelse(pval <= 0.05, '*', 
+                            ifelse(pval <= 0.1, '.', 
+                              ifelse(pval <= 1, ' ')))))) %>% 
+  mutate(analysis = c(rep(c('vw', 'vw'), 4), rep(c('uw', 'uw'), 4)), 
+         subset = c(rep('vw subset', 4), rep('no diez', 4), rep('all', 4), rep('vw subset', 4))) %>% 
+  mutate(paramter = factor(parameter, levels = c('Dur', 'CHI', 'Dur:CHI')), 
+         analysis = factor(analysis, levels = c('vw', 'uw')), 
+         subset = factor(subset, levels = c('vw subset', 'all', 'no diez'))) %>% 
+  #mutate(analysis = c(rep(c('vw', 'vw'), 4), rep(c('ss', 'ss', 'ss'), 4), rep(c('uw', 'uw'), 4)), 
+  #       subset   = c(rep('vw subset', 4), rep('no diez', 4), rep('all', 4), rep('no smith', 4), rep('vw subset', 4), 
+  #                    rep('all', 4), rep('vw subset', 4))) %>%
+  #mutate(parameter = factor(parameter, levels = c('Dur', 'CHI', 'Dur:CHI')), 
+  #       analysis = factor(analysis, levels = c('vw', 'ss', 'uw')), 
+  #       subset = factor(subset, levels = c('vw subset', 'all', 'no diez', 'no smith'))) %>% 
+  filter(parameter != 'Int') %>%  
+  arrange(parameter, analysis, subset) %>% 
+  select(analysis, subset, n, k, parameter, estimate, `% change`, pval, sig) %>% 
+    knitr::kable(., caption = '**Table SX.** LR ~ DUR * CHI model - comparison across analysis types and data subsets')
+
+```
+
+
+#### LR ~ DURATION \* DRIVERS analysis/dataset comparison
+
+```{r}
+<<drivers-var-weighted-model-output-df-scaled-table3>>
+<<drivers-var-weighted-model-output-df-scaled-no-diez>>
+#<<drivers-ss-weighted-model-output-df-scaled>>
+#<<drivers-ss-weighted-model-output-df-scaled-no-smith>>
+#<<drivers-ss-weighted-model-output-df-scaled-vw-subset>>
+<<drivers-unweighted-table>>
+<<drivers-unweighted-table-vw-subset>>
+
+#bind_rows(drivers_mod_output_df, drivers_mod_output_df_nd, drivers_mod_ss_output_df, drivers_mod_ss_output_df_ns, drivers_mod_ss_output_df_vws, drivers_lmer_df, drivers_lmer_df_vws) %>% 
+bind_rows(drivers_mod_output_df, drivers_mod_output_df_nd, drivers_lmer_df, drivers_lmer_df_vws) %>% 
+  mutate(parameter = gsub('intrcpt', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('(\\(Intercept)', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Duration', 'Dur', .$parameter)) %>% 
+  mutate(parameter = gsub('Impact', 'CHI', .$parameter)) %>% 
+  mutate(parameter = gsub('total_ltc', 'LTC', .$parameter)) %>% 
+  mutate(model = gsub('D', 'Dur', .$model)) %>%  
+  mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
+  mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
+  mutate(model = gsub('N', 'Nut', .$model)) %>%
+  mutate(`% change` = format(.$`% change`, digits = 1)) %>% 
+  mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
+         `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
+  mutate(sig = ifelse(pval <= 0.001, '***', 
+                        ifelse(pval <= 0.01, '**', 
+                          ifelse(pval <= 0.05, '*', 
+                            ifelse(pval <= 0.1, '.', 
+                              ifelse(pval <= 1, ' ')))))) %>% 
+  mutate(analysis = c(rep(c('vw', 'vw'), 8), rep(c('uw', 'uw'), 8)), 
+         subset   = c(rep('vw subset', 8), rep('no diez', 8), rep('all', 8), rep('vw subset', 8))) %>%
+  filter(parameter != 'Int') %>%  
+  mutate(parameter = factor(parameter, levels = c('Dur', 'Inv', 'Nut', 'LTC', 'Dur:Inv', 'Dur:Nut', 'Dur:LTC')), 
+         analysis = factor(analysis, levels = c('vw', 'uw')), 
+         subset = factor(subset, levels = c('vw subset', 'all', 'no diez'))) %>% 
+  #mutate(analysis = c(rep(c('vw', 'vw'), 8), rep(c('ss', 'ss', 'ss'), 8), rep(c('uw', 'uw'), 8)), 
+         #subset   = c(rep('vw subset', 8), rep('no diez', 8), rep('all', 8), rep('no smith', 8), rep('vw subset', 8), 
+                      #rep('all', 8), rep('vw subset', 8))) %>%
+  #filter(parameter != 'Int') %>%  
+  #mutate(parameter = factor(parameter, levels = c('Dur', 'Inv', 'Nut', 'LTC', 'Dur:Inv', 'Dur:Nut', 'Dur:LTC')), 
+   #      analysis = factor(analysis, levels = c('vw', 'ss', 'uw')), 
+   #      subset = factor(subset, levels = c('vw subset', 'all', 'no diez', 'no smith'))) %>% 
+  arrange(parameter, analysis, subset) %>% 
+  select(analysis, subset, n, k, parameter, estimate, `% change`, pval, sig) %>% 
+    knitr::kable(., caption = '**Table SX.** LR ~ DUR * (NUTS + INVS + LTC) model - comparison across analysis types and data subsets')
+
+```
+
+--------------------------------------------------------------------------------
+
+
+## A mess past this point.
+
+--------------------------------------------------------------------------------
+
+```{r, Duration-frequency-no-event-data, echo=FALSE, fig.cap='**Figure S2.** Frequency distribution of study durations included in the variance-weighted meta-analysis.'}
+
+```
+
+--------------------------------------------------------------------------------
+
+```{r, cumulative-impacts-freq-dist-for-var-weighted-dataset-fig5, fig.cap='Frequency distribution of cumulative human impacts across the data used for the variance-weighted meta-regression'}
+```
+
+
+### Raw data broken down by taxonomic group
+
+```{r, taxa-mixed-vw-plot, echo=FALSE, fig.cap='**Figure. S15** Caterpillar plot of data used in the variance-weighted meta-analysis of proportion of change in species richness over time. Points are site-level mean richness observations, where point size indicates precision (1 / variance) and error bars are 95% confidence intervals.'}
+```
+
+
+```{r, taxa-algae-vw-plot, echo=FALSE, fig.cap='**Figure. S15** Caterpillar plot of data used in the variance-weighted meta-analysis of proportion of change in species richness over time. Points are site-level mean richness observations, where point size indicates precision (1 / variance) and error bars are 95% confidence intervals.'}
+```
+
+```{r, taxa-inverts-ss-plot, echo=FALSE, fig.cap='**Figure. S16** Caterpillar plot of data used in the sample-size weighted meta-analysis of proportion of change in species richness over time for invertebrates. Points are site-level mean richness observations, where point size represents number of plot replicates and error bars are 95% confidence intervals.'}
+```
+
+```{r, taxa-coral-ss-plot, echo=FALSE, fig.cap='**Figure. S17** Caterpillar plot of data used in the sample-size weighted meta-analysis of proportion of change in species richness over time for coral. Points are site-level mean richness observations, where point size represents number of plot replicates and error bars are 95% confidence intervals.'}
+```
+
+
+--------------------------------------------------------------------------------
+
+
+### Possible unweighted text
+
+*Unweighted analysis*  
+
+Results of the unweighted analyses included 79 additional studies in the duration analysis, 73 in the impacts analysis, and 61 in the specific drivers analysis (Table S2). No significant effects were found in the unweighted analysis (Table S3). To determine whether differences in the observed trends in the variance-weighted analyses and the unweighted analysis was due to differences in the data subsets or weighting method, we performed the unweighted analyses on the same subset of data used in the variance-weighted analysis. The observed increase in log proportion of richness in over time (Tables S4) was the only result that was robust to weighting method. This result indicates that the duration effects was the only signal strong enough to be apparent when variability of richness was not accounted for in the analysis.
+
+
+
+
+
+```{r, include=FALSE}
+#### The relationship of initial richness and log ratio is not biased
+
+#This simulation demonstrates the relationship between initial richness and the proportion of change when the average proportion of change is zero. 
+
+#However, should we include initial richness as a predictor? This is still an open question. 
+```
+
+```{r, include=FALSE}
+#s_df <- data.frame(t1 = rpois(100, 30))
+#s_df$change <- exp(rnorm(100, 0, 0.2))
+#s_df$t2 <-  s_df$t1 * s_df$change
+
+#hist(s_df$change)
+#plot(t2 ~ t1, data=s_df)
+
+
+#plot(log(t2/t1) ~ t1, data=s_df)
+```
+
+
+
+```{r, echo=FALSE, fig.height=4.9, fig.width=8, fig.cap='**Figure S3.** Sample size - variance relationship across taxonomic groups indicates that the sample size - variance relationship does not vary across taxonomic groups.'}
+no_event %>%
+  mutate(taxa_combined = taxa) %>% 
+  mutate(taxa_combined = gsub('phytoplankton|zooplankton', 'plankton', .$taxa_combined)) %>% 
+  mutate(taxa_combined = gsub('mobile inverts|sessile inverts', 'inverts', .$taxa_combined)) %>%
+  mutate(taxa_combined = replace(taxa_combined, taxa_combined == 'Mixed', 'mixed')) %>% 
+  filter(!is.na(vi_SppR_ROM)) %>% 
+ggplot(data = ., aes(x = n1, y = vi_SppR_ROM, colour = taxa_combined)) + 
+  geom_point() + 
+  theme_bw() +
+  guides(colour = FALSE) +
+  xlab('sample size') + 
+  ylab('variance') +
+  facet_wrap(~ taxa_combined, scales = 'free')
+```
+
+```{r, no-event-caterpillar-plot-duration, echo=FALSE, fig.height=20, fig.width=6.6, fig.cap='**Figure S1.** Caterpillar plot of the data used in the variance-weighted meta-analysis of proportion of change in species richness over time. Points are site-level mean richness observations, where point size indicates precision (1 / variance) and lines are 95% confidence intervals.'}
+
+```
+
+```{r, echo=FALSE, include = FALSE}
+#### Collinearity of specific drivers used in the variance-weighted dataset
+<<drivers-var-weighted-collinearity-table>>
+
+rownames(drivers_cor_table) <- c('Nutrients', 'Invasives', 'LTC', 'Duration')
+colnames(drivers_cor_table) <- c('Nutrients', 'Invasives', 'LTC', 'Duration')
+
+drivers_cor_table %>% knitr::kable(., caption = '**Table S2.** Correlation matrix for the three drivers included in the variance-weighted meta-regression.')
+
+```

@@ -1,0 +1,81 @@
+```{r, include=FALSE}
+
+library(knitr)
+read_chunk("sensitivity_analyses.R")
+read_chunk("taxonomic_groups.R")
+read_chunk("discussion_question_responses_aug18.R")
+
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(fig.height=9, fig.width=10)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+##### Differences between variance-weighted and sample size weighted analyses (leave-1-out results)
+
+```{r, leave-1-out-compare-Duration:LTC-var-weighted-data-subset, fig.height=7, fig.width=9, fig.cap='**Figure 1.** Comparison of leave one out analyses for the effect size estimates for the Duration*Linear temperature change interaction between the variance-weighted analysis (left) and the sample size weighted analysis (right) performed on the same subset of data.'}
+```
+
+--------------------------------------------------------------------------------
+
+```{r, Duration-leave-1-out-study-Duration-ss-weighted, fig.cap='**Figure 2.** Duration coefficient estimates from the LR ~ Duration model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+--------------------------------------------------------------------------------
+
+```{r, Impacts-leave-1-out-study-Duration-ss-weighted, fig.cap='**Figure 3.** Duration coefficient estimates from the LR ~ Duration $*$ Impacts model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Impacts-leave-1-out-study-Impact-ss-weighted, fig.cap='**Figure 4.** Impacts coefficient estimates from the LR ~ Duration $*$ Impacts model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Impacts-leave-1-out-study-Duration:Impact-ss-weighted, fig.cap='**Figure 5.** Duration*Impact interaction coefficient estimates from the LR ~ Duration $*$ Impacts model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+--------------------------------------------------------------------------------
+
+
+```{r, Drivers-leave-1-out-study-Duration-ss-weighted, fig.cap='**Figure 6.** Duration coefficient estimates from the LR ~ Duration $*$ (Invs + Nuts + LTC) model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Drivers-leave-1-out-study-Invasives-ss-weighted, fig.cap='**Figure 7.** Invasives coefficient estimates from the LR ~ Duration $*$ (Invs + Nuts + LTC) model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Drivers-leave-1-out-study-Nutrients-ss-weighted, fig.cap='**Figure 8.** Nutrients coefficient estimates from the LR ~ Duration $*$ (Invs + Nuts + LTC) model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Drivers-leave-1-out-study-LTC-ss-weighted, fig.cap='**Figure 9.** Linear temperature change (LTC) coefficient estimates from the LR ~ Duration $*$ (Invs + Nuts + LTC) model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Drivers-leave-1-out-study-Duration:Invasives-ss-weighted, fig.cap='**Figure 10.** Duration*Invasives interaction coefficient estimates from the LR ~ Duration $*$ (Invs + Nuts + LTC) model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Drivers-leave-1-out-study-Duration:Nutrients-ss-weighted, fig.cap='**Figure 11.** Duration*Nutrients interaction coefficient estimates from the LR ~ Duration $*$ (Invs + Nuts + LTC) model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+```{r, Drivers-leave-1-out-study-Duration:LTC-ss-weighted, fig.cap='**Figure 12.** Duration*LTC interaction coefficient estimates from the LR ~ Duration $*$ (Invs + Nuts + LTC) model. Comparison of the variance-weighted and sample-size weighted analyses.'}
+```
+
+--------------------------------------------------------------------------------
+
+##### Differences in distribution of drivers between variance weighted and sample size weighted analyses
+
+The dark blue bars are the driver frequencies of the variacne size weighted analysis with the light blue bars of the sample size weighted analysis driver frequencies superimposed.
+
+```{r, var-weighted-vs-ss-weighted-impact-score-hist, fig.height=5, fig.width=6, fig.cap='**Figure 13.** Distribution of cumulative human impact scores in the variance weighted analysis (dark blue) and sample size weighted analysis (light blue).'}
+```
+
+```{r, var-weighted-vs-ss-weighted-invasives-score-hist, fig.height=5, fig.width=7,  fig.cap='**Figure 14.** Distribution of invasives impacts in the variance weighted analysis (dark blue) and sample size weighted analysis (light blue). There are four panels of this because the range of this driver was so large that it made visualising the comparison of distributions difficult in the low values.'}
+```
+
+```{r, var-weighted-vs-ss-weighted-nutrients-score-hist, fig.height=5, fig.width=6,  fig.cap='**Figure 15.** Distribution of nutrients in the variance weighted analysis (dark blue) and sample size weighted analysis (light blue).'}
+```
+
+```{r, var-weighted-vs-ss-weighted-annual-temp-change-score-hist, fig.height=5, fig.width=6,  fig.cap='**Figure 16.** Distribution of annual linear temperature change in the variance weighted analysis (dark blue) and sample size weighted analysis (light blue).'}
+```
+
+--------------------------------------------------------------------------------
+
+Relationship between sample size (number of replicate plots sampled at a site) and reported variance.  
+
+```{r, sample-size-variance-relationship-scatterplot, fig.height=5, fig.width=7, fig.cap='**Figure 16.** '}
+```
