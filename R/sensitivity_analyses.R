@@ -1,9 +1,9 @@
 ## @knitr prep-sensitivity-analyses
-library(readr)
-library(dplyr)
-library(metafor)
-library(gridExtra)
-library(ggplot2)
+#library(readr)
+#library(dplyr)
+#library(metafor)
+#library(gridExtra)
+#library(ggplot2)
 
 source('02_functions.R')
 
@@ -164,14 +164,14 @@ funnel(mod1, main="Funnel Plot for Duration Analysis")
 funnel(impact_ne_w, main="Funnel Plot for Impacts Analysis")
 funnel(drivers_scaled, main="Funnel Plot for Drivers Analysis")
 
-test = lm(rstandard(mod1)$z ~ diag(mod1$V))
+#test = lm(rstandard(mod1)$z ~ diag(mod1$V))
 
-test <- data_frame(residuals = rstandard(mod1)$z, variance = diag(mod1$V), study = no_event$Study.ID[mod1$not.na])
+#test <- data_frame(residuals = rstandard(mod1)$z, variance = diag(mod1$V), study = no_event$Study.ID[mod1$not.na])
 
-ggplot(data = test, aes(x = residuals, y = variance, colour = study)) + 
-  geom_point() + 
-  theme_minimal() +
-  theme(legend.position = 'none')
+#ggplot(data = test, aes(x = residuals, y = variance, colour = study)) + 
+#  geom_point() + 
+#  theme_minimal() +
+#  theme(legend.position = 'none')
 
 
 ## @knitr likelihood-profile-plots-var-weighted-models

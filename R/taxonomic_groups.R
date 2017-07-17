@@ -395,21 +395,29 @@ ggplot(data = , aes(x = taxa, y = estimate)) +
   ylim(c(-0.23, 0.23)) + 
   facet_wrap(~ weighting, scales = 'free_x')
 
-
 ## @knitr rate-of-change-by-taxa-vw-plot
-taxa_results %>% 
-  mutate(weighting = c(rep('variance weighted', 5), rep('unweighted', 6))) %>% 
-  filter(weighting == 'variance weighted') %>% 
-  mutate(taxa = factor(taxa, levels = c('mixed', 'algae', 'coral', 'inverts', 'zooplankton', 'fish'))) %>% 
-ggplot(data = , aes(x = taxa, y = estimate)) + 
-  geom_hline(yintercept = 0, colour = 'red', linetype = 'dashed') + 
-  geom_point() + 
-  geom_errorbar(aes(x = taxa, ymin = ci_lb, ymax = ci_ub), width = 0) + 
-  theme_bw() +
-  xlab('Taxa') + 
-  ylab('Duration coefficient estimate') + 
-  ylim(c(-0.13, 0.13))
+vw_taxa_plot_labels <- 
+taxa_results_vw %>% 
+  mutate(taxa = paste0(.$taxa, '\n'), 
+         sites = paste0('k = ', .$sites, '\n'), 
+         studies = paste0('n = ', .$studies)) %>% 
+  mutate(labels = paste0(taxa, sites, studies))
 
+taxa_vw_plot <- 
+  taxa_results %>% 
+    mutate(weighting = c(rep('variance weighted', 5), rep('unweighted', 6))) %>% 
+    filter(weighting == 'variance weighted') %>% 
+    mutate(taxa = factor(taxa, levels = c('mixed', 'algae', 'coral', 'inverts', 'zooplankton', 'fish'))) %>% 
+  ggplot(data = , aes(x = taxa, y = estimate)) + 
+    geom_hline(yintercept = 0, colour = 'red', linetype = 'dashed') + 
+    geom_point() + 
+    geom_errorbar(aes(x = taxa, ymin = ci_lb, ymax = ci_ub), width = 0) + 
+    theme_bw() +
+    xlab('\nTaxa') + 
+    ylab('Coefficient estimate') + 
+    ylim(c(-0.13, 0.13)) + 
+    scale_x_discrete(labels = vw_taxa_plot_labels$labels)
+taxa_vw_plot
 
 # Raw data for the variance weighted analysis broken down by taxonomic group
 ## @knitr taxa-mixed-vw-plot
@@ -693,6 +701,8 @@ ggplot(data = , aes(x = taxa, y = estimate)) +
   facet_wrap(~ parameter, scales = 'free_x')
 
 
+
+## @knitr breakpoint-to-end-above-chunk
 # Driver specific runs
 
 mixed_vw_nuts <- 
@@ -713,14 +723,14 @@ mixed_vw_ltc <-
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
          data = fixed_taxa %>% filter(taxa == 'mixed'), 
          random = ~ 1 | as.factor(Study.ID), 
-         mods = ~ Duration * mean_ltc)
+         mods = ~ Duration * sliced_ltc)
 mixed_vw_ltc
 
 fish_vw_nuts <- 
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
          data = fixed_taxa %>% filter(taxa == 'fish'), 
          random = ~ 1 | as.factor(Study.ID), 
-         mods = ~ Duration * nuts)
+         mods = ~ Duration * mean_nuts)
 fish_vw_nuts
 
 fish_vw_invs <- 

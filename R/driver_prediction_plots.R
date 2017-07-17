@@ -316,7 +316,7 @@ nuts_alone_predictions <-
 driver_predictions %>% 
   filter(invs_quantile == 0, temp_quantile == 0) %>% 
   mutate(nuts_quantile = factor(nuts_quantile, levels = c('0', '50', '100'))) %>% 
-  mutate(driver = 'Nutrient addition') %>% 
+  mutate(driver = 'Nutrient addition') %>%
 ggplot(data = .) + 
   geom_line(aes(x = duration, y = (pred), colour = nuts_quantile)) + 
   geom_ribbon(aes(x = duration, ymin = (ci.lb), ymax = (ci.ub), fill = nuts_quantile), alpha = 0.4) + 
@@ -325,8 +325,8 @@ ggplot(data = .) +
   scale_fill_manual(values = c('darkgrey', '#619CFF')) + 
   guides(colour = FALSE) +
   guides(fill = FALSE) +
-  xlim(c(0, 15)) + 
-  ylim(c(-5, 5)) + 
+  xlim(c(0, 20)) + 
+  ylim(c(-8, 8)) + 
   ylab('Predicted log response ratio') + 
   xlab('\nDuration (years)') + 
   facet_grid(. ~ driver) + 
@@ -338,7 +338,7 @@ invs_alone_predictions <-
 driver_predictions %>% 
   filter(nuts_quantile == 0, temp_quantile == 0) %>% 
   mutate(invs_quantile = factor(invs_quantile, levels = c('0', '50', '75', '100'))) %>% 
-  mutate(driver = 'Propagule pressure') %>% 
+  mutate(driver = 'Invasion potential') %>% 
 ggplot(data = .) + 
   geom_line(aes(x = duration, y = (pred), colour = invs_quantile)) + 
   geom_ribbon(aes(x = duration, ymin = (ci.lb), ymax = (ci.ub), fill = invs_quantile), alpha = 0.4) + 
@@ -347,8 +347,8 @@ ggplot(data = .) +
   scale_fill_manual(values = c('darkgrey', '#619CFF')) + 
   guides(colour = FALSE) +
   guides(fill = FALSE) +
-  xlim(c(0, 15)) + 
-  ylim(c(-5, 5)) + 
+  xlim(c(0, 20)) + 
+  ylim(c(-8, 8)) + 
   facet_grid(. ~ driver) + 
   theme(axis.title.y = element_blank(), 
         axis.title.x = element_blank(), 
@@ -369,8 +369,8 @@ ggplot(data = .) +
   scale_fill_manual(values = c('darkgrey', '#619CFF')) + 
   guides(colour = FALSE) +
   guides(fill = FALSE) +
-  xlim(c(0, 15)) + 
-  ylim(c(-5, 5)) + 
+  xlim(c(0, 20)) + 
+  ylim(c(-8, 8)) + 
   facet_grid(. ~ driver) + 
   theme(axis.title.y = element_blank(), 
         axis.title.x = element_blank(), 
@@ -390,8 +390,8 @@ ggplot(data = ., aes(group = temp_quantile)) +
   scale_fill_manual(values = c('darkgrey', '#F8766D')) + 
   guides(colour = FALSE) +
   guides(fill = FALSE) +
-  xlim(c(0, 15)) + 
-  ylim(c(-5, 5)) + 
+  xlim(c(0, 20)) + 
+  ylim(c(-8, 8)) + 
   facet_grid(. ~ driver) + 
   theme(axis.title.y = element_blank(), 
         axis.title.x = element_blank(), 
@@ -415,19 +415,19 @@ print(all_mean_predictions, vp = set_vp(1, 5))
 #
 grid.text(
     "a)", vp = viewport(layout.pos.row = 1, layout.pos.col = 2), 
-    gp = gpar(fontsize = 11), vjust = -15, hjust = 9
+    gp = gpar(fontsize = 11), vjust = -12.5, hjust = 10
     )
 grid.text(
     "b)", vp = viewport(layout.pos.row = 1, layout.pos.col = 3), 
-    gp = gpar(fontsize = 11), vjust = -15, hjust = 10
+    gp = gpar(fontsize = 11), vjust = -12.5, hjust = 10
     )
 grid.text(
     "c)", vp = viewport(layout.pos.row = 1, layout.pos.col = 4), 
-    gp = gpar(fontsize = 11), vjust = -15, hjust = 10
+    gp = gpar(fontsize = 11), vjust = -12.5, hjust = 10
     )
 grid.text(
     "d)", vp = viewport(layout.pos.row = 1, layout.pos.col = 5), 
-    gp = gpar(fontsize = 11), vjust = -15, hjust = 10
+    gp = gpar(fontsize = 11), vjust = -12.5, hjust = 10
     )
 grid.text(
     expression('Predicted log response ratio'), 

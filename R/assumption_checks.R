@@ -68,6 +68,7 @@ abline(h = 0, col = 'red', lty = 2)
 #-------------------------------------------------------------------------------
 # Taxonomic checks
 
+## @knitr rma-taxa-qqplots
 par(mfrow = c(1, 5))
 car::qqPlot(rstandard(mixed_vw)$z, xlab = 'Fitted values', ylab = 'Standardised residuals')
 car::qqPlot(rstandard(fish_vw)$z, xlab = 'Fitted values', ylab = 'Standardised residuals')

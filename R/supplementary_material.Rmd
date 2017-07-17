@@ -1,3 +1,11 @@
+---
+header-includes: 
+  - \usepackage[utf8]{inputenc}
+  - \usepackage[T1]{fontenc}
+output: word_document
+---
+
+
 ```{r, include=FALSE}
 
 library(knitr)
@@ -16,13 +24,106 @@ knitr::opts_chunk$set(fig.height=7, fig.width=6.6)
 #knitr::opts_chunk$set(cache=TRUE)
 ```
 
-```{r, site-map, echo=FALSE, fig.height=5.25, fig.width=10, fig.cap='**Figure S1.** Global distribution of sites (k = 144) included in the meta-analysis with unique studies (n = 35) indicated by colour.'}
+
+### Appendix 1 - Search String
+
+We entered the following search terms into the Web of Science and Aquatic Commons databases on February 19, 2014: (marine OR ocean\* OR benthic\* OR coral OR kelp\* OR seamount OR vent OR mangrove OR "sea grass" OR seagrass OR plankton OR "deep sea" OR abyss\* OR pelagic OR beach OR intertid\* OR "salt marsh" OR "soft sediment" OR mudflat OR "mud flat" OR benthos OR "sub-tidal\*" OR subtidal\* OR "sub-littoral" OR sublittoral\* OR macrobenthos OR estuar\*) AND (biodiv\* OR divers\* OR richness OR evenness OR "community composition" OR "food web" OR "benthic communit\*" OR "pelagic communit\*") AND (resurvey\* OR resampl\* OR "time series" OR "temporal change" OR decad\* OR annual\* OR multiyear OR "multi-year" OR "multi-decade" OR revisit\*) NOT (fossil OR geologic\* OR freshwater OR terrestrial OR grassland)
+
+
+
+### Appendix 2 - Figures and Tables
+
+
+![**Figure S1.** Preferred Reporting Items for Systematic reviews and Meta-Analysis (PRISMA) diagram depicting the study selection process.](../PRISMA.png)
+
+
+```{r, site-map, echo=FALSE, fig.height=5.25, fig.width=10, fig.cap='**Figure S2.** Global distribution of sites (k = 144) included in the meta-analysis with unique studies (n = 35) indicated by colour.'}
 
 ```
 
---------------------------------------------------------------------------------
 
-```{r, echo=FALSE, fig.height=3.2, fig.width=5.6, fig.cap='**Figure S2.** The sample size - variance relationship indicates that sample size is an inappropriate substitution for use in a sample-size weighted meta-analysis. Sample size is a poor indicator of variance, where sites with low replication often had high precision.'}
+```{r, echo=FALSE}
+<<duration-var-weighted-model-output-table1>>
+<<impact-var-weighted-model-output-table2>>
+<<drivers-var-weighted-model-output-df-scaled-table3>>
+#<<interactions-var-weighted-model-output>>
+
+mod1_output_df[2, c('model', 'k', 'n')] <- ''
+imp_mod_output_df[2:4, c('model', 'k', 'n')] <- ''
+drivers_mod_output_df[2:8, c('model', 'k', 'n')] <- ''
+#interactions_output_df[2:12, c('model', 'k', 'n')] <- ''
+
+#bind_rows(mod1_output_df, imp_mod_output_df, drivers_mod_output_df, interactions_output_df) %>% 
+bind_rows(mod1_output_df, imp_mod_output_df, drivers_mod_output_df) %>% 
+  mutate(parameter = gsub('intrcpt', 'Int', .$parameter)) %>% 
+  mutate(parameter = gsub('Duration', 'Dur', .$parameter)) %>% 
+  mutate(parameter = gsub('Impact', 'CHI', .$parameter)) %>% 
+  mutate(parameter = gsub('total_ltc', 'LTC', .$parameter)) %>% 
+  mutate(parameter = gsub(', center = FALSE', '', .$parameter)) %>% 
+  mutate(model = gsub('D', 'Dur', .$model)) %>%  
+  mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
+  mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
+  mutate(model = gsub('N', 'Nut', .$model)) %>%
+  mutate(`% change` = format(.$`% change`, digits = 1, scientific = FALSE)) %>% 
+  mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
+         `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
+  dplyr::select(model, n, k, parameter, estimate, `% change`, pval, `lower CI`, `upper CI`) %>% 
+  knitr::kable(., caption = '**Table S1.** Standardised parameter estimates from three variance-weighted meta-regressions of the log ratio of the proportion of species richness change (LR). For each parameter estimate the number of studies (n), number of sites (k), p-value (pval), lower and upper 95% confidence intervals are included. The percent change (% change) has been back-calculated from the estimated log ratio of the proportion of change in species richness. Each study could contain multiple sites and therefore studies were modeled as random effects.')
+
+```
+
+
+```{r, echo=FALSE}
+<<taxa-vw-results-table>>
+
+taxa_results_vw %>% 
+  mutate(ci_lb_p = get_percent_change(ci_lb), 
+         ci_ub_p = get_percent_change(ci_ub)) %>% 
+  dplyr::select(taxa, studies, sites, max_duration, `percent change`, pval, ci_lb_p, ci_ub_p, sig_stars) %>% 
+  rename(`lower ci` = ci_lb_p, `upper ci` = ci_ub_p, sig = sig_stars, `max duration` = max_duration) %>% 
+  kable(., digits = 3, caption='**Table S2.** Rate of the percent change of species richness across the five most sampled taxonomic groups using variance-weighted meta-regressions: mixed (more than one taxonomic group), fish, algae, invertebrates, and zooplankton. The table includes the number of unique studies, sites, and duration of the longest running study. Upper (upper ci) and lower (lower ci) confidence intervals for the percent change are also included and number of stars indicate level of significance.')
+
+```
+
+
+```{r, taxa-vw-impacts-results-plot, fig.height=3.25, fig.width=8.5, fig.cap='**Figure S3.** Coefficient estimates of the log-proportion of species richness change as moderated by cumulative human impact values (CHI) in the four most sampled taxonomic groups. Points represent coefficient estimates and lines represent 95% confidence intervals using variance-weighted meta-regressions.'}
+
+```
+
+
+```{r, echo=FALSE}
+<<taxa-vw-impacts-results-table>>
+
+taxa_results_imps2 <- taxa_results_imps
+
+taxa_results_imps2[c(2, 3, 5, 6, 8, 9, 11, 12), c('taxa', 'studies', 'sites', 'max_duration')] <- '' 
+
+taxa_results_imps2 %>% 
+  mutate(ci_lb_p = get_percent_change(ci_lb), 
+         ci_ub_p = get_percent_change(ci_ub)) %>% 
+  mutate(driver = gsub('Duration', 'Dur', .$driver)) %>% 
+  mutate(driver = gsub('mean_imps', 'CHI', .$driver)) %>% 
+  mutate(driver = gsub('Duration:mean_imps', 'Dur:CHI', .$driver)) %>% 
+  rename(parameter = driver) %>% 
+  dplyr::select(taxa, studies, sites, max_duration, parameter, `percent change`, pval, ci_lb_p, ci_ub_p, sig_stars) %>% 
+  rename(`lower ci` = ci_lb_p, `upper ci` = ci_ub_p, sig = sig_stars, `max duration` = max_duration) %>% 
+  kable(., digits = 3, caption='**Table S3.** The effect of cumulative human impact value (CHI) on the percent change and rate of percent change of species richness across the four most sampled taxonomic groups using variance-weighted meta-regressions: mixed (more than one taxonomic group), fish, algae, and invertebrates. The table includes the number of unique studies, sites, and duration of the longest running study. Upper (upper ci) and lower (lower ci) confidence intervals for the percent change are also included and number of stars indicate level of significance.')
+
+```
+
+```{r, echo=FALSE}
+<<AICc-table-taxonomic-groups>>
+
+aic_groups %>% 
+  kable(., digits=2, caption='**Table S4.** AICc scores (corrected for small sample sizes) calculated for two variance-weighted meta-regressions of the log ratio of the proportion of species richness change (LR) across four different taxonomic groups (Taxa). Addition of cumulative human impacts generally improved model performance over the model containing only study duration in studies except in fish communities.')
+
+```
+
+#### Unweighted analyses
+
+Within the subset of the data for which we had variances associated with richness, these reported variances range from less than 10-5 to 1, which violates the assumption of identically distributed variables meaning that confidence intervals estimated from an unweighted analysis can be invalid [1]. Additionally, the relationship between sample size and variance was highly non-linear (figure S4), indicating that sample size was a poor proxy for study variance. However, for completeness we also present the results of an unweighted analysis. 
+
+```{r, echo=FALSE, fig.height=3.2, fig.width=5.6, fig.cap='**Figure S4.** The sample size - variance relationship indicates that sample size is an inappropriate substitution for use in a sample-size weighted meta-analysis. Sample size is a poor indicator of variance, where sites with low replication often had high precision.'}
 no_event %>%
   filter(!is.na(vi_SppR_ROM)) %>% 
 ggplot(data = ., aes(x = n1, y = vi_SppR_ROM, colour = Study.ID)) + 
@@ -34,16 +135,13 @@ ggplot(data = ., aes(x = n1, y = vi_SppR_ROM, colour = Study.ID)) +
 
 ```
 
---------------------------------------------------------------------------------
 
-### Unweighted analysis results
-
-```{r}
+```{r, echo=FALSE}
 <<unweighted-diffs-based-on-mod-weighting-comparison>>
 
 sample_size_diffs_df[1:3, ] %>%
   rename(`un-w sites` = `samp-w sites`, `un-w studies` = `samp-w studies`) %>% 
-  knitr::kable(., caption = '**Table S1.** Comparison of sample sizes used for each of the three models of the log ratio of species richness change performed using: variance-weighted (var-w) meta-regression and unweighted (un-w) regression.')
+  knitr::kable(., caption = '**Table S5.** Comparison of sample sizes used for each of the three models of the log ratio of species richness change performed using: variance-weighted (var-w) meta-regression and unweighted (un-w) regression.')
 ```
 
 
@@ -73,7 +171,7 @@ bind_rows(dur_lmer_df, impacts_lmer_df, drivers_lmer_df) %>%
   mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
          `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
   select(model, n, k, parameter, estimate, `% change`, pval, `lower CI`, `upper CI`) %>% 
-  knitr::kable(., caption = '**Table S2.** Standardised parameter estimates from three unweighted regressions of the log ratio of the proportion of species richness change (LR). Table details are the same as in Table S1.')
+  knitr::kable(., caption = '**Table S6.** Standardised parameter estimates from three unweighted regressions of the log ratio of the proportion of species richness change (LR). Table details are the same as in Table S2.')
 
 ```
 
@@ -103,27 +201,28 @@ bind_rows(dur_lmer_df_vws, impacts_lmer_df_vws, drivers_lmer_df_vws) %>%
   mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
          `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
   select(model, n, k, parameter, estimate, `% change`, pval, `lower CI`, `upper CI`) %>% 
-  knitr::kable(., caption = '**Table S3.** Standardised parameter estimates from three unweighted regressions of the log ratio of the proportion of species richness change (LR) performed on the same subset of data used in the variance-weighted analysis. Table details are the same as in Table S1.')
+  knitr::kable(., caption = '**Table S7.** Standardised parameter estimates from three unweighted regressions of the log ratio of the proportion of species richness change (LR) performed on the same subset of data used in the variance-weighted analysis. Table details are the same as in Table S1.')
 
 ```
 
---------------------------------------------------------------------------------
+#### Leave-one-out analysis 
 
-### Sensitivity analyses
+To test whether our data were robust to the exclusion of a single study, we performed a leave-one-out analysis. The results of the model that included three specific drivers of local richness change were not however, robust to the exclusion of the single study D&#237;ez [2]  (figures S5 - S8, table S8). Leave-one-out analyses revealed that D&#237;ez's [2] report of diversity change of seaweeds in the Bay of Biscay had a substantial effect on the parameter estimates for cumulative human impacts, nutrient addition, and invasion potential (figures S5-S8, table S8). D&#237;ez [2] was a notable study as it had the site associated with the highest nutrient enrichment values (32.9 mt fertilizer / km^2) and the highest invasion potential (158,635 mt shipping traffic / km^2). Thus it was important in extending the range of variability in our predictors and increasing the power of our analysis. Furthermore, including D&#237;ez [2] increased our study's ability ot reflect the true distribution of drivers across the globe. Only with the inclusion of D&#237;ez [2], did our analysis span the range of drivers observed globally in coastal areas (figure S10).
 
-```{r, impacts-leave-1-out-study-nutrients-3-panel, fig.height=6, fig.width=13, fig.cap='**Figure S3.** Jackknife plots evaluating the influence of studies on the coefficient estimates from the LR ~ Duration + Impacts + Duration:Impacts variance-weighted meta-regression.'}
 
-```
-
-```{r, drivers-leave-1-out-study-nutrients-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S5.** Jackknife plots evaluating the influence of studies on the coefficient estimation of nutrients alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
+```{r, impacts-leave-1-out-study-nutrients-3-panel, fig.height=6, fig.width=13, fig.cap='**Figure S5.** Jackknife plots evaluating the influence of studies on the coefficient estimates from the LR ~ Duration + Impacts + Duration:Impacts variance-weighted meta-regression.'}
 
 ```
 
-```{r, drivers-leave-1-out-study-invasives-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S6.** Jackknife plots evaluating the influence of studies on the coefficient estimation of invasives alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
+```{r, drivers-leave-1-out-study-nutrients-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S6.** Jackknife plots evaluating the influence of studies on the coefficient estimation of nutrients alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
 
 ```
 
-```{r, drivers-leave-1-out-study-LTC-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S6.** Jackknife plots evaluating the influence of studies on the coefficient estimation of linear temperature change alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
+```{r, drivers-leave-1-out-study-invasives-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S7.** Jackknife plots evaluating the influence of studies on the coefficient estimation of invasives alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
+
+```
+
+```{r, drivers-leave-1-out-study-LTC-short-long-plot, echo=FALSE, fig.height=7, fig.width=11, fig.cap='**Figure S8.** Jackknife plots evaluating the influence of studies on the coefficient estimation of linear temperature change alone and the effect of invasives on the rate of change of local richness change in the full driver by duration variance-weighted meta-regression.'}
 
 ```
 
@@ -149,23 +248,119 @@ bind_rows(mod1_output_df_nd, imp_mod_output_df_nd, drivers_mod_output_df_nd) %>%
   mutate(model = gsub('Imp', 'CHI', .$model)) %>%  
   mutate(model = gsub('\\(I', '\\(Inv', .$model)) %>%  
   mutate(model = gsub('N', 'Nut', .$model)) %>%
-  mutate(`% change` = format(.$`% change`, digits = 1)) %>% 
+  mutate(`% change` = format(.$`% change`, digits = 2)) %>% 
   mutate(`lower CI` = round(as.numeric(.$ci.lb), digits = 2),
          `upper CI` = round(as.numeric(.$ci.ub), digits = 2)) %>% 
   select(model, n, k, parameter, estimate, `% change`, pval, `lower CI`, `upper CI`) %>% 
-  knitr::kable(., caption = '**Table S4** Standardised parameter estimates from three variance-weighted meta-regressions of the log ratio of the proportion of species richness change (LR) that excluded the influential study Diez *et al.* 2011. For each parameter estimate the number of studies (n), number of sites (k), p-value (pval), lower and upper 95% confidence intervals are included. The percent change (% change) has been back-calculated from the estimated log ratio of the proportion of change in species richness. Each study could contain multiple sites and therefore studies were modeled as random effects.')
+  knitr::kable(., caption = '**Table S8** Standardised parameter estimates from three variance-weighted meta-regressions of the log ratio of the proportion of species richness change (LR) that excluded the influential study D&#237;ez [2]. For each parameter estimate the number of studies (n), number of sites (k), p-value (pval), lower and upper 95% confidence intervals are included. The percent change (% change) has been back-calculated from the estimated log ratio of the proportion of change in species richness. Each study could contain multiple sites and therefore studies were modeled as random effects.')
 
 ```
 
-```{r, drivers-var-weighted-int-scaled-par-est-plot-short-long-breakdown-no-diez, echo=FALSE, fig.height=6, fig.width=9, fig.cap='**Figure S7.** The effect, when the influential study Diez *et al.* 2011 was excluded, of three global drivers: propagule pressure (Invasives), decadal rate of linear temperature change (LTC), and nutrient addition (Nutrients) on (a) the log-proportion of change in species richness in the short term and (b) the effect of these drivers on the rate of change in the log-proportion of change in species richness over time. Points represent standardised coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
+```{r, drivers-var-weighted-int-scaled-par-est-plot-short-long-breakdown-no-diez, echo=FALSE, fig.height=6, fig.width=9, fig.cap='**Figure S9.** The effect, when the influential study D&#237;ez [2] was excluded, of three global drivers: propagule pressure (Invasives), decadal rate of linear temperature change (LTC), and nutrient addition (Nutrients) on (a) the log-proportion of change in species richness in the short term and (b) the effect of these drivers on the rate of change in the log-proportion of change in species richness over time. Points represent standardised coefficient estimates and lines represent 95% CI obtained using a variance-weighted meta-regression.'}
 
 ```
 
-----------------------------------------------------------------------
 
-### Distribution of drivers in a global context
+#### Distribution of drivers in a global context
 
-```{r, global-vs-analysis-data-coverage-drivers-plot, echo=FALSE, fig.height=3.2, fig.width=11, fig.cap='**Figure S8.** The global distribution of drivers (blue) compared to the distribution of drivers observed in our dataset (red) for (a) nutrient addition, (b) propagule pressure, and (c) rate of linear temperature (degree C / year). Values of nutrient addition and propagule pressure were log-transformed to improve visualisation of extreme values. Due to idiosyncrasies in the data layers and because large expanses of coastal areas had no nutrient addition or propagule pressure values greater than zero, zero values in the global drivers were excluded, therefore are under-represented here. To include zero values that were observed in our dataset we added either 0.1 or 1 to the driver values before log-transforming them.'}
+```{r, global-vs-analysis-data-coverage-drivers-plot, echo=FALSE, fig.height=3.2, fig.width=13, fig.cap='**Figure S10.** The global distribution of drivers (blue) compared to the distribution of drivers observed in our dataset (red) for (a) nutrient addition, (b) propagule pressure, and (c) rate of linear temperature (degree C / year). Values of nutrient addition and propagule pressure were log-transformed to improve visualisation of extreme values. Due to idiosyncrasies in the data layers and because large expanses of coastal areas had no nutrient addition or propagule pressure values greater than zero, zero values in the global drivers were excluded, therefore are under-represented here. To include zero values that were observed in our dataset we added either 0.1 or 1 to the driver values before log-transforming them.'}
 
 ```
 
+### Appendix 3 - Study selection criteria
+
+We excluded studies with inconsistent sampling effort because richness estimates are sensitive to sampling effort (e.g., 3). Sampling methods were considered consistent if the sampling gear used and the number of subsamples was identical between time points.  However, we included studies with non-permanent plots, but that sampled the same 'site', because for larger taxa like fish trawls and marine mammal surveys, exact and permanent transects are often not appropriate or feasible.  We also excluded studies if rare species were not counted, but studies were retained if there was systematic exclusion of a taxon type or group of species (e.g., macroalgae) as it should not have biased trends. Additionally, we excluded a survey of groundfish [4] that included the entire west coast of the United States because it was an outlier relative to the spatial extent of the other studies included in the analysis and thus could not truly be called "local" scale (1900 km2 versus 139 km2 for the next largest site).
+
+Most importantly, we excluded sites if an a priori event was described by authors as affecting a site because we were primarily interested in testing whether variation in a select few human impacts was sufficient to explain the direction and magnitude of biodiversity change at local scales.  Therefore, the inclusion of studies with a priori identification of very localized stressors (e.g., hypoxia, sedimentation) or management actions (e.g., fishing closures, cessation of pollution or eutrophication) would likely introduce noise into our geospatial analysis, which necessarily relies on course-grained (1 km2 to 1 degree grids) estimates of human impacts. Moreover, these studies were inconsistent in their first measurement of biodiversity, with it occurring before, during or after the local impact, yielding unreliable information for our approach. We therefore excluded one hundred ninety-four sites because authors explicitly identified an a priori 'event' (e.g., dredging, marine protected area creation) as potentially affecting the community surveyed. For the remaining data, we contextualized local biodiversity change using an independent evaluation of human impacts [5]. In studies where biodiversity was measured in manipulative experiments, we extracted data only from the control plots that were never manipulated and only used as a reference for the experimental plots. 
+
+
+
+
+#### Appendix 4 - Data Sources
+
+Barrett, N. S., Edgar, G. J., Buxton, C. D., & Haddon, M. (2007). Changes in fish assemblages following 10 years of protection in Tasmanian marine protected areas. Journal of Experimental Marine Biology and Ecology, 345(2), 141-157. doi:10.1016/j.jembe.2007.02.007
+
+Birchenough, S. N. R., & Frid, C. L. J. (2009). Macrobenthic succession following the cessation of sewage sludge disposal. Journal of Sea Research, 62(4), 258-267. doi:10.1016/j.seares.2009.06.004
+
+Bollens, S. M., Breckenridge, J. K., Vanden Hooff, R. C., & Cordell, J. R. (2011). Mesozooplankton of the lower San Francisco Estuary: spatio-temporal patterns, ENSO effects and the prevalence of non-indigenous species. Journal of Plankton Research, 33(9), 1358-1377. doi:10.1093/plankt/fbr034
+
+Burd, B., Bertold, S., & Macdonald, T. (2012). Responses of infaunal composition, biomass and production to discharges from a marine outfall over the past decade. Marine Pollution Bulletin, 64(9), 1837-1852. doi:10.1016/j.marpolbul.2012.06.007
+
+Conlan, K. E., Kim, S. L., Lenihan, H. S., & Oliver, J. S. (2004). Benthic changes during 10 years of organic enrichment by McMurdo Station, Antarctica. Marine Pollution Bulletin, 49(1-2), 43-60. doi:10.1016/j.marpolbul.2004.01.007
+
+Conversi, A., Peluso, T., & Fonda-Umani, S. (2009). Gulf of Trieste: A changing ecosystem. Journal of Geophysical Research, 114(C3). doi:10.1029/2008jc004763
+de Loma, TL., Chabanet, P., Ferraris, J., Galzin, R., & Harmelin-Vivien, M. (2009). Long-term spatiotemporal variations in coral-reef fish community structure and fishing at a South Pacific atoll. Aquatic Living Resources, 22(3), 281-290. doi:10.1051/alr/2009037
+
+D&#237;ez, I., Muguerza, N., Santolaria, A., Ganzedo, U., & Gorostiaga, J. M. (2012). Seaweed assemblage changes in the eastern Cantabrian Sea and their potential relationship to climate change. Estuarine, Coastal and Shelf Science, 99, 108-120. doi:10.1016/j.ecss.2011.12.027
+
+Elahi, R., Birkeland, C., Sebens, K. P., Turner, K. R., & Dwyer, T. R. (2013). Limited change in the diversity and structure of subtidal communities over four decades. Marine Biology, 160(12), 3209-3219. doi:10.1007/s00227-013-2308-3
+
+Gooday, A. J., Malzone, M. G., Bett, B. J., & Lamont, P. A. (2010). Decadal-scale changes in shallow-infaunal foraminiferal assemblages at the Porcupine Abyssal Plain, NE Atlantic. Deep Sea Research Part II: Topical Studies in Oceanography, 57(15), 1362-1382. doi:10.1016/j.dsr2.2010.01.012
+
+Hagan, S. M., & Able, K. W. (2007). Diel Variation in the Pelagic Fish Assemblage in a Temperate Estuary. Estuaries and Coasts, 31(1), 33-42. doi:10.1007/s12237-007-9018-3
+
+Hall, J. (1996). Effects of metal contamination on macrobenthos of two North Sea estuaries. ICES Journal of Marine Science, 53(6), 1014-1023. doi:10.1006/jmsc.1996.0127
+
+Hawkins, J. P., Roberts, C. M., Dytham, C., Schelten, C., & Nugues, M. M. (2006). Effects of habitat characteristics and sedimentation on performance of marine reserves in St. Lucia. Biological Conservation, 127(4), 487-499. doi:10.1016/j.biocon.2005.09.008
+
+Hoffmeyer, M. S. (2004). Decadal change in zooplankton seasonal succession in the Bahia Blanca estuary, Argentina, following introduction of two zooplankton species. Journal of Plankton Research, 26(2), 181-189. doi:10.1093/plankt/fbh023
+
+Jones, M. V., & West, R. J. (2005). Spatial and temporal variability of seagrass fishes in intermittently closed and open coastal lakes in southeastern Australia. Estuarine, Coastal and Shelf Science, 64(2-3), 277-288. doi:10.1016/j.ecss.2005.02.021
+
+K&#281;dra, M., W&#322;odarska-Kowalczuk, M., & W&#281;s&#322;awski, J. M. (2009). Decadal change in macrobenthic soft-bottom community structure in a high Arctic fjord (Kongsfjorden, Svalbard). Polar Biology, 33(1), 1-11. doi:10.1007/s00300-009-0679-1
+
+Labrune, C., Gr&#233;mare, A., Guizien, K., & Amouroux, J. M. (2007). Long-term comparison of soft bottom macrobenthos in the Bay of Banyuls-sur-Mer (north-western Mediterranean Sea): A reappraisal. Journal of Sea Research, 58(2), 125-143. doi:10.1016/j.seares.2007.02.006
+
+Lindstrom, S. C., Houghton, J. P., & Lees, D. C. (1999). Intertidal Macroalgal Community Structure in Southwestern Prince William Sound, Alaska. Botanica Marina, 42(3). doi:10.1515/bot.1999.030
+
+Link, H., Piepenburg, D., & Archambault, P. (2013). Are Hotspots Always Hotspots? The Relationship between Diversity, Resource and Ecosystem Functions in the Arctic. PLoS ONE, 8(9), e74077. doi:10.1371/journal.pone.0074077
+López-Rasgado, F., Herzka, S., Del-Monte-Luna, P., Serviere-Zaragoza, E., Balart, E., & Lluch-Cota, S. (2012). Fish assemblages in three arid mangrove systems of the Gulf of California: comparing observations from 1980 and 2010. Bulletin of Marine Science, 88(4), 919-945. doi:10.5343/bms.2011.1111
+
+Martin, R. A., Nesbitt, E. A., & Martin, D. E. (2013). Distribution of foraminifera in Puget Sound, Western Washington, USA. The Journal of Foraminiferal Research, 43(3), 291-304.
+
+Masuda, R. (2007). Seasonal and interannual variation of subtidal fish assemblages in Wakasa Bay with reference to the warming trend in the Sea of Japan. Environmental Biology of Fishes, 82(4), 387-399. doi:10.1007/s10641-007-9300-z
+
+Occhipinti-Ambrogi, A., Favruzzo, M., & Savini, D. (2002). Multi-Annual Variations of Macrobenthos along the Emilia-Romagna Coast (Northern Adriatic). Marine Ecology, 23(s1), 307-319. doi:10.1111/j.1439-0485.2002.tb00029.x
+
+Ponti, M., Antonia Colangelo, M., & Ugo Ceccherelli, V. (2007). Composition, biomass and secondary production of the macrobenthic invertebrate assemblages in a coastal lagoon exploited for extensive aquaculture: Valle Smarlacca (northern Adriatic Sea). Estuarine, Coastal and Shelf Science, 75(1-2), 79-89. doi:10.1016/j.ecss.2007.01.021
+
+Rufino, M. M., Gaspar, M. B., Maynou, F., & Monteiro, C. C. (2008). Regional and temporal changes in bivalve diversity off the south coast of Portugal. Estuarine, Coastal and Shelf Science, 80(4), 517-528. doi:10.1016/j.ecss.2008.09.014
+
+Sales, M., & Ballesteros, E. (2012). Seasonal dynamics and annual production of Cystoseira crinita (Fucales: Ochrophyta)-dominated assemblages from the northwestern Mediterranean. Scientia Marina, 76(2), 391-401. doi:10.3989/scimar.03465.16d
+
+Shirayama, Y., Kitazato, H., & Shimanaga, M. (2004). Temporal patterns in diversity and species composition of deep-sea benthic copepods in bathyal Sagami Bay, central Japan. Marine Biology, 144(6), 1097-1110. doi:10.1007/s00227-003-1273-7
+
+Somerfield, P. J., Jaap, W. C., Clarke, K. R., Callahan, M., Hackett, K., Porter, J., Lybolt, M., Tsokos, C., Yanev, G. (2008). Changes in coral reef communities among the Florida Keys, 1996-2003. Coral Reefs, 27(4), 951-965. doi:10.1007/s00338-008-0390-7
+
+Stuart-Smith, R. D., Barrett, N. S., Stevenson, D. G., & Edgar, G. J. (2010). Stability in temperate reef communities over a decadal time scale despite concurrent ocean warming. Global Change Biology, 16(1), 122-134. doi:10.1111/j.1365-2486.2009.01955.x
+
+Svensson, P., Rodwell, L. D., & Attrill, M. J. (2009). Privately managed marine reserves as a mechanism for the conservation of coral reef ecosystems: a case study from Vietnam. AMBIO: A Journal of the Human Environment, 38(2), 72-78.
+
+Wan Hussin, W. M. R., Cooper, K. M., Froj&#225;n, C. R. S. B., Defew, E. C., & Paterson, D. M. (2012). Impacts of physical disturbance on the recovery of a macrofaunal community: A comparative analysis using traditional and novel approaches. Ecological Indicators, 12(1), 37-45. doi:10.1016/j.ecolind.2011.03.016
+
+Warwick, R.M., Ashman, C.M., Brown, A.R., Clarke, K.R., Dowell, B., Hart, B., Lewis, R.E., Shillabeer, N., Somerfield, J., Tapp, J.F. (2002). Inter-annual changes in the biodiversity and community structure of the macrobenthos in Tees Bay and the Tees estuary, UK, associated with local and regional environmental events. Marine Ecology Progress Series, 234, 1-13. doi:10.3354/meps234001
+
+Whomersley, P., Ware, S., Rees, H. L., Mason, C., Bolam, T., Huxham, M., & Bates, H. (2008). Biological indicators of disturbance at a dredged-material disposal site in Liverpool Bay, UK: an assessment using time-series data. ICES Journal of Marine Science, 65(8), 1414-1420. doi:10.1093/icesjms/fsn125
+
+Wilson, S. K., Dolman, A. M., Cheal, A. J., Emslie, M. J., Pratchett, M. S., & Sweatman, H. P. A. (2008). Maintenance of fish diversity on disturbed coral reefs. Coral Reefs, 28(1), 3-14. doi:10.1007/s00338-008-0431-2 
+
+
+
+### Literature cited
+
+
+Literature cited:
+
+1. Hedges L V, Gurevitch J, Curtis PS. 1999 The meta-analysis of resonse ratios in experimental ecology. Ecology 80, 1150-1156. 
+
+2. D&#237;ez I, Muguerza N, Santolaria A, Ganzedo U, Gorostiaga JM. 2012 Seaweed assemblage changes in the eastern Cantabrian Sea and their potential relationship to climate change. Estuar. Coast. Shelf Sci. 99, 108-120. (doi:10.1016/j.ecss.2011.12.027)
+
+3. Gotelli N, Colwell R. 2001 Quantifying biodiversity: procedures and pitfalls in the measurement and comparison of species richness. Ecol. Lett. 4, 379-391.
+
+4. Keller AA, Wallace JR, Horness BH, Hamel OS, Stewart IJ. 2011 Variations in eastern North Pacific demersal fish biomass based on the U.S. west coast groundfish bottom trawl survey (2003 - 2010). Fish. Res. 164, 205-222. (doi:10.1016/j.fishres.2014.11.010)
+
+5. Halpern BS et al. 2015 Spatial and temporal changes in cumulative human impacts on the world's ocean. Nat. Commun. 6, 7615. (doi:10.1038/ncomms8615)
+
+
+
+Hedges, L. V, J. Gurevitch, and P. S. Curtis. 1999. The meta-analysis of response ratios in experimental ecology. Ecology 80:1150-1156.

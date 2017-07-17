@@ -1,6 +1,7 @@
 ## Local marine diversity change meta-analysis model results
 
 ## @knitr cleaned-meta-models-data
+library(readr)
 library(raster)
 library(dplyr)
 library(tidyr)
@@ -27,10 +28,56 @@ fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>%
 
 no_event <- filter(fl_combined, Event != 'Yes')
 
+# Spatial scale as a covariate
+source('driver_extraction_functions.R')
+spatial <- semi_join(read_sp_data('../master_data/SiteSpatialData.csv'), no_event, by = c('Study.ID', 'Site'))
+
+# Get the min and max lat long values (so that I don't need all the pieces in between)
+corners <- 
+  spatial %>% 
+    group_by(Study.ID, Site) %>% 
+    slice(c(which.min(Start_Lat), which.min(Start_Long), 
+            which.max(Start_Lat), which.max(Start_Long))) %>% 
+    ungroup() %>% 
+    mutate(study_site = paste0(Study.ID, '__', Site))
+
+corners_list <- split(corners, corners$study_site)
+
+study_site_sp_points <- lapply(corners_list, function(study_site_df) {
+  coordinates(study_site_df) <- ~Start_Long + Start_Lat
+  projection(study_site_df) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+  return(study_site_df)
+  #sp_polygon <- Polygon(study_site_df)
+  #return(sp_polygon)
+})
+
+# Calculate and tabulate the maximum distances between replicates in studies.
+max_dists <- lapply(study_site_sp_points, function(sp_points_df) {
+  max_dist <- geosphere::distm(sp_points_df) %>% max(.)
+  return(max_dist)
+}) %>% 
+  bind_rows(.) %>% 
+  gather(key = study_site, value = max_dist) %>% 
+  separate(study_site, into = c('Study.ID', 'Site'), sep = '__')
+
+no_event <- left_join(no_event, max_dists)
+
+no_event2 <- filter(no_event, max_dist <= 150000)
+
+no_event %>% 
+filter(!is.na(yi_SppR_ROM), !is.na(vi_SppR_ROM)) %>% 
+filter(max_dist > 100000) %>% select(Study.ID, Reference, max_dist) %>% 
+mutate(max_dist / 1000) %>% 
+arrange(max_dist)
+
+
+summarise(no_event2, max(max_dist))
+
+
 ## @knitr duration-var-weighted-intercept
 mod1 <- 
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event %>% filter(!is.na(yi_SppR_ROM)), 
+         data = no_event2 %>% filter(!is.na(yi_SppR_ROM)), 
          random = ~ 1 | as.factor(Study.ID), 
          mods = ~ Duration)
 mod1
@@ -38,7 +85,7 @@ mod1
 ## @knitr impacts-var-weighted-intercept
 impact_ne_w <- 
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event,
+         data = no_event2,
          random = ~ 1 | factor(Study.ID), 
          mods = ~ Duration * mean_imps)
 impact_ne_w
@@ -47,9 +94,9 @@ impact_ne_w
 ## @knitr drivers-var-weighted-intercept
 drivers_scaled <- 
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3),
+         data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3),
          random = ~ 1 | Study.ID, 
-         mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
+         mods = ~ Duration * (scale(scaled_invs, center = FALSE) + scale(sliced_ltc, center = FALSE) + scale(mean_nuts, center = FALSE)))
 drivers_scaled
 
 ## @knitr drivers-var-weighted-collinearity-table
@@ -100,7 +147,7 @@ duration_w <-
 filter(no_event, !is.na(yi_SppR_ROM), !is.na(vi_SppR_ROM)) %>%
 ggplot(data = .) +
   geom_point(aes(x = Duration, y = yi_SppR_ROM, colour = as.factor(Study.ID)), size = 1) + 
-  ylab('Log ratio') +
+  ylab('Change in richness (LRR)') +
   theme_bw() +
   theme(legend.position = 'none') +
   geom_hline(yintercept = 0, colour = 'red', linetype = 'dashed') +
@@ -109,28 +156,32 @@ ggplot(data = .) +
   ylim(-2, 2) + 
   geom_line(data = data.frame(x = 1:41, y = predict(mod1, 1:41)$pred), aes(x = x, y = y), colour = 'blue') +
   geom_ribbon(data = data.frame(x = 1:41, ymin = predict(mod1, 1:41)$ci.lb, ymax = predict(mod1, 1:41)$ci.ub), aes(x = x, ymin = ymin, ymax = ymax), alpha = 0.1)
-duration_w
+#duration_w
 
 # IMPACTS PLOTS
 ## @knitr impacts-var-weighted-intercept-profile-plot
 profile(impact_ne_w)
 
 ## @knitr impacts-var-weighted-intercept-coefficient-estimates-fig2
+impact_coefs_plot <- 
 mk_rma_summary_df(impact_ne_w) %>%
   mutate(driver = gsub("mean_imps", "Cumulative human impact", driver)) %>%
   filter(driver != 'intrcpt') %>% 
   mutate(driver = factor(driver, levels = c('Duration:Cumulative human impact', 'Duration', 'Cumulative human impact'))) %>%
+  mutate(driver = gsub(pattern = 'Cumulative human impact', replacement = 'CHI', x = driver)) %>% 
+  mutate(driver = factor(driver, levels = c('Duration:CHI', 'CHI' ,'Duration'))) %>%
   ggplot(data = ., aes(x = estimate, y = driver)) + 
     theme_bw() +
     geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 0.8) + 
     geom_point(size = 3) + 
     geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
     xlim(c(-0.12, 0.12)) + 
-    theme(axis.text.y = element_text(hjust = 1, size = 14), 
-          axis.text.x = element_text(size = 14), 
-          axis.title = element_text(size = 16)) + 
+    theme(axis.text.y = element_text(hjust = 1, size = 11)) +
+          #axis.text.x = element_text(size = 14), 
+          #axis.title = element_text(size = 16)) + 
     ylab("") + 
     xlab('\nCoefficient estimate')
+#impact_coefs_plot
 
 ## @knitr impacts-var-weighted-predictions
 imp_quantiles <- 
@@ -245,8 +296,8 @@ model_driver_vector <-
   c('Duration', 'Invasives', 'LTC', 'Nutrients', 'Duration:Invasives', 
     'Duration:LTC', 'Duration:Nutrients')
 ordered_driver_vector <- 
-  c('Duration', 'Invasives', 'Nutrients', 'LTC', 'Duration:Invasives', 
-    'Duration:Nutrients', 'Duration:LTC')
+  c('Duration', 'Nutrients', 'Invasives', 'LTC', 'Duration:Nutrients', 
+    'Duration:Invasives', 'Duration:LTC')
 
 driver_summary_plot_short  <- 
   mk_rma_summary_df(drivers_scaled) %>% 
@@ -254,21 +305,23 @@ driver_summary_plot_short  <-
     mutate(grouping = as.character(driver)) %>% 
     mutate(grouping = factor(model_driver_vector, 
                              levels = rev(ordered_driver_vector))) %>% 
-    mutate(short_term = c('no', 'yes', 'yes', 'yes', 'no', 'no', 'no')) %>%
+    mutate(short_term = c('yes', 'yes', 'yes', 'yes', 'no', 'no', 'no')) %>%
     filter(short_term == 'yes') %>%
     ggplot(data = ., aes(x = estimate, y = grouping)) + 
       theme_bw() +
       geom_errorbarh(aes(xmin = ci_lb, xmax = ci_ub), height = 0, size = 1.5) + 
       geom_point(size = 4) + 
       geom_vline(xintercept = 0, colour = 'black', linetype = 'dashed') + 
-      xlim(c(-3.2, 3.2)) + 
+      xlim(c(-3.3, 3.3)) + 
       theme(axis.text.y = element_text(hjust = 1, size = 13), 
             axis.text.x = element_text(size = 13), 
             axis.title = element_text(size = 13), 
             plot.background = element_blank()) + 
       ylab("") + 
-      xlab('\nStandardised coefficient estimate')
+      xlab('\nStandardised coefficient estimate') + 
+      scale_y_discrete(limits=c('LTC', 'Invasives', 'Nutrients', ''))
 #driver_summary_plot_short
+
 
 driver_summary_plot_long  <- 
   mk_rma_summary_df(drivers_scaled) %>% 

@@ -3,6 +3,8 @@ library(dplyr)
 library(ggplot2)
 library(readr)
 
+source('driver_extraction_functions.R')
+
 sp_data <- read_sp_data('../master_data/SiteSpatialData.csv') %>% 
   mutate(study_site = paste(.$Study.ID, .$Site, sep = '_'))
 
@@ -32,14 +34,14 @@ ggplot(data = vw_spatial, aes(x = Start_Long, y = Start_Lat)) +
   ylab("Latitude")
 
 ## @knitr site-map-effect size
-ggplot(data = test, aes(x = Start_Long, y = Start_Lat)) + 
-  theme_void() + 
-  borders('world', colour = NA, fill = 'darkgrey', alpha = 0.5) + 
-  geom_point(mapping = aes(fill = yi_SppR_ROM), colour = 'grey60', shape = 21, size = 2) + 
+#ggplot(data = vw_spatial, aes(x = Start_Long, y = Start_Lat)) + 
+#  theme_void() + 
+#  borders('world', colour = NA, fill = 'darkgrey', alpha = 0.5) + 
+#  geom_point(mapping = aes(fill = yi_SppR_ROM), colour = 'grey60', shape = 21, size = 2) + 
 #  theme(legend.position = 'none') + 
-  scale_fill_gradient2(low = 'blue', high = 'red') + 
-  xlab("Longitude") +
-  ylab("Latitude")
+#  scale_fill_gradient2(low = 'blue', high = 'red') + 
+#  xlab("Longitude") +
+#  ylab("Latitude")
 
 ## @knitr cumulative-impacts-with-sites-map-2008
 imp_map_b1 <- raster("../../Human_Cumulative_Impacts/model_class_wgs84_lzw.tif", band = 1)

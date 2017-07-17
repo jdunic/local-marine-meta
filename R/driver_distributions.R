@@ -196,48 +196,6 @@ grid.arrange(driver_cum_freq, driver_hist, nrow = 2)
 #nuts_points <- rasterToPoints(big_nuts_raster, spatial=TRUE)
 #proj4string(nuts_points)
 
-
-meow <- readOGR("../master_data/MEOW-TNC", "meow_ecos")
-
-meow2 <- spTransform(meow, projection(imps))
-meow2 <- spTransform(meow[c(-68, -69, -70, -71), ], projection(imps))
-
-fortify(meow2) %>% arrange(group) %>% filter(hole == TRUE)
-
-#plot(spTransform(meow[c(-68, -69, -70, -71), ], projection(imps)))
-
-
-map.df <- left_join(map.df, data, by=c('id'='ID'))
-
-meow2@polygons[[1]]@Polygons[[1]]@hole %>% str
-
-slot(meow2, 'polygons') %>% str
-
-test <- lapply(meow2@polygons, function(polygon) {
-  inner_hole_list = lapply(polygon@Polygons, function(inner_poly) {
-    inner_hole = inner_poly@hole
-    return(inner_hole)
-  }
-  inner_poly_sum <- sum(unlist(inner_hole_list))
-  return(inner_poly_sum)
-  )
-  hole_TF = sum(unlist(inner_hole_list))
-})
-
-meow_nh <- fortify(meow2) %>% arrange(group) %>% mutate(group = as.numeric(as.character(group))) %>% filter(hole == TRUE) %>% 
-  mutate(group = factor(group))
-
-meow_list <- split(meow_nh, meow_nh$group)
-
-lapply <- 
-
-ggplot(test, mapping = aes(x = long, y = lat, group = group, fill = factor(group))) + geom_polygon()
-
-68.1, 70.1, 70.2 
-
-ggplot(meow2, mapping = aes(x = long, y = lat, group = group, fill = group)) +
- geom_polygon()
-
 #invs_values <- extract(invs, big_invs)
 #nuts_values <- extract(nuts, big_nuts)
 
@@ -284,7 +242,7 @@ ggplot(data = ., aes(x = log(nuts + 0.1), colour = dataset, fill = dataset)) +
   theme_bw() + 
   guides(colour = FALSE, fill = FALSE) +
   ylab('Density') +
-  xlab('\nlog(nutrient addtion + 0.1)')
+  xlab('\nlog(nutrient addition + 0.1)')
 invs_dist <- 
 no_event %>% 
   filter(yi_SppR_ROM > 0, !is.na(vi_SppR_ROM), !is.na(mean_invs), !is.na(mean_nuts), !is.na(sliced_ltc)) %>% 
@@ -297,7 +255,7 @@ ggplot(data = ., aes(x = log(invs + 1), colour = dataset, fill = dataset)) +
   theme_bw() + 
   guides(colour = FALSE, fill = FALSE) + 
   ylab('') +
-  xlab('\nlog(propagule pressure + 1)')
+  xlab('\nlog(invasion potential + 1)')
 ltc_dist <- 
 no_event %>% 
   filter(yi_SppR_ROM > 0, !is.na(vi_SppR_ROM), !is.na(mean_invs), !is.na(mean_nuts), !is.na(sliced_ltc)) %>% 
@@ -309,7 +267,7 @@ ggplot(data = ., aes(x = ltc / 10, colour = dataset, fill = dataset)) +
   geom_density(alpha = 0.5) + 
   theme_bw() + 
   ylab('') +
-  xlab('\nLinear temperature change C / year') + 
+  xlab('\nLinear temperature change degree C / year') + 
   labs(fill = '', colour = '')
 
 #grid.arrange(nuts_dist, invs_dist, ltc_dist, ncol = 3)
@@ -329,29 +287,48 @@ ggplot(data = ., aes(x = ltc_short / 10, colour = dataset, fill = dataset)) +
   xlab('\nLinear temperature change C / year') + 
   labs(fill = '', colour = '')
 
+## @knitr global-vs-analysis-data-coverage-drivers-plot
+#dev.new(height = 3.5, width = 13)
 master_layout <- 
 grid.layout(nrow = 1, ncol = 3, 
             widths = unit(c(0.8, 0.8, 1), "null"),
             heights = unit(c(1), "null"))
-#dev.new(height = 3.5, width = 11)
 
-## @knitr global-vs-analysis-data-coverage-drivers-plot
-grid.newpage()
+#grid.newpage()
 pushViewport(viewport(layout = master_layout))
-print(nuts_dist, vp = set_vp(1, 1))
-print(invs_dist, vp = set_vp(1, 2))
-print(ltc_dist, vp = set_vp(1, 3))
+
+nuts_dist_big <- 
+  nuts_dist + 
+  theme(axis.text.y = element_text(size = 16), 
+        axis.text.x = element_text(size = 16), 
+        axis.title.y = element_text(size = 16), 
+        axis.title.x = element_text(size = 16))
+invs_dist_big <- 
+invs_dist + 
+  theme(axis.text.y = element_text(size = 16), 
+        axis.text.x = element_text(size = 16), 
+        axis.title.x = element_text(size = 16))
+ltc_dist_big <- 
+ltc_dist + 
+  theme(axis.text.y = element_text(size = 16), 
+        axis.text.x = element_text(size = 16), 
+        axis.title.x = element_text(size = 16), 
+        legend.text = element_text(size = 16))
+
+print(nuts_dist_big, vp = set_vp(1, 1))
+print(invs_dist_big, vp = set_vp(1, 2))
+print(ltc_dist_big, vp = set_vp(1, 3))
 
 #
 grid.text(
     "a)", vp = viewport(layout.pos.row = 1, layout.pos.col = 1), 
-    gp = gpar(fontsize = 11), vjust = -13, hjust = 12
+    gp = gpar(fontsize = 16, fontface = 'italic'), vjust = -9.8, hjust = 9.5
     )
 grid.text(
     "b)", vp = viewport(layout.pos.row = 1, layout.pos.col = 2), 
-    gp = gpar(fontsize = 11), vjust = -13, hjust = 12
+    gp = gpar(fontsize = 16, fontface = 'italic'), vjust = -9.8, hjust = 9.5
     )
 grid.text(
     "c)", vp = viewport(layout.pos.row = 1, layout.pos.col = 3), 
-    gp = gpar(fontsize = 11), vjust = -13, hjust = 16.5
+    gp = gpar(fontsize = 16, fontface = 'italic'), vjust = -9.8, hjust = 13.5
     )
