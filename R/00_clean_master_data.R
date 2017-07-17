@@ -87,8 +87,8 @@ process_master_data <- function(richData = rich_data, event_data = event_data, s
 
   # Load modified datamart::uncov function set to allow use of '^' in unit names
   # and to silence datamart::mashup output
-  source("R/datamart_UnitSetManager2_source.r")
-  source("R/datamart_mashup_source.r")
+  source("R/00_datamart_UnitSetManager2_source.r")
+  source("R/00_datamart_mashup_source.r")
 
   # Standardize unit names
   richData$`PltSz (units)` <- tolower(as.character(richData$`PltSz (units)`))
@@ -318,7 +318,7 @@ process_master_data <- function(richData = rich_data, event_data = event_data, s
   richData$date2 <- make_date_col(year = richData$T2, month = richData$T2m)
 
 #browser()
-  # Using the new date functions in 02_functions.R
+  # Using the new date functions in 00_functions.R
   firstSampleFilteredData <- 
     richData %>% 
       group_by(`Study ID`, Reference, Sys, taxa, samp_method, 
@@ -513,7 +513,7 @@ process_master_data <- function(richData = rich_data, event_data = event_data, s
 
   cbdata <- rbind_all(split_dates_list)
 
-  # Using the new date functions in 02_functions.R
+  # Using the new date functions in 00_functions.R
   cb_firstSampleFilteredData <- 
     cbdata %>% 
       group_by(subSiteID) %>%

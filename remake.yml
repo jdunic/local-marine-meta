@@ -15,9 +15,9 @@ packages:
 
 
 sources:
-  - R/02_functions.R
-  - R/clean_master_data.R
-  - R/driver_extraction_functions.R
+  - R/00_functions.R
+  - R/00_clean_master_data.R
+  - R/00_driver_extraction_functions.R
 
 targets:
   all:
@@ -148,8 +148,3 @@ targets:
 
   fl_driver_data:
     command: combine_fl_data(fl_data = cleaned_master_data, spatial_data = spatial_data, imps = imp_data, invs = invs_data, nuts = nut_data, pest = pest_data, total_ltc = total_ltc_data, total_vocc = total_vel_data, sliced_temp = combined_temp_data)
-
-#  test_report.html:
-#    depends:
-#      - Data_outputs/firstLastData_1.0.csv
-#    command: render("test_report.Rmd")
