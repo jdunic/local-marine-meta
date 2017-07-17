@@ -315,7 +315,7 @@ driver_predictions <- bind_rows(all0, invs_q100_all0, nuts_q100_all0, ltc_q100_a
 nuts_alone_predictions <- 
 driver_predictions %>% 
   filter(invs_quantile == 0, temp_quantile == 0) %>% 
-  mutate(nuts_quantile = factor(nuts_quantile, levels = c('0', '50', '100'))) %>% 
+  mutate(nuts_quantile = factor(nuts_quantile, levels = c('0', '100'))) %>% 
   mutate(driver = 'Nutrient addition') %>%
 ggplot(data = .) + 
   geom_line(aes(x = duration, y = (pred), colour = nuts_quantile)) + 
@@ -337,7 +337,7 @@ ggplot(data = .) +
 invs_alone_predictions <- 
 driver_predictions %>% 
   filter(nuts_quantile == 0, temp_quantile == 0) %>% 
-  mutate(invs_quantile = factor(invs_quantile, levels = c('0', '50', '75', '100'))) %>% 
+  mutate(invs_quantile = factor(invs_quantile, levels = c('0', '100'))) %>% 
   mutate(driver = 'Invasion potential') %>% 
 ggplot(data = .) + 
   geom_line(aes(x = duration, y = (pred), colour = invs_quantile)) + 
@@ -359,7 +359,7 @@ ggplot(data = .) +
 ltc_alone_predictions <- 
 driver_predictions %>% 
   filter(nuts_quantile == 0, invs_quantile == 0) %>% 
-  mutate(temp_quantile = factor(temp_quantile, levels = c('0', '50', '100'))) %>% 
+  mutate(temp_quantile = factor(temp_quantile, levels = c('0', '100'))) %>% 
   mutate(driver = 'Linear temperature change') %>% 
 ggplot(data = .) + 
   geom_line(aes(x = duration, y = (pred), colour = temp_quantile)) + 
@@ -380,7 +380,7 @@ ggplot(data = .) +
 #
 all_mean_predictions <- 
 bind_rows(all0, all_mean) %>% 
-  mutate(temp_quantile = factor(temp_quantile, levels = c('0', 'mean', '100'))) %>%
+  mutate(temp_quantile = factor(temp_quantile, levels = c('0', 'mean'))) %>%
   mutate(driver = 'All drivers') %>% 
 ggplot(data = ., aes(group = temp_quantile)) + 
   geom_line(aes(x = duration, y = (pred), colour = temp_quantile)) + 

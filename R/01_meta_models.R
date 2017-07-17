@@ -29,7 +29,7 @@ fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>%
 no_event <- filter(fl_combined, Event != 'Yes')
 
 # Spatial scale as a covariate
-source('driver_extraction_functions.R')
+source('00_driver_extraction_functions.R')
 spatial <- semi_join(read_sp_data('../master_data/SiteSpatialData.csv'), no_event, by = c('Study.ID', 'Site'))
 
 # Get the min and max lat long values (so that I don't need all the pieces in between)

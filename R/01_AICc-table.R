@@ -158,7 +158,7 @@ aic_tab_mixed <-
          `Akaike weight` = exp(-0.5 * `Delta AICc` / sum_AICc_weight)) %>% 
   mutate(`Akaike weight` = round(`Akaike weight`, digits = 3)) %>% 
   mutate(Model = c('LR ~ Dur + CHI + Dur*CHI', 'LR ~ Dur')) %>% 
-  arrange(`Akaike weight`) %>% 
+  arrange(-`Akaike weight`) %>% 
   mutate(Taxa = c('mixed', '')) %>% 
   select(Taxa, Model, `logLik:`, K, `deviance:`, `AICc:`, `Delta AICc`, `Akaike weight`) %>% 
   rename(`Log-Likelihood` = `logLik:`, Deviance = `deviance:`, AICc = `AICc:`)
@@ -175,8 +175,8 @@ aic_tab_fish <-
          sum_AICc_weight = sum(exp(-0.5 * `Delta AICc`)), 
          `Akaike weight` = exp(-0.5 * `Delta AICc` / sum_AICc_weight)) %>% 
   mutate(`Akaike weight` = round(`Akaike weight`, digits = 3)) %>% 
-  mutate(Model = c('LR ~ Dur + CHI + Dur*CHI', 'LR ~ Dur')) %>% 
-  arrange(`Akaike weight`) %>% 
+  mutate(Model = c('LR ~ Dur', 'LR ~ Dur + CHI + Dur*CHI')) %>% 
+  arrange(-`Akaike weight`) %>% 
   mutate(Taxa = c('fish', '')) %>% 
   select(Taxa, Model, `logLik:`, K, `deviance:`, `AICc:`, `Delta AICc`, `Akaike weight`) %>% 
   rename(`Log-Likelihood` = `logLik:`, Deviance = `deviance:`, AICc = `AICc:`)
@@ -193,8 +193,8 @@ aic_tab_algae <-
          sum_AICc_weight = sum(exp(-0.5 * `Delta AICc`)), 
          `Akaike weight` = exp(-0.5 * `Delta AICc` / sum_AICc_weight)) %>% 
   mutate(`Akaike weight` = round(`Akaike weight`, digits = 3)) %>% 
-  mutate(Model = c('LR ~ Dur + CHI + Dur*CHI', 'LR ~ Dur')) %>% 
-  arrange(`Akaike weight`) %>% 
+  mutate(Model = c('LR ~ Dur', 'LR ~ Dur + CHI + Dur*CHI')) %>% 
+  arrange(-`Akaike weight`) %>% 
   mutate(Taxa = c('algae', '')) %>% 
   select(Taxa, Model, `logLik:`, K, `deviance:`, `AICc:`, `Delta AICc`, `Akaike weight`) %>% 
   rename(`Log-Likelihood` = `logLik:`, Deviance = `deviance:`, AICc = `AICc:`)
@@ -212,7 +212,7 @@ aic_tab_inverts <-
          `Akaike weight` = exp(-0.5 * `Delta AICc` / sum_AICc_weight)) %>% 
   mutate(`Akaike weight` = round(`Akaike weight`, digits = 3)) %>% 
   mutate(Model = c('LR ~ Dur + CHI + Dur*CHI', 'LR ~ Dur')) %>%  
-  arrange(`Akaike weight`) %>% 
+  arrange(-`Akaike weight`) %>% 
   mutate(Taxa = c('inverts', '')) %>%
   select(Taxa, Model, `logLik:`, K, `deviance:`, `AICc:`, `Delta AICc`, `Akaike weight`) %>% 
   rename(`Log-Likelihood` = `logLik:`, Deviance = `deviance:`, AICc = `AICc:`)
