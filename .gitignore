@@ -13,6 +13,9 @@
 *.tif
 *.xlsx
 *.xls
+*.rda
+*.rdx
+*.RData
 
 # Images #
 ##########
