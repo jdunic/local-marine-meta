@@ -16,6 +16,7 @@
 *.rda
 *.rdx
 *.RData
+*.rdb
 
 # Images #
 ##########
