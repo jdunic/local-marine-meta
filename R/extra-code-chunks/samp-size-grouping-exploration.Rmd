@@ -4,8 +4,8 @@ library(readr)
 
 knitr::opts_chunk$set(warning=FALSE, message = FALSE)
 
-source('meta_models.R')
-source('driver_extraction_functions.R')
+source('01_meta_models.R')
+source('00_driver_extraction_functions.R')
 
 # Just a tabular look at how replication is distributed across taxa
 no_event %>% 

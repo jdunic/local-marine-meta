@@ -1,4 +1,4 @@
-#source('meta_models.R')
+#source('01_meta_models.R')
 
 no_smith <- filter(no_event, Reference != 'Smith et al 2006')
 

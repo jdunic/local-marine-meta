@@ -1,7 +1,7 @@
 ## Local marine diversity change meta-analysis model results
 
 ```{r, include=FALSE, cache=TRUE}
-source('meta_models.R')
+source('01_meta_models.R')
 ```
 
 
@@ -13,7 +13,7 @@ options(width=120)
 
 ```{r, echo=FALSE, cache=FALSE}
 library(knitr)
-read_chunk("./meta_models.R")
+read_chunk("./01_meta_models.R")
 #read_chunk("./plot_effect_sizes.R")
 
 ```
