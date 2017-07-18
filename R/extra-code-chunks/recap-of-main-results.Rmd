@@ -1,8 +1,8 @@
 ```{r, include=FALSE}
 
 library(knitr)
-read_chunk('meta_models.R')
-#read_chunk("taxonomic_groups.R")
+read_chunk('01_meta_models.R')
+#read_chunk("01_taxonomic_groups.R")
 read_chunk("discussion_question_responses_aug18.R")
 
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
