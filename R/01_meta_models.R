@@ -26,11 +26,11 @@ fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>%
   # 'shrimp farming' and 'tidal restriction'
   filter(Site != 'Enfermeria')
 
-no_event <- filter(fl_combined, Event != 'Yes')
+no_event2 <- filter(fl_combined, Event != 'Yes')
 
 # Spatial scale as a covariate
 source('00_driver_extraction_functions.R')
-spatial <- semi_join(read_sp_data('../master_data/SiteSpatialData.csv'), no_event, by = c('Study.ID', 'Site'))
+spatial <- semi_join(read_sp_data('../master_data/SiteSpatialData.csv'), no_event2, by = c('Study.ID', 'Site'))
 
 # Get the min and max lat long values (so that I don't need all the pieces in between)
 corners <- 
@@ -60,18 +60,17 @@ max_dists <- lapply(study_site_sp_points, function(sp_points_df) {
   gather(key = study_site, value = max_dist) %>% 
   separate(study_site, into = c('Study.ID', 'Site'), sep = '__')
 
-no_event <- left_join(no_event, max_dists)
+no_event2 <- left_join(no_event2, max_dists)
 
-no_event2 <- filter(no_event, max_dist <= 150000)
+no_event2 <- filter(no_event2, max_dist <= 150000)
 
-no_event %>% 
-filter(!is.na(yi_SppR_ROM), !is.na(vi_SppR_ROM)) %>% 
-filter(max_dist > 100000) %>% select(Study.ID, Reference, max_dist) %>% 
-mutate(max_dist / 1000) %>% 
-arrange(max_dist)
+#no_event2 %>% 
+#filter(!is.na(yi_SppR_ROM), !is.na(vi_SppR_ROM)) %>% 
+#filter(max_dist > 100000) %>% select(Study.ID, Reference, max_dist) %>% 
+#mutate(max_dist / 1000) %>% 
+#arrange(max_dist)
 
-
-summarise(no_event2, max(max_dist))
+#summarise(no_event2, max(max_dist))
 
 
 ## @knitr duration-var-weighted-intercept
@@ -101,14 +100,14 @@ drivers_scaled
 
 ## @knitr drivers-var-weighted-collinearity-table
 drivers_cor_table <- 
-no_event %>% 
+no_event2 %>% 
   filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
          !is.na(mean_nuts) & !is.na(sliced_ltc)) %>% mutate(mean_invs = mean_invs * 10^-3) %>% select(mean_nuts, mean_invs, sliced_ltc, Duration) %>% cor()
 
 ## @knitr drivers-var-weighted-intercept-not-scaled
 drivers_unscaled <- 
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event, #%>% mutate(scaled_invs = mean_invs * 10^-3), 
+         data = no_event2, #%>% mutate(scaled_invs = mean_invs * 10^-3), 
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * (mean_invs + sliced_ltc + mean_nuts))
 drivers_unscaled
@@ -118,7 +117,7 @@ drivers_unscaled
 # Nutrients * temperature (Binzer et al 2012)
 interactions_scaled <- 
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+         data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3), 
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * (scale(scaled_invs) * scale(sliced_ltc) + scale(sliced_ltc) * scale(mean_nuts)))
 
@@ -130,7 +129,7 @@ interactions_scaled
 ## @knitr drivers-interactions-var-weighted-unscaled
 interactions_unscaled <- 
   rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+         data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3), 
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * (scaled_invs * sliced_ltc + sliced_ltc * mean_nuts))
 
@@ -144,7 +143,7 @@ interactions_unscaled
 # DURATION PLOT
 ## @knitr no-event-data-plotted-with-duration-var-weighted-fig1
 duration_w <- 
-filter(no_event, !is.na(yi_SppR_ROM), !is.na(vi_SppR_ROM)) %>%
+filter(no_event2, !is.na(yi_SppR_ROM), !is.na(vi_SppR_ROM)) %>%
 ggplot(data = .) +
   geom_point(aes(x = Duration, y = yi_SppR_ROM, colour = as.factor(Study.ID)), size = 1) + 
   ylab('Change in species richness (LRR)') +
@@ -185,7 +184,7 @@ mk_rma_summary_df(impact_ne_w) %>%
 
 ## @knitr impacts-var-weighted-predictions
 imp_quantiles <- 
-  no_event %>% 
+  no_event2 %>% 
     filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
     .$mean_imps %>% 
     quantile(.) %>% 
@@ -227,7 +226,7 @@ impact_predicted_log_ratio <-
 
 ## @knitr impacts-var-weighted-observed-log-ratio
 observed_log_ratio <- 
-  no_event %>% 
+  no_event2 %>% 
     filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
     ggplot(data = .) + 
       geom_point(aes(x = Duration, y = yi_SppR_ROM, colour = Study.ID)) + 
@@ -261,7 +260,7 @@ impact_predicted_percent_change <-
 
 ## @knitr impacts-var-weighted-observed-percent-change
 observed_percent_change <- 
-  no_event %>% 
+  no_event2 %>% 
     filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)) %>% 
     ggplot(data = .) + 
       geom_point(aes(x = Duration, y = get_percent_change(yi_SppR_ROM), colour = Study.ID)) + 
@@ -280,7 +279,7 @@ grid.arrange(observed_log_ratio, impact_predicted_log_ratio, ncol = 2)
 grid.arrange(observed_percent_change, impact_predicted_percent_change, ncol = 2)
 
 ## @knitr cumulative-impacts-freq-dist-for-var-weighted-dataset-fig5
-ggplot(data = no_event %>% filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)), 
+ggplot(data = no_event2 %>% filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_imps)), 
        aes(x = mean_imps)) + 
   geom_histogram(binwidth = 1, colour = 'black', boundary = 0) + 
   scale_x_continuous(breaks = 0:10) + 
@@ -423,7 +422,7 @@ grid.arrange(text_a, interaction_summary_plot_short, text_b, interaction_summary
 ## @knitr duration-samp-size-weighted-model-output
 mod1_ss <- 
   rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
-         data = no_event %>% filter(!is.na(yi_SppR_ROM)), 
+         data = no_event2 %>% filter(!is.na(yi_SppR_ROM)), 
          random = ~ 1 | as.factor(Study.ID), 
          mods = ~ Duration)
 #mod1_ss
@@ -433,7 +432,7 @@ mod1_ss_robust
 ## @knitr impacts-samp-size-weighted-model-output
 impact_ne_ss <- 
   rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
-         data = no_event %>% filter(!is.na(mean_imps) & !is.na(yi_SppR_ROM)),
+         data = no_event2 %>% filter(!is.na(mean_imps) & !is.na(yi_SppR_ROM)),
          random = ~ 1 | factor(Study.ID), 
          mods = ~ Duration * mean_imps)
 #impact_ne_ss
@@ -443,8 +442,8 @@ impact_ne_ss_robust
 ## @knitr drivers-samp-size-weighted-model-output-scaled
 drivers_scaled_ss <- 
   rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
-         #data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+         data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
+         #data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3), 
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
 #drivers_scaled_ss
@@ -455,8 +454,8 @@ drivers_scaled_ss_robust
 ## @knitr drivers-interactions-samp-size-weighted-scaled
 interactions_ss_scaled <- 
   rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
-         #data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+         data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
+         #data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3), 
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * (scale(scaled_invs) * scale(sliced_ltc) + scale(sliced_ltc)*scale(mean_nuts)))
 interactions_ss_scaled 
@@ -469,8 +468,8 @@ interactions_ss_scaled_robust
 # @knitr drivers-interactions-samp-size-weighted-unscaled
 interactions_ss_unscaled <- 
   rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
-         #data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+         data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
+         #data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3), 
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * (scaled_invs * sliced_ltc + sliced_ltc*mean_nuts))
 interactions_ss_unscaled 
@@ -535,8 +534,8 @@ grid.arrange(driver_summary_plot_short_ss, driver_summary_plot_long_ss, ncol = 2
 ## @knitr drivers-samp-size-weighted-model-output-unscaled
 drivers_unscaled_ss <- 
   rma.mv(yi = yi_SppR_ROM, V = 1 / n1, 
-         data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
-         #data = no_event %>% mutate(scaled_invs = mean_invs * 10^-3), 
+         data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3) %>% filter(!is.na(yi_SppR_ROM) & !is.na(sliced_ltc) & !is.na(mean_nuts) & !is.na(scaled_invs)), 
+         #data = no_event2 %>% mutate(scaled_invs = mean_invs * 10^-3), 
          random = ~ 1 | Study.ID, 
          mods = ~ Duration * (scaled_invs + sliced_ltc + mean_nuts))
 #drivers_unscaled_ss
