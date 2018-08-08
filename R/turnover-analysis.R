@@ -29,11 +29,12 @@
 
 #SiteSpatialData.csv
 #Study.ID,Reference,Site,Start_Lat,Start_Long,End_Lat,End_Long,Shape,Source,Checked,Notes
-source('03_run_results_scripts.R')
-source('clean-raw-data.R')
-
 library(vegan)
 library(raster)
+library(tidyverse)
+
+source('clean-raw-data.R')
+source('00_driver_extraction_functions.R')
 
 raw_refs <- read_csv('../master_data/raw_species_papers/raw-species-refs-list.csv')
 
