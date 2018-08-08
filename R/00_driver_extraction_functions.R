@@ -58,8 +58,9 @@ create_sp_lines <- function(spatial_data) {
 # ------------------------------------------------------------------------------
 # Get cumulative human impact values (Halpern, 2013) for all spatial data points
 # ------------------------------------------------------------------------------
-extract_imp_data <- function(spatial_data, sp_points, sp_lines) {
-  imp_map <- raster('master_data/Impact_Data/CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif')
+extract_imp_data <- function(spatial_data, sp_points, sp_lines, in_file = 'master_data/Impact_Data/CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif', 
+  out_file = 'Data_outputs/spatial_data_with_cumulative_impacts.csv') {
+  imp_map <- raster(in_file)
 
   point_imps <- raster::extract(imp_map, sp_points, buffer = 1000)
   # Clean up the list of lists of impact values for both point imps and line imps
@@ -78,7 +79,7 @@ extract_imp_data <- function(spatial_data, sp_points, sp_lines) {
   combined_data <- rbind(sp_data_points2, sp_data_lines2)
 
   # Save the data so I don't have to run all of this again + waste more time
-  write_csv(combined_data, 'Data_outputs/spatial_data_with_cumulative_impacts.csv')
+  write_csv(combined_data, out_file)
   beepr::beep()
   return(combined_data)
 }
