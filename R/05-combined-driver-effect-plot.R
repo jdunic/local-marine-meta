@@ -1,34 +1,78 @@
-temp = c(-0.5, -0.001, 0.001, 0.5)
-invs = seq(from = 0, to = 160000, by = 1000)
-duration = as.vector(c(5, 20), mode = 'integer')
-nuts = seq(from = 0, to = 200, by = 1)
+#Libraries
+library(tidyverse)
+library(ggplot2)
+library(metafor)
 
+
+
+#the data
+source('00_functions.R')
+
+fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>% 
+  mutate(Study.ID = factor(Study.ID)) %>% 
+  # This study was a duplicate
+  filter(Study.ID != 'Shimanaga') %>% 
+  # Keller study 
+  filter(Study.ID != '172') %>%
+  # Study  136 - Enfermeria should have been classified as having an event - 
+  # 'shrimp farming' and 'tidal restriction'
+  filter(Site != 'Enfermeria')
+
+no_event2 <- filter(fl_combined, Event != 'Yes')
+
+#The model
+drivers_unscaled <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = no_event2, #%>% mutate(scaled_invs = mean_invs * 10^-3), 
+         random = ~ 1 | Study.ID, 
+         mods = ~ Duration * (mean_invs + sliced_ltc + mean_nuts))
+
+#Now setup conditions for  predictions
+temp = c(-1, -0.5, -0.01, 0.01, 0.5, 1)
+invs = seq(from = 0, to = 160000, by = 1000)
+duration = as.vector(c(5, 10,15, 20), mode = 'integer')
+nuts = seq(from = 0, to = 200, by = 2)
+
+#make the predictions
 prediction_df <- 
   crossing(duration, invs, temp, nuts) %>% 
   mutate(invs_dur = invs*duration, temp_dur = temp*duration, nuts_dur = nuts*duration)  
 prediction_mat <- (as.matrix(prediction_df))
 dimnames(prediction_mat) <- NULL
-#
-g_preds <- 
-  bind_cols(prediction_df, 
-  predict.rma(object = drivers_unscaled, newmods = prediction_mat) %>% as_data_frame()) %>%
-  mutate(nuts_factor = case_when(nuts == nut_quantiles$`0%` ~ 'low (0)', 
-                                 nuts == nut_quantiles$`50%` ~ 'median (0.46)', 
-                                 nuts == nut_quantiles$`100%` ~ 'max (185)')) %>% 
-  mutate(change = case_when(ci.ub < 0 ~ 'loss', ci.lb > 0 ~ 'gain', ci.lb < 0 & ci.ub > 0 ~ 'no change')) %>% 
-  mutate(change = factor(change, level = c('gain', 'no change', 'loss'))) %>%
-  mutate(temp = case_when(temp <=  -0.5 ~ '< -0.5', 
-                          temp >   -0.5 & temp < 0 ~ '-0.5 to 0',
-                          temp >    0 & temp < 0.5 ~ '0 to -0.5', 
-                          temp >=   0.5 ~ '> 0.5')) %>% 
-  mutate(temp = factor(temp, levels = c('< -0.5', 
-                                        '-0.5 to 0', 
-                                        '0 to -0.5',
-                                        '> 0.5'))) %>% 
-  mutate(duration = case_when(duration == 5 ~ '5 years', duration == 20 ~ '20 years')) %>% 
-  mutate(duration = factor(duration, levels = c('5 years', '20 years')))
 
-dev.new(width = 10, height = 5)
+#format for plotting
+g_preds_raw <- 
+  bind_cols(prediction_df, 
+            predict.rma(object = drivers_unscaled, newmods = prediction_mat) %>%
+              as_data_frame())
+beepr::beep()
+
+g_preds <- g_preds_raw %>%
+  mutate(change = case_when(ci.ub < 0 ~ 'Loss', ci.lb > 0 ~ 'Gain', ci.lb < 0 & ci.ub > 0 ~ 'No change')) %>%
+  mutate(change = factor(change, level = c('Gain', 'No change', 'Loss'))) %>%
+  mutate(duration = str_c(duration, "years", sep=" ")) %>%
+  mutate(duration = factor(duration, levels = c('5 years', '10 years', 
+                                                '15 years', '20 years')))
+
+# %>%
+#   
+#   mutate(nuts_factor = case_when(nuts == nut_quantiles$`0%` ~ 'low (0)', 
+#                                  nuts == nut_quantiles$`50%` ~ 'median (0.46)', 
+#                                  nuts == nut_quantiles$`100%` ~ 'max (185)')) %>% 
+#   mutate(temp = case_when(temp <=  -0.5 ~ '< -0.5', 
+#                           temp >   -0.5 & temp < 0 ~ '-0.5 to 0',
+#                           temp >    0 & temp < 0.5 ~ '0 to -0.5', 
+#                           temp >=   0.5 ~ '> 0.5')) %>% 
+#   mutate(temp = factor(temp, levels = c('< -0.5', 
+#                                         '-0.5 to 0', 
+#                                         '0 to -0.5',
+#                                         '> 0.5'))) %>% 
+#   mutate(duration = case_when(duration == 5 ~ '5 years', 
+#                               duration == 20 ~ '20 years')) %>% 
+
+#Plot!
+dev.new(width = 11, height = 5)
+
 ggplot() + 
   theme(legend.background = element_blank(), 
         legend.key = element_blank(), 
@@ -39,52 +83,23 @@ ggplot() +
         strip.background = element_blank(), 
         plot.background = element_blank(),
         strip.text.y = element_text(angle = 0), 
+        axis.text.x = element_text(angle = 45, hjust = 1),
         plot.title = element_text(hjust = 0.5, size = 10)) + 
-  geom_point(data = filter(g_preds), aes(x = invs, y = nuts, colour = change), shape = 15) + 
-  scale_colour_manual(values = c('#0571b0', 'grey90', '#ca0020')) + 
-  #scale_x_log10() + 
-  #scale_y_log10(labels=scales::trans_format('log10', scales::math_format(10^.x))) + 
-  #geom_point(
-  #  data = no_event %>% 
-  #         filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
-  #                !is.na(mean_nuts) & !is.na(sliced_ltc)) %>% 
-  #         mutate(temp = case_when(sliced_ltc <= -0.5 ~ '< -0.5', 
-  #                                 sliced_ltc > -0.5 & sliced_ltc <= -0.001 ~ '-0.5 to 0',
-  #                                 sliced_ltc >= 0.001 & sliced_ltc < 0.5 ~ '0 to -0.5', 
-  #                                 sliced_ltc >= 0.5 ~ '> 0.5')) %>% 
-  #         mutate(temp = factor(temp, levels = c('< -0.5', 
-  #                                               '-0.5 to 0', 
-  #                                               '0 to -0.5', 
-  #                                               '> 0.5'))) %>% 
-  #         mutate(duration = case_when(Duration <= 10 ~ '5 years', Duration > 10 ~ '20 years')) %>%
-  #         mutate(duration = factor(duration, levels = c('5 years', '20 years'))) %>%  
-  #         mutate(change = case_when(yi_SppR_ROM + vi_SppR_ROM < 0 ~ 'loss', yi_SppR_ROM - vi_SppR_ROM > 0 ~ 'gain', yi_SppR_ROM - vi_SppR_ROM < 0 & yi_SppR_ROM + vi_SppR_ROM > 0 ~ 'no change')), 
-  #  aes(x = mean_invs + 0.1, y = mean_nuts + 0.001, colour = change)) + 
-  #geom_point(
-  #  data = no_event %>% 
-  #         filter(!is.na(yi_SppR_ROM) & !is.na(vi_SppR_ROM) & !is.na(mean_invs) & 
-  #                !is.na(mean_nuts) & !is.na(sliced_ltc)) %>% 
-  #         mutate(temp = case_when(sliced_ltc <= -0.5 ~ '< -0.5', 
-  #                                 sliced_ltc > -0.5 & sliced_ltc <= -0.001 ~ '-0.5 to 0',
-  #                                 sliced_ltc >= 0.001 & sliced_ltc < 0.5 ~ '0 to -0.5', 
-  #                                 sliced_ltc >= 0.5 ~ '> 0.5')) %>% 
-  #         mutate(temp = factor(temp, levels = c('< -0.5', 
-  #                                              '-0.5 to 0', 
-  #                                              '0 to -0.5', 
-  #                                              '> 0.5'))) %>% 
-  #         mutate(duration = case_when(Duration <= 10 ~ '5 years', Duration > 10 ~ '20 years')) %>% 
-  #         mutate(duration = factor(duration, levels = c('5 years', '20 years'))), 
-  #  aes(x = mean_invs + 0.1, y = mean_nuts + 0.001), shape = 21, colour = 'black') + 
+  geom_raster(data = filter(g_preds), aes(x = invs, y = nuts, 
+                                          fill = change, alpha=abs(pred)), 
+              interpolate=TRUE) + 
+  scale_fill_manual(values = c('#0571b0', 'grey90', '#ca0020'),
+                    guide = guide_legend("Direction of\nRichness Change")) + 
+  scale_alpha(guide = guide_legend("Absolute\nMagnitude\n(LRR)")) +
   facet_grid(duration ~ temp) + 
-  #xlab('\nInvasion potential (metric tonnes of cargo shipped)') + 
-  #ylab('Nutrient use (metric tonnes of nitrogen and phosphorous fertilizer used)\n') + 
   xlab('\n   Invasion potential') + 
   ylab('Nutrient use\n') + 
   labs(colour = 'LRR') + 
   guides(colour = guide_legend(override.aes = list(size = 3))) + 
-  ggtitle(expression("   Temperature ("*degree*"C)"))
-beep()
+  ggtitle(expression("   Temperature Change ("*degree*"C)"))
 
-dev.copy2pdf(file = '../figures/combined-drivers.pdf')
+beepr::beep()
+
+dev.copy2pdf(file = '../figures/3_new_combined-drivers.pdf', width = 8, height = 5)
 
 
