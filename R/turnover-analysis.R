@@ -33,9 +33,11 @@ library(vegan)
 library(raster)
 library(tidyverse)
 
-source('clean-raw-data.R')
+#source('clean-raw-data.R')
 source('00_driver_extraction_functions.R')
 source('00_functions.R')
+
+load("../data_outputs/turnover_dfs.Rdata")
 
 raw_refs <- read_csv('../master_data/raw_species_papers/raw-species-refs-list.csv')
 
