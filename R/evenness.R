@@ -1,3 +1,12 @@
+library(tidyverse)
+library(metafor)
+
+fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>% 
+  mutate(Study.ID = factor(Study.ID))
+
+event <- filter(fl_combined, Event == 'Yes')
+no_event2 <- filter(fl_combined, Event != 'Yes')
+
 # Increases in shannon diversity
 mod1_shan <- 
   rma.mv(yi = yi_Shan_ROM, V = vi_Shan_ROM, 
@@ -56,7 +65,8 @@ drivers_scaled_even <-
                 filter(Study.ID != 47) %>% mutate(scaled_invs = mean_invs * 10^-3) %>%
                 filter(!is.na(sliced_ltc), !is.na(mean_nuts)), 
          random = ~ 1 | Study.ID, 
-         mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
+         mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)),
+         control=list(optimizer="bobyqa"))
 drivers_scaled_even
 
 
