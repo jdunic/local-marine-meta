@@ -103,3 +103,37 @@ beepr::beep()
 dev.copy2pdf(file = '../figures/3_new_combined-drivers.pdf', width = 8, height = 5)
 
 
+####### marignal effects
+library(modelr)
+
+make_marg_data <- function(avar){
+  avar_x <- enquo(avar)
+  name_x <- quo_name(avar_x)
+  print(avar_x)
+  print(name_x)
+  # vars <- quos(mean_invs, sliced_ltc, mean_nuts)
+  
+  dat <- no_event2 %>% data_grid(
+                    Duration = seq_range(Duration, 3),
+                    !!name_x := seq_range(!!avar_x, 200))
+  
+  vars <- c("mean_invs", "sliced_ltc", "mean_nuts")
+  vars <- vars[vars!=name_x]
+  
+  values <- map(vars, ~median(no_event2[[.]], na.rm=T))
+  names(values) <- vars
+  
+  cbind(dat, values, list(var = name_x))
+} 
+
+
+
+marg_data_frame <- bind_rows(
+  make_marg_data(mean_invs),
+  make_marg_data(sliced_ltc),
+  make_marg_data(mean_nuts)
+)
+
+pred_frame <- as_tibble(predict(drivers_unscaled, newdata = marg_data_frame))
+  
+  
