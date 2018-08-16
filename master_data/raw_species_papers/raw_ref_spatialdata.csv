@@ -1,0 +1,501 @@
+Study.ID,Reference,Site,Raw_Site,Start_Lat,Start_Long,End_Lat,End_Long,Shape,Source,Checked,Notes,row
+
+300,Ibarra-Obando et al 2009,Tidal,Tidal,31.719494,-116.650333,NA,NA,point,Figure 1 + google maps,Using google maps,NA,2
+
+67,"Kilfoyle et al, 2013",N,N,26.01763679,-80.11303855,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",19
+
+67,"Kilfoyle et al, 2013",N,N,26.02577351,-80.11235828,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",20
+
+67,"Kilfoyle et al, 2013",N,N,26.03151834,-80.11198035,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",21
+
+67,"Kilfoyle et al, 2013",N,N,26.0369228,-80.11175359,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",22
+
+67,"Kilfoyle et al, 2013",N,N,26.03821956,-80.11145125,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",23
+
+67,"Kilfoyle et al, 2013",N,N,26.04102306,-80.11122449,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",24
+
+67,"Kilfoyle et al, 2013",N,N,26.04273143,-80.11099773,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",25
+
+67,"Kilfoyle et al, 2013",N,N,26.05087281,-80.11069539,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",26
+
+67,"Kilfoyle et al, 2013",N,N,26.05189671,-80.11046863,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",27
+
+67,"Kilfoyle et al, 2013",N,N,26.05394637,-80.11016629,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",28
+
+67,"Kilfoyle et al, 2013",N,N,26.05518213,-80.11046863,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",29
+
+67,"Kilfoyle et al, 2013",N,N,26.0565464,-80.1100907,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",30
+
+67,"Kilfoyle et al, 2013",N,N,26.05914456,-80.10986395,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",31
+
+67,"Kilfoyle et al, 2013",N,N,25.97777778,-80.11590563,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",32
+
+67,"Kilfoyle et al, 2013",N,N,25.97901235,-80.1152968,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",33
+
+67,"Kilfoyle et al, 2013",N,N,25.98916324,-80.11491629,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",34
+
+67,"Kilfoyle et al, 2013",N,N,25.99218107,-80.11476408,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",35
+
+67,"Kilfoyle et al, 2013",N,N,25.99348422,-80.11453577,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",36
+
+67,"Kilfoyle et al, 2013",N,N,25.9962963,-80.11415525,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",37
+
+67,"Kilfoyle et al, 2013",N,N,25.99780521,-80.11415525,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",38
+
+67,"Kilfoyle et al, 2013",N,N,26.00082305,-80.11362253,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",39
+
+67,"Kilfoyle et al, 2013",N,N,26.00932785,-80.11331811,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",40
+
+67,"Kilfoyle et al, 2013",N,N,26.01769547,-80.11324201,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,"There are two sites which were not in the figure, but this is good enough for the cumulative impact values. 23/25 plots should be representative, and they're quite close together.",41
+
+193,Burrows et al. 2012,monterey,monterey,36.91057086,-122.0835877,NA,NA,point,Figure 1 + webplot digitizer,NA,line1,492
+
+193,Burrows et al. 2012,monterey,monterey,36.86443758,-121.870452,NA,NA,point,Figure 1 + webplot digitizer,NA,line1,493
+
+193,Burrows et al. 2012,monterey,monterey,36.86038524,-122.0836812,NA,NA,point,Figure 1 + webplot digitizer,NA,line2,494
+
+193,Burrows et al. 2012,monterey,monterey,36.80764518,-121.834245,NA,NA,point,Figure 1 + webplot digitizer,NA,line2,495
+
+193,Burrows et al. 2012,monterey,monterey,36.81019963,-122.0837747,NA,NA,point,Figure 1 + webplot digitizer,NA,line3,496
+
+193,Burrows et al. 2012,monterey,monterey,36.76030217,-121.8538862,NA,NA,point,Figure 1 + webplot digitizer,NA,line3,497
+
+193,Burrows et al. 2012,monterey,monterey,36.76000883,-122.0820059,NA,NA,point,Figure 1 + webplot digitizer,NA,line4,498
+
+193,Burrows et al. 2012,monterey,monterey,36.71197529,-121.8539762,NA,NA,point,Figure 1 + webplot digitizer,NA,line4,499
+
+193,Burrows et al. 2012,monterey,monterey,36.71075777,-122.0839598,NA,NA,point,Figure 1 + webplot digitizer,NA,line5,500
+
+193,Burrows et al. 2012,monterey,monterey,36.66367176,-121.862446,NA,NA,point,Figure 1 + webplot digitizer,NA,line5,501
+
+193,Burrows et al. 2012,monterey,monterey,36.66150152,-122.0840516,NA,NA,point,Figure 1 + webplot digitizer,NA,line6,502
+
+193,Burrows et al. 2012,monterey,monterey,36.63610239,-121.9742292,NA,NA,point,Figure 1 + webplot digitizer,NA,line6,503
+
+193,Burrows et al. 2012,monterey,monterey,36.61131591,-122.084145,NA,NA,point,Figure 1 + webplot digitizer,NA,line7,504
+
+193,Burrows et al. 2012,monterey,monterey,36.59153189,-121.9882787,NA,NA,point,Figure 1 + webplot digitizer,NA,line7,505
+
+621,Williams and Zedler 1999,natural,natural,32.64552098,-117.1067698,NA,NA,point,Figure1 + webplot digitizer,Using google maps,NA,528
+
+621,Williams and Zedler 1999,natural,natural,32.64352222,-117.1088373,NA,NA,point,Figure1 + webplot digitizer,Using google maps,NA,529
+
+621,Williams and Zedler 1999,natural,natural,32.63803442,-117.1103007,NA,NA,point,Figure1 + webplot digitizer,Using google maps,NA,530
+
+621,Williams and Zedler 1999,natural,natural,32.63181449,-117.1041567,NA,NA,point,Figure1 + webplot digitizer,Using google maps,NA,531
+
+660,"Gibson et al., 1993",Tralee Beach,Tralee Beach,56.4896066,-5.418165,NA,NA,point,Fig 1 + Google Earth,Using google maps,NA,14499
+
+660,"Gibson et al., 1993",Tralee Beach,Tralee Beach,56.4888733,-5.409355,NA,NA,point,Fig 1 + Google Earth,Using google maps,NA,14500
+
+660,"Gibson et al., 1993",Tralee Beach,Tralee Beach,56.4876833,-5.406885,NA,NA,point,Fig 1 + Google Earth,Using google maps,NA,14501
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,47.228923,-124.2772421,47.68579435,-126.6685797,line,Figure 1,Using google maps,NA,15468
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,45.66794591,-123.9902816,46.61976121,-129.1077441,line,Figure 1,Using google maps,NA,15469
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,44.18311404,-124.1815886,45.47758285,-130.8295072,line,Figure 1,Using google maps,NA,15470
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.77442739,-124.7076829,43.95467836,-130.6382002,line,Figure 1,Using google maps,NA,15471
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.05104776,-128.2468626,42.58406433,-130.9729875,line,Figure 1,Using google maps,NA,15472
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.08912037,-126.5250995,47.57157651,-124.5642026,line,Figure 1,Using google maps,NA,15473
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.05104776,-128.2946893,47.91423002,-126.0946587,line,Figure 1,Using google maps,NA,15474
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.05104776,-129.6816651,47.07663255,-128.0077288,line,Figure 1,Using google maps,NA,15475
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,43.49780702,-130.9729875,46.2771077,-129.9686257,line,Figure 1,Using google maps,NA,15476
+
+691,Barlow and Forney 2007,california,pacific coast,41.17537768,-124.3250689,42.01297515,-128.2468626,line,Figure 1,Using google maps,NA,15477
+
+691,Barlow and Forney 2007,california,pacific coast,39.57632797,-124.0859351,41.13730507,-131.0208142,line,Figure 1,Using google maps,NA,15478
+
+691,Barlow and Forney 2007,california,pacific coast,37.90113304,-122.8424395,39.57632797,-130.6382002,line,Figure 1,Using google maps,NA,15479
+
+691,Barlow and Forney 2007,california,pacific coast,36.26401072,-121.981558,37.82498782,-129.5381849,line,Figure 1,Using google maps,NA,15480
+
+691,Barlow and Forney 2007,california,pacific coast,34.55074318,-120.7858892,36.07364766,-128.3903428,line,Figure 1,Using google maps,NA,15481
+
+691,Barlow and Forney 2007,california,pacific coast,32.30445906,-118.2510713,34.3223075,-127.4338078,line,Figure 1,Using google maps,NA,15482
+
+691,Barlow and Forney 2007,california,pacific coast,31.1622807,-119.6858739,32.68518519,-126.2859657,line,Figure 1,Using google maps,NA,15483
+
+691,Barlow and Forney 2007,california,pacific coast,30.36275585,-123.0337466,30.62926413,-124.1337619,line,Figure 1,Using google maps,NA,15484
+
+691,Barlow and Forney 2007,california,pacific coast,31.00999025,-120.3076217,34.05579922,-119.2554331,line,Figure 1,Using google maps,NA,15485
+
+691,Barlow and Forney 2007,california,pacific coast,31.96180556,-118.2988981,33.44663743,-117.9162841,line,Figure 1,Using google maps,NA,15486
+
+691,Barlow and Forney 2007,california,pacific coast,30.55311891,-122.0293848,34.43652534,-120.8815427,line,Figure 1,Using google maps,NA,15487
+
+691,Barlow and Forney 2007,california,pacific coast,30.36275585,-123.8468013,36.26401072,-121.981558,line,Figure 1,Using google maps,NA,15488
+
+691,Barlow and Forney 2007,california,pacific coast,31.4668616,-125.0424702,35.08375975,-123.8946281,line,Figure 1,Using google maps,NA,15489
+
+691,Barlow and Forney 2007,california,pacific coast,32.76133041,-126.4772727,39.88090887,-123.8946281,line,Figure 1,Using google maps,NA,15490
+
+691,Barlow and Forney 2007,california,pacific coast,34.55074318,-127.385981,42.05104776,-124.9468167,line,Figure 1,Using google maps,NA,15491
+
+691,Barlow and Forney 2007,california,pacific coast,36.26401072,-128.5338231,41.97490253,-126.5250995,line,Figure 1,Using google maps,NA,15492
+
+691,Barlow and Forney 2007,california,pacific coast,38.01535088,-129.6816651,41.97490253,-128.3425161,line,Figure 1,Using google maps,NA,15493
+
+691,Barlow and Forney 2007,california,pacific coast,39.69054581,-130.7338537,41.89875731,-129.8729721,line,Figure 1,Using google maps,NA,15494
+
+691,Barlow and Forney 2007,california,pacific coast,41.50895141,-124.2105263,42.04603581,-127.5598086,line,Figure 1,Using google maps,NA,15495
+
+691,Barlow and Forney 2007,california,pacific coast,39.36061381,-123.923445,40.35805627,-131.0047847,line,Figure 1,Using google maps,NA,15496
+
+691,Barlow and Forney 2007,california,pacific coast,38.32480818,-123.062201,39.20716113,-130.5263158,line,Figure 1,Using google maps,NA,15497
+
+691,Barlow and Forney 2007,california,pacific coast,36.17647059,-121.7703349,37.13554987,-127.9425837,line,Figure 1,Using google maps,NA,15498
+
+691,Barlow and Forney 2007,california,pacific coast,37.3657289,-122.5837321,38.09462916,-129.7607656,line,Figure 1,Using google maps,NA,15499
+
+691,Barlow and Forney 2007,california,pacific coast,35.02557545,-120.7655502,36.06138107,-126.5550239,line,Figure 1,Using google maps,NA,15500
+
+691,Barlow and Forney 2007,california,pacific coast,34.02813299,-119.4258373,35.14066496,-127.84689,line,Figure 1,Using google maps,NA,15501
+
+691,Barlow and Forney 2007,california,pacific coast,32.72378517,-117.9425837,34.06649616,-127.2727273,line,Figure 1,Using google maps,NA,15502
+
+691,Barlow and Forney 2007,california,pacific coast,31.91815857,-118.3253589,32.83887468,-126.4593301,line,Figure 1,Using google maps,NA,15503
+
+691,Barlow and Forney 2007,california,pacific coast,30.84398977,-120.9569378,31.64961637,-125.645933,line,Figure 1,Using google maps,NA,15504
+
+691,Barlow and Forney 2007,california,pacific coast,41.89258312,-128.7559809,38.67007673,-130.1913876,line,Figure 1,Using google maps,NA,15505
+
+691,Barlow and Forney 2007,california,pacific coast,41.93094629,-125.7416268,36.2915601,-128.5645933,line,Figure 1,Using google maps,NA,15506
+
+691,Barlow and Forney 2007,california,pacific coast,39.39897698,-123.8755981,33.49104859,-126.8899522,line,Figure 1,Using google maps,NA,15507
+
+691,Barlow and Forney 2007,california,pacific coast,36.98209719,-122.15311,31.11253197,-125.0717703,line,Figure 1,Using google maps,NA,15508
+
+691,Barlow and Forney 2007,california,pacific coast,34.48849105,-120.430622,30.49872123,-122.2488038,line,Figure 1,Using google maps,NA,15509
+
+691,Barlow and Forney 2007,california,pacific coast,33.52941176,-117.9425837,31.41943734,-118.708134,line,Figure 1,Using google maps,NA,15510
+
+691,Barlow and Forney 2007,california,pacific coast,41.96930946,-124.4976077,39.7826087,-131.0526316,line,Figure 1,Using google maps,NA,15511
+
+691,Barlow and Forney 2007,california,pacific coast,41.62404092,-125.4066986,39.5140665,-129.8086124,line,Figure 1,Using google maps,NA,15512
+
+691,Barlow and Forney 2007,california,pacific coast,40.70332481,-124.4019139,38.1713555,-129.7129187,line,Figure 1,Using google maps,NA,15513
+
+691,Barlow and Forney 2007,california,pacific coast,39.43734015,-123.8755981,37.59590793,-129.3779904,line,Figure 1,Using google maps,NA,15514
+
+691,Barlow and Forney 2007,california,pacific coast,39.43734015,-123.8277512,37.17391304,-129.1866029,line,Figure 1,Using google maps,NA,15515
+
+691,Barlow and Forney 2007,california,pacific coast,38.24808184,-123.0143541,36.13810742,-128.5645933,line,Figure 1,Using google maps,NA,15516
+
+691,Barlow and Forney 2007,california,pacific coast,37.25063939,-122.5837321,35.37084399,-128.1339713,line,Figure 1,Using google maps,NA,15517
+
+691,Barlow and Forney 2007,california,pacific coast,36.2915601,-121.9138756,34.18158568,-127.3205742,line,Figure 1,Using google maps,NA,15518
+
+691,Barlow and Forney 2007,california,pacific coast,35.10230179,-120.8133971,32.99232737,-126.6985646,line,Figure 1,Using google maps,NA,15519
+
+691,Barlow and Forney 2007,california,pacific coast,35.40920716,-122.4880383,31.11253197,-122.5358852,line,Figure 1,Using google maps,NA,15520
+
+691,Barlow and Forney 2007,california,pacific coast,30.42307692,-121.3809524,30.84615385,-124.7142857,line,Figure 1,Using google maps,NA,15521
+
+691,Barlow and Forney 2007,california,pacific coast,31.11538462,-119.0952381,31.96153846,-125.4285714,line,Figure 1,Using google maps,NA,15522
+
+691,Barlow and Forney 2007,california,pacific coast,32.03846154,-118.0952381,33.19230769,-126.6666667,line,Figure 1,Using google maps,NA,15523
+
+691,Barlow and Forney 2007,california,pacific coast,32.96153846,-117.3809524,34.34615385,-127.3333333,line,Figure 1,Using google maps,NA,15524
+
+691,Barlow and Forney 2007,california,pacific coast,34.34615385,-120.1904762,35.34615385,-127.952381,line,Figure 1,Using google maps,NA,15525
+
+691,Barlow and Forney 2007,california,pacific coast,35.46153846,-121.1428571,36.46153846,-128.6666667,line,Figure 1,Using google maps,NA,15526
+
+691,Barlow and Forney 2007,california,pacific coast,36.65384615,-121.9047619,37.61538462,-129.4761905,line,Figure 1,Using google maps,NA,15527
+
+691,Barlow and Forney 2007,california,pacific coast,37.76923077,-122.6190476,38.73076923,-130.1428571,line,Figure 1,Using google maps,NA,15528
+
+691,Barlow and Forney 2007,california,pacific coast,38.88461538,-124.1428571,39.76923077,-130.8095238,line,Figure 1,Using google maps,NA,15529
+
+691,Barlow and Forney 2007,california,pacific coast,40,-124.6666667,40.84615385,-131.047619,line,Figure 1,Using google maps,NA,15530
+
+691,Barlow and Forney 2007,california,pacific coast,41,-124.6190476,41.84615385,-130.952381,line,Figure 1,Using google maps,NA,15531
+
+691,Barlow and Forney 2007,california,pacific coast,30.03846154,-123.5238095,32.88461538,-117.2857143,line,Figure 1,Using google maps,NA,15532
+
+691,Barlow and Forney 2007,california,pacific coast,30.92307692,-124.8571429,33.80769231,-118.2857143,line,Figure 1,Using google maps,NA,15533
+
+691,Barlow and Forney 2007,california,pacific coast,31.80769231,-125.7619048,34.42307692,-120.2380952,line,Figure 1,Using google maps,NA,15534
+
+691,Barlow and Forney 2007,california,pacific coast,33.03846154,-126.5714286,35.46153846,-121.1428571,line,Figure 1,Using google maps,NA,15535
+
+691,Barlow and Forney 2007,california,pacific coast,34.30769231,-127.2857143,36.65384615,-121.8571429,line,Figure 1,Using google maps,NA,15536
+
+691,Barlow and Forney 2007,california,pacific coast,35.38461538,-128,37.80769231,-122.6190476,line,Figure 1,Using google maps,NA,15537
+
+691,Barlow and Forney 2007,california,pacific coast,36.5,-128.5714286,38.76923077,-123.6666667,line,Figure 1,Using google maps,NA,15538
+
+691,Barlow and Forney 2007,california,pacific coast,37.65384615,-129.4761905,39.88461538,-124.3809524,line,Figure 1,Using google maps,NA,15539
+
+691,Barlow and Forney 2007,california,pacific coast,38.76923077,-130.1428571,41,-124.6190476,line,Figure 1,Using google maps,NA,15540
+
+691,Barlow and Forney 2007,california,pacific coast,39.76923077,-130.8095238,41.92307692,-125.6666667,line,Figure 1,Using google maps,NA,15541
+
+691,Barlow and Forney 2007,california,pacific coast,41.23076923,-131,41.96153846,-129.3809524,line,Figure 1,Using google maps,NA,15542
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.11538462,-125.3333333,42.76923077,-131,line,Figure 1,Using google maps,NA,15543
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,43.03846154,-124.4285714,43.84615385,-131,line,Figure 1,Using google maps,NA,15544
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,44.11538462,-124.1428571,44.76923077,-129.7142857,line,Figure 1,Using google maps,NA,15545
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,45.15384615,-124,45.76923077,-130.8095238,line,Figure 1,Using google maps,NA,15546
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,46.15384615,-123.8571429,46.69230769,-128.9047619,line,Figure 1,Using google maps,NA,15547
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,47.19230769,-124.2857143,47.46153846,-126.952381,line,Figure 1,Using google maps,NA,15548
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,41.96153846,-129.2857143,44.11538462,-124.1904762,line,Figure 1,Using google maps,NA,15549
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.69230769,-131,45.65384615,-124,line,Figure 1,Using google maps,NA,15550
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,44.23076923,-130.952381,46.92307692,-124.1428571,line,Figure 1,Using google maps,NA,15551
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,45.80769231,-130.8095238,48.03846154,-124.8571429,line,Figure 1,Using google maps,NA,15552
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,46.29770992,-123.9723599,46.67938931,-125.5825284,line,Figure 1,Using google maps,NA,15553
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,44.92366412,-123.9767013,46.06870229,-130.1816143,line,Figure 1,Using google maps,NA,15554
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,43.4351145,-124.3605514,44.69465649,-130.8494628,line,Figure 1,Using google maps,NA,15555
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.0610687,-125.1705799,43.20610687,-130.9015593,line,Figure 1,Using google maps,NA,15556
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,41.98473282,-125.6447548,46.33587786,-123.9722393,line,Figure 1,Using google maps,NA,15557
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.02290076,-127.1612219,48.39694656,-124.8662012,line,Figure 1,Using google maps,NA,15558
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.09923664,-128.7723551,45.49618321,-127.6241815,line,Figure 1,Using google maps,NA,15559
+
+691,Barlow and Forney 2007,washington/oregon,pacific coast,42.0610687,-130.5734235,46.48854962,-128.9480602,line,Figure 1,Using google maps,NA,15560
+
+691,Barlow and Forney 2007,california,pacific coast,40.45801527,-124.4647444,41.71755725,-130.9062624,line,Figure 1,Using google maps,NA,15561
+
+691,Barlow and Forney 2007,california,pacific coast,38.85496183,-123.7589089,40.26717557,-130.910845,line,Figure 1,Using google maps,NA,15562
+
+691,Barlow and Forney 2007,california,pacific coast,37.17557252,-122.5319875,38.70229008,-129.967922,line,Figure 1,Using google maps,NA,15563
+
+691,Barlow and Forney 2007,california,pacific coast,35.34351145,-121.4477286,37.21374046,-129.0721513,line,Figure 1,Using google maps,NA,15564
+
+691,Barlow and Forney 2007,california,pacific coast,32.97709924,-117.4267694,35.26717557,-127.9408608,line,Figure 1,Using google maps,NA,15565
+
+691,Barlow and Forney 2007,california,pacific coast,31.5648855,-118.426492,33.4351145,-126.8092085,line,Figure 1,Using google maps,NA,15566
+
+691,Barlow and Forney 2007,california,pacific coast,30.64885496,-121.2729882,31.83206107,-125.8664062,line,Figure 1,Using google maps,NA,15567
+
+691,Barlow and Forney 2007,california,pacific coast,30.19083969,-123.0279898,30.6870229,-124.4956164,line,Figure 1,Using google maps,NA,15568
+
+691,Barlow and Forney 2007,california,pacific coast,31.14503817,-119.3756859,33.66412214,-118.6568262,line,Figure 1,Using google maps,NA,15569
+
+691,Barlow and Forney 2007,california,pacific coast,30.72519084,-121.1779603,34.3129771,-120.0765771,line,Figure 1,Using google maps,NA,15570
+
+691,Barlow and Forney 2007,california,pacific coast,30.19083969,-123.0753832,35.53435115,-121.3997323,line,Figure 1,Using google maps,NA,15571
+
+691,Barlow and Forney 2007,california,pacific coast,30.83969466,-124.5425274,37.21374046,-122.5318669,line,Figure 1,Using google maps,NA,15572
+
+691,Barlow and Forney 2007,california,pacific coast,31.87022901,-125.8188922,38.66412214,-123.522545,line,Figure 1,Using google maps,NA,15573
+
+691,Barlow and Forney 2007,california,pacific coast,33.47328244,-126.8564813,40.41984733,-124.464865,line,Figure 1,Using google maps,NA,15574
+
+691,Barlow and Forney 2007,california,pacific coast,35.30534351,-127.9881336,41.94656489,-125.5500886,line,Figure 1,Using google maps,NA,15575
+
+691,Barlow and Forney 2007,california,pacific coast,37.2519084,-129.0246373,41.98473282,-127.1613425,line,Figure 1,Using google maps,NA,15576
+
+691,Barlow and Forney 2007,california,pacific coast,38.74045802,-130.0625882,41.90839695,-128.9151381,line,Figure 1,Using google maps,NA,15577
+
+440,James et al 2008,all - small seine,all,-33.53920244,27.04753193,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16264
+
+440,James et al 2008,all - small seine,all,-33.5378583,27.04691149,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16265
+
+440,James et al 2008,all - small seine,all,-33.53738036,27.04640619,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16266
+
+440,James et al 2008,all - small seine,all,-33.53720572,27.04597818,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16267
+
+440,James et al 2008,all - small seine,all,-33.53585632,27.04383907,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16268
+
+440,James et al 2008,all - small seine,all,-33.53536988,27.04088051,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16269
+
+440,James et al 2008,all - small seine,all,-33.53420281,27.04138901,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16270
+
+440,James et al 2008,all - small seine,all,-33.532817,27.04123595,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16271
+
+440,James et al 2008,all - small seine,all,-33.53021975,27.04127995,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16272
+
+440,James et al 2008,all - small seine,all,-33.52826996,27.04077751,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16273
+
+440,James et al 2008,all - small seine,all,-33.52731691,27.04058466,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16274
+
+440,James et al 2008,all - small seine,all,-33.52713971,27.03941679,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16275
+
+440,James et al 2008,all - small seine,all,-33.52609846,27.03875682,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16276
+
+440,James et al 2008,all - small seine,all,-33.52574769,27.03747246,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16277
+
+440,James et al 2008,all - small seine,all,-33.52496376,27.03611105,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16278
+
+440,James et al 2008,all - small seine,all,-33.52339993,27.03455647,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16279
+
+440,James et al 2008,all - small seine,all,-33.52213927,27.03304023,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16280
+
+440,James et al 2008,all - small seine,all,-33.52096451,27.03132912,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16281
+
+440,James et al 2008,all - small seine,all,-33.52048104,27.02922726,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16282
+
+440,James et al 2008,all - small seine,all,-33.51943723,27.02782742,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16283
+
+440,James et al 2008,all - small seine,all,-33.52003843,27.02642438,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16284
+
+440,James et al 2008,all - large seine,all,-33.53563569,27.04263233,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16285
+
+440,James et al 2008,all - large seine,all,-33.53381199,27.04103931,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16286
+
+440,James et al 2008,all - large seine,all,-33.52935544,27.04170998,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16287
+
+440,James et al 2008,all - large seine,all,-33.52513813,27.03646118,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16288
+
+440,James et al 2008,all - large seine,all,-33.52105231,27.03167942,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16289
+
+440,James et al 2008,all - large seine,all,-33.519434,27.02689285,NA,NA,point,Figure 1 + webplot digitizer,Using google maps,NA,16290
+
+620,Lazzari et al 1999,salt pond,salt pond,43.756997,-69.762598,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16304
+
+620,Lazzari et al 1999,beach - low tide,beach - low tide,43.755366,-69.764064,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16305
+
+620,Lazzari et al 1999,beach - mid flood,beach - mid flood,43.755366,-69.764064,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16306
+
+181,Diez et al. 2011,Kobaron (KO),all,43.35454625,-3.151612903,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16683
+
+181,Diez et al. 2011,La Galea (GA),all,43.3813398,-3.050044803,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16684
+
+181,Diez et al. 2011,Menakoz (ME),all,43.3968517,-3.003001792,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16685
+
+181,Diez et al. 2011,Matxilando (MA),all,43.41555646,-2.977240143,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16686
+
+181,Diez et al. 2011,Cabo Villano (VI),all,43.43831702,-2.950358423,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16687
+
+181,Diez et al. 2011,Arminza (AR),all,43.44243295,-2.923476703,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16688
+
+181,Diez et al. 2011,Lemoiz (LE),all,43.44172692,-2.878673835,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16689
+
+181,Diez et al. 2011,Bakio (BA),all,43.43859159,-2.832750896,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16690
+
+181,Diez et al. 2011,San Juan de Gasztelugatxe (SJ),all,43.4508531,-2.7890681,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16691
+
+181,Diez et al. 2011,Matxitxako (MX),all,43.45903529,-2.756586022,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16692
+
+181,Diez et al. 2011,Gibeleko (GI),all,43.44772823,-2.738664875,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16693
+
+181,Diez et al. 2011,Ogono (NO),all,43.42199709,-2.64905914,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16694
+
+181,Diez et al. 2011,Elantxobe (EL),all,43.40422325,-2.623297491,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16695
+
+181,Diez et al. 2011,Ea (EA),all,43.39621104,-2.58297491,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16696
+
+181,Diez et al. 2011,Ogeia (OG),all,43.38818575,-2.548252688,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16697
+
+181,Diez et al. 2011,Santa Catalina (CA),all,43.38422932,-2.506810036,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16698
+
+181,Diez et al. 2011,Egiluz (EG),all,43.36808983,-2.475448029,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16699
+
+181,Diez et al. 2011,Ondarroa (ON),all,43.33904293,-2.417204301,NA,NA,point,Fig 1 + webplot,Using google maps,NA,16700
+
+599,Noe and Zedler 2001,SWC,SWC,32.646153,-117.104113,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16735
+
+599,Noe and Zedler 2001,SWC,SWC,32.644523,-117.106205,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16736
+
+599,Noe and Zedler 2001,SWP,SWP,32.644991,-117.104882,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16737
+
+599,Noe and Zedler 2001,SWP,SWP,32.643073,-117.104626,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16738
+
+599,Noe and Zedler 2001,TEC,TEC,32.574412,-117.129895,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16739
+
+599,Noe and Zedler 2001,TEC,TEC,32.570076,-117.129776,NA,NA,point,Figure 1 + google maps,Using google maps,NA,16740
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.73100186,-0.713568075,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16743
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.72714286,-0.711971831,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16744
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.72380334,-0.710469484,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16745
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.72699443,-0.701455399,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16746
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.73011132,-0.703239437,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16747
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.73359926,-0.704929577,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16748
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.7358256,-0.697887324,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16749
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.73248609,-0.696197183,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16750
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.72944341,-0.694225352,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16751
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.7241744,-0.691877934,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16752
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.63658743,-0.694184875,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16753
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.63903879,-0.688542852,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16754
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.63593957,-0.686038155,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16755
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.63371497,-0.68453656,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16756
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.63157835,-0.688467267,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16757
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.62991744,-0.692094567,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16758
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.65295331,-0.654693374,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16759
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.6556474,-0.651968041,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16760
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Recruits,Cape of Palos and Grosa Island,37.65746768,-0.648742621,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16761
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.73100186,-0.713568075,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16762
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.72714286,-0.711971831,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16763
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.72380334,-0.710469484,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16764
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.72699443,-0.701455399,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16765
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.73011132,-0.703239437,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16766
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.73359926,-0.704929577,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16767
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.7358256,-0.697887324,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16768
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.73248609,-0.696197183,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16769
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.72944341,-0.694225352,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16770
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.7241744,-0.691877934,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16771
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.63658743,-0.694184875,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16772
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.63903879,-0.688542852,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16773
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.63593957,-0.686038155,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16774
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.63371497,-0.68453656,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16775
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.63157835,-0.688467267,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16776
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.62991744,-0.692094567,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16777
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.65295331,-0.654693374,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16778
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.6556474,-0.651968041,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16779
+
+34,Felix-Hackradt et al. 2013,Cape of Palos and Grosa Island - Settlers,Cape of Palos and Grosa Island,37.65746768,-0.648742621,NA,NA,point,Fig 1 + webplot,Using google maps,"different subset of community considered, given distinguishing site names so the same locations are used",16780
+
+595,Methven et al. 2001,estuary,estuary,47.635294,-53.732596,NA,NA,point,Text + google maps,Using google maps,Used coordinates in the text to locate Bellevue but the point was on land and so it was assumed that the point was taken from the bay next to Bellevue town.,16786
+
+6,Yildiz and Feyzioglu (2014),Trabzon,Trabzon,41.373678,40.487326,NA,NA,point,Google,Using google maps,NA,16802
+
+551,Ohgaki and Kosuge (2004),Nagura Estuary,Nagura Estuary,24.454236,124.143538,NA,NA,point,Google,NA,NA,17158

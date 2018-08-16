@@ -1,0 +1,18 @@
+QC,Study ID,Reference,Collector,coral,plant,algae,fish,inverts,mobile inverts,sessile inverts,marine mammals,phytoplankton,zooplankton,mesh size,mesh size units,Descriptor of Taxa Sampled,Sys,Lat,Long,Loc,Event?,Event type,A priori?,Year of Event,Notes,Vis,Trwl,Line,Drdg,Trp,Source,Site,n1,n2,sub1,sub2,I1,I2,ind1_error,ind1_error_type,ind2_error,ind2_error_type,P1,P2,SiSz,SiSz (units),PltSz,PltSz (units),T1,T1m,T2,T2m,SppR1,SppR1 Error,SppR1 Error Type,SppR2,SppR2 Error,SppR2 Error Type,Shan1,Shan1 Error,Shan1 Error Type,Shan2,Shan2 Error,Shan2 Error Type,Simps1,Simps1 Error,Simps1 Error Type,Simps2,Simps2 Error,Simps2 Error Type,Even1,Even1 Error,Even1 Error Type,Even2,Even2 Error,Even2 Error Type
+JD,599,Noe and Zedler 2001,TI,0,1,0,0,0,0,0,0,0,0,NA,NA,plant seedlings,salt marsh,32.66666667,-117.083," San
+Diego County, California",No,,No,,Number of replicates = five 1 m^2 quadrats on each of two transects. Each quadrat is made up of four sampled 0.04 m^2 squares. ,1,0,0,0,0,Table 1,SWC,10,10,4,4,209.28,486.4,NA,NA,NA,NA,NA,NA,NA,NA,0.04,m^2,1996,,1997,,17,NA,NA,19,NA,NA,1.8450833,NA,NA,1.7977488,NA,NA,0.7177379,NA,NA,0.7166363,NA,NA,0.6512335,NA,NA,0.6105573,NA,NA
+JD,599,Noe and Zedler 2001,TI,0,1,0,0,0,0,0,0,0,0,NA,NA,plant seedlings,salt marsh,32.66666667,-117.083," San
+Diego County, California",No,,No,,Number of replicates = five 1 m^2 quadrats on each of two transects. Each quadrat is made up of four sampled 0.04 m^2 squares. ,1,0,0,0,0,Table 1,SWP,10,10,4,4,1414.72,1125.76,NA,NA,NA,NA,NA,NA,NA,NA,0.04,m^2,1996,,1997,,12,NA,NA,16,NA,NA,1.6013028,NA,NA,1.5486423,NA,NA,0.7040235,NA,NA,0.6981742,NA,NA,0.6444117,NA,NA,0.5585547,NA,NA
+JD,599,Noe and Zedler 2001,TI,0,1,0,0,0,0,0,0,0,0,NA,NA,plant seedlings,salt marsh,32.66666667,-117.083," San
+Diego County, California",No,,No,,Number of replicates = five 1 m^2 quadrats on each of two transects. Each quadrat is made up of four sampled 0.04 m^2 squares. ,1,0,0,0,0,Table 1,TEC,10,10,4,4,433.92,134.08,NA,NA,NA,NA,NA,NA,NA,NA,0.04,m^2,1996,,1997,,8,NA,NA,10,NA,NA,0.8683899,NA,NA,1.2934774,NA,NA,0.5396824,NA,NA,0.6496574,NA,NA,0.4176073,NA,NA,0.5617501,NA,NA
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
