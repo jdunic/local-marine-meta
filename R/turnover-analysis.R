@@ -35,6 +35,7 @@ library(tidyverse)
 
 source('clean-raw-data.R')
 source('00_driver_extraction_functions.R')
+source('00_functions.R')
 
 raw_refs <- read_csv('../master_data/raw_species_papers/raw-species-refs-list.csv')
 
@@ -52,7 +53,7 @@ raw_lines <- create_sp_lines(raw_spatial)
 raw_chi_data <- 
   extract_imp_data(raw_spatial, sp_points = raw_points, sp_lines = raw_lines, 
                    in_file = '../master_data/Impact_Data/CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif', 
-                   out_file = 'Data_outputs/raw_species_with_chi.csv') %>%
+                   out_file = '../Data_outputs/raw_species_with_chi.csv') %>%
   group_by(Study.ID, Raw_Site) %>% 
   summarise(mean_chi = mean(mean_imps, na.rm = TRUE))
 
@@ -450,6 +451,8 @@ jacs_ts <-
   arrange(ref_id, site, group, year) %>%
   slice(-1) %>% 
   ungroup()
+
+write_csv(jac_ts, )  
 
 
 
