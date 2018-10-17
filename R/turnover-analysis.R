@@ -538,23 +538,3 @@ jacs_ts %>%
     guides(colour = FALSE)
 
 #dev.copy2pdf(file = '../figures/jaccard-plot.pdf')
-
-
-#left_join(jacs_ts, raw_refs, by = 'ref_id') %>%
-jacs_ts %>%
-  filter(ref_id %in% more_than_1_year[['ref_id']]) %>% 
-  ggplot(data = .) + 
-    geom_point(aes(x = duration, y = jaccard, colour = factor(ref_id))) + 
-    stat_smooth(se = FALSE, method = 'lm', aes(x = duration, y = jaccard, colour = factor(ref_id)))  + 
-    geom_line(data = data_frame(duration = 1:21, jaccard = predict(jac_ts_mod, 1:21)$pred), aes(x = duration, y = jaccard), colour = 'black', size = 1) +
-    geom_ribbon(data = data.frame(duration = 1:21, ymin = predict(jac_ts_mod, 1:21)$ci.lb, ymax = predict(jac_ts_mod, 1:21)$ci.ub), aes(x = duration, ymin = ymin, ymax = ymax), alpha = 0.1) + 
-    #stat_smooth(method = 'lm', aes(x = duration, y = jaccard, colour = factor(ref_id)), alpha = 0.2)  + 
-    theme_minimal() + 
-    theme(axis.text.y = element_text(hjust = 1, size = 13), 
-          axis.text.x = element_text(size = 13), 
-          axis.title = element_text(size = 13), 
-          plot.background = element_blank()) + 
-    ylab("Jaccard index\n") + 
-    xlab("\nStudy duration (years)") + 
-    guides(colour = FALSE)
-    #guides(colour = guide_legend(title = "Study"))
