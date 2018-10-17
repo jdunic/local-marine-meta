@@ -155,7 +155,7 @@ ggplot(data = .) +
   ylim(-2, 2) + 
   geom_line(data = data.frame(x = 1:41, y = predict(mod1, 1:41)$pred), aes(x = x, y = y), colour = 'blue') +
   geom_ribbon(data = data.frame(x = 1:41, ymin = predict(mod1, 1:41)$ci.lb, ymax = predict(mod1, 1:41)$ci.ub), aes(x = x, ymin = ymin, ymax = ymax), alpha = 0.1)
-#duration_w
+duration_w
 
 # IMPACTS PLOTS
 ## @knitr impacts-var-weighted-intercept-profile-plot
