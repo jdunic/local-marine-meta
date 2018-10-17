@@ -46,21 +46,22 @@ raw_refs <- read_csv('../master_data/raw_species_papers/raw-species-refs-list.cs
 
 # Get spatial data and cumulative human impact layer
 #-------------------------------------------------------------------------------
-raw_spatial <- read_csv('../master_data/raw_species_papers/raw_ref_spatialdata.csv')
+#raw_spatial <- read_csv('../master_data/raw_species_papers/raw_ref_spatialdata.csv')
 
-raw_points <- create_sp_points(raw_spatial)
+#raw_points <- create_sp_points(raw_spatial)
 
-raw_lines <- create_sp_lines(raw_spatial)
+#raw_lines <- create_sp_lines(raw_spatial)
 
-raw_chi_data <- 
-  extract_imp_data(raw_spatial, sp_points = raw_points, sp_lines = raw_lines, 
-                   in_file = '../master_data/Impact_Data/CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif', 
-                   out_file = '../Data_outputs/raw_species_with_chi.csv') %>%
-  group_by(Study.ID, Raw_Site) %>% 
-  summarise(mean_chi = mean(mean_imps, na.rm = TRUE))
+#raw_chi_data <- 
+#  extract_imp_data(raw_spatial, sp_points = raw_points, sp_lines = raw_lines, 
+#                   in_file = '../master_data/Impact_Data/CI_2013_OneTimePeriod/global_cumul_impact_2013_all_layers.tif', 
+#                   out_file = '../Data_outputs/raw_species_with_chi.csv') %>%
+#  #group_by(Study.ID, Raw_Site) %>% 
+  #summarise(mean_chi = mean(mean_imps, na.rm = TRUE))
 
+#write_csv(raw_chi_data, '../Data_outputs/raw_species_with_chi.csv')
 
-
+raw_chi_data <- read_csv('../Data_outputs/raw_species_with_chi.csv')
 
 # Get Jaccard matrices for each dataset
 #-------------------------------------------------------------------------------
