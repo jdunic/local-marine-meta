@@ -455,21 +455,94 @@ jacs_ts <-
   slice(-1) %>% 
   ungroup()
 
-write_csv(jac_ts, )  
 
+# Jaccard ~ Duration * CHI
+# When cumulative impacts were taken into account, there was still no observed 
+# change in Jaccard over time.
+
+library(lme4)
+library(lmerTest)
+library(broom)
+
+more_than_1_year <- 
+  jacs_ts %>% 
+    group_by(ref_id, site, group) %>% 
+    summarise(year_count = n()) %>% 
+    filter(year_count > 1)
+
+jacs_lms <- 
+  jacs_ts %>%
+    filter(ref_id %in% more_than_1_year[['ref_id']]) %>% 
+    group_by(ref_id, site, group, mean_chi) %>% 
+    do(fit = lm(jaccard ~ duration, data = .) %>% broom::tidy(.)) %>% 
+    unnest(fit) %>% 
+    filter(term == 'duration')
+
+jacs_lmer <- 
+  jacs_ts %>%
+    filter(ref_id %in% more_than_1_year[['ref_id']]) %>% 
+    mutate(ref_id = factor(ref_id)) %>% 
+  lmer(jaccard ~ duration + (1 | ref_id), data = .)
+
+jac_ts_mod <- 
+  rma.mv(yi = estimate, V = std.error, data = jacs_lms, 
+         random = ~ 1 | as.factor(ref_id))
+
+jac_ts_chi_mod <- 
+  rma.mv(yi = estimate, V = std.error, data = jacs_lms, 
+         random = ~ 1 | as.factor(ref_id), 
+         mods = ~ mean_chi)
+
+# Jaccard data tables
+
+jac_ts_mod_tab <- 
+  data_frame(model = 'LR ~ D', 
+             parameter = rownames(jac_ts_mod$b), 
+             estimate = round(as.vector(jac_ts_mod$b), digits = 3),
+             se = round(jac_ts_mod$se, digits = 3), 
+             pval = round(jac_ts_mod$pval, digits = 3), 
+             ci.lb = round(jac_ts_mod$ci.lb, digits = 3), 
+             ci.ub = round(jac_ts_mod$ci.ub, digits = 3), 
+             k = jac_ts_mod$k, 
+             n = jac_ts_mod$s.nlevels)
+
+jac_ts_chi_mod_tab <- 
+  data_frame(model = 'LR ~ D*CHI', 
+             parameter = rownames(jac_ts_chi_mod$b), 
+             estimate = round(as.vector(jac_ts_chi_mod$b), digits = 3), 
+             se = round(jac_ts_chi_mod$se, digits = 3), 
+             pval = round(jac_ts_chi_mod$pval, digits = 3), 
+             ci.lb = round(jac_ts_chi_mod$ci.lb, digits = 3), 
+             ci.ub = round(jac_ts_chi_mod$ci.ub, digits = 3), 
+             k = jac_ts_chi_mod$k, 
+             n = jac_ts_chi_mod$s.nlevels)
 
 
 # Jaccard ~ Duration
 # Jaccard did not change with increasing duration
-jac_ts_mod <- 
-  rma.mv(yi = jaccard, V = 1, 
-         data = jacs_ts, 
-         random = ~ 1 | as.factor(ref_id), 
-         mods = ~ duration)
-jac_ts_mod
-
 dev.new(width = 8.2, height = 5)
-left_join(jacs_ts, raw_refs, by = 'ref_id') %>%
+jacs_ts %>%
+  filter(ref_id %in% more_than_1_year[['ref_id']]) %>% 
+  ggplot(data = .) + 
+    geom_point(aes(x = duration, y = jaccard, colour = factor(ref_id))) + 
+    stat_smooth(se = FALSE, method = 'lm', aes(x = duration, y = jaccard, colour = factor(ref_id))) + 
+    #geom_abline(aes(slope = broom.mixed::tidy(jacs_lmer)[2, 'estimate'][[1]], 
+    #                intercept = broom.mixed::tidy(jacs_lmer)[1, 'estimate'][[1]])) + 
+    theme_minimal() + 
+    theme(axis.text.y = element_text(hjust = 1, size = 13), 
+          axis.text.x = element_text(size = 13), 
+          axis.title = element_text(size = 13), 
+          plot.background = element_blank()) + 
+    ylab("Jaccard index\n") + 
+    xlab("\nStudy duration (years)") + 
+    guides(colour = FALSE)
+
+#dev.copy2pdf(file = '../figures/jaccard-plot.pdf')
+
+
+#left_join(jacs_ts, raw_refs, by = 'ref_id') %>%
+jacs_ts %>%
+  filter(ref_id %in% more_than_1_year[['ref_id']]) %>% 
   ggplot(data = .) + 
     geom_point(aes(x = duration, y = jaccard, colour = factor(ref_id))) + 
     stat_smooth(se = FALSE, method = 'lm', aes(x = duration, y = jaccard, colour = factor(ref_id)))  + 
@@ -481,39 +554,7 @@ left_join(jacs_ts, raw_refs, by = 'ref_id') %>%
           axis.text.x = element_text(size = 13), 
           axis.title = element_text(size = 13), 
           plot.background = element_blank()) + 
-    ylab("Jaccard's dissimilarity\n") + 
+    ylab("Jaccard index\n") + 
     xlab("\nStudy duration (years)") + 
     guides(colour = FALSE)
     #guides(colour = guide_legend(title = "Study"))
-
-
-# Jaccard ~ Duration * CHI
-# When cumulative impacts were taken into account, there was still no observed 
-# change in Jaccard over time.
-jac_ts_chi_mod <- 
-  rma.mv(yi = jaccard, V = 1, 
-         data = jacs_ts, 
-         random = ~ 1 | as.factor(ref_id), 
-         mods = ~ duration*mean_chi)
-jac_ts_chi_mod
-
-
-
-# I don't think this works very well, or at least it requires us to compare the 
-# last time point to the 2nd time point (since the first Jaccard value = 0)
-fl_jacs <- 
-  all_jac_mats %>% 
-  group_by(ref_id, site, group) %>% 
-  arrange(ref_id, site, group, year) %>%
-  slice(c(1, n())) %>% 
-  ungroup()
-
-left_join(fl_jacs %>% 
-          filter(duration == 0) %>%
-          select(ref_id, site, group, year, jaccard) %>% 
-          rename(first_year = year, first_jac = jaccard), 
-            fl_jacs %>% 
-            filter(duration > 0) %>% 
-            select(ref_id, site, group, year, jaccard) %>% 
-            rename(last_year = year, last_jac = jaccard)) %>% 
-left_join(fl_jacs, .) %>% view()
