@@ -36,7 +36,7 @@ create_sp_lines <- function(spatial_data) {
   lines_list  <- 
     sp_data_lines %>% 
       split(.$row) %>%
-      map(function(x) {
+      purrr:::map(function(x) {
         start <- x[, c('Study.ID', 'Reference', 'Site', 'Start_Lat', 'Start_Long')]
         end <- x[, c('Study.ID', 'Reference', 'Site', 'End_Lat', 'End_Long')]
         names(start) <- names(end) <- c('Study.ID', 'Reference', 'Site', 'Lat', 'Lon')

@@ -20,6 +20,13 @@ drivers_aic <-
          mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
 drivers_aic
 
+drivers_with_chi_aic <- 
+  rma.mv(yi = yi_SppR_ROM, V = vi_SppR_ROM, 
+         data = no_event2 %>% filter(!is.na(yi_SppR_ROM), !is.na(mean_imps), !is.na(mean_invs), !is.na(sliced_ltc), !is.na(mean_nuts)) %>% mutate(scaled_invs = mean_invs * 10^-3),
+         random = ~ 1 | Study.ID, method = 'ML', 
+         mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts) + mean_imps))
+drivers_with_chi_aic
+
 ## @knitr AICc-table
 aic_tab <- 
   fitstats(mod1_aic, impact_aic, drivers_aic) %>% 

@@ -50,7 +50,7 @@ beepr::beep()
 g_preds <- g_preds_raw %>%
   mutate(change = case_when(ci.ub < 0 ~ 'Loss', ci.lb > 0 ~ 'Gain', ci.lb < 0 & ci.ub > 0 ~ 'No change')) %>%
   mutate(change = factor(change, level = c('Gain', 'No change', 'Loss'))) %>%
-  mutate(duration = str_c(duration, "years", sep=" ")) %>%
+  mutate(duration = stringr::str_c(duration, "years", sep=" ")) %>%
   mutate(duration = factor(duration, levels = c('5 years', '10 years', 
                                                 '15 years', '20 years')))
 
@@ -71,7 +71,7 @@ g_preds <- g_preds_raw %>%
 #                               duration == 20 ~ '20 years')) %>% 
 
 #Plot!
-dev.new(width = 11, height = 5)
+dev.new(width = 8.5, height = 5.5)
 
 ggplot() + 
   theme(legend.background = element_blank(), 
@@ -89,18 +89,19 @@ ggplot() +
                                           fill = change, alpha=abs(pred)), 
               interpolate=TRUE) + 
   scale_fill_manual(values = c('#0571b0', 'grey90', '#ca0020'),
-                    guide = guide_legend("Direction of\nRichness Change")) + 
-  scale_alpha(guide = guide_legend("Absolute\nMagnitude\n(LRR)")) +
+                    guide = guide_legend("Direction of\nrichness change")) + 
+  scale_alpha(guide = guide_legend("Absolute\nmagnitude\n(LRR)")) +
   facet_grid(duration ~ temp) + 
   xlab('\n   Invasion potential') + 
   ylab('Nutrient use\n') + 
   labs(colour = 'LRR') + 
   guides(colour = guide_legend(override.aes = list(size = 3))) + 
-  ggtitle(expression("   Temperature Change ("*degree*"C)"))
+  ggtitle(expression("   Temperature change ("*degree*"C)"))
+grid.text('Figure 3', hjust = 6.75, vjust = 22.5)
 
 beepr::beep()
 
-dev.copy2pdf(file = '../figures/3_new_combined-drivers.pdf', width = 8, height = 5)
+dev.copy2pdf(file = '../figures/Figure_3.pdf', width = 8.5, height = 5.5)
 
 
 ####### marignal effects

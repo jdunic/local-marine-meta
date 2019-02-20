@@ -36,6 +36,16 @@ drivers_scaled_shan <-
          mods = ~ Duration * (scale(scaled_invs) + scale(sliced_ltc) + scale(mean_nuts)))
 drivers_scaled_shan
 
+drivers_unscaled_shan <- 
+  rma.mv(yi = yi_Shan_ROM, V = vi_Shan_ROM, 
+         data = no_event2 %>% filter(!is.na(yi_Shan_ROM), !is.na(vi_Shan_ROM)) %>% 
+                filter(Study.ID != 47) %>% mutate(scaled_invs = mean_invs * 10^-3) %>%
+                filter(!is.na(sliced_ltc), !is.na(mean_nuts)), 
+         random = ~ 1 | Study.ID, 
+         mods = ~ Duration * (scaled_invs + sliced_ltc + mean_nuts),
+         control=list(optimizer="bobyqa"))
+drivers_unscaled_shan
+
 
 # Pielou's
 # Increases in evenness diversity
@@ -117,3 +127,56 @@ fitstats(mod1_aic, impact_aic, drivers_aic, test_scaled_aic) %>%
 # I got ~8-9 better when I ran it with + impacts. I'm not sure that I really like that test as a way to answer reviewer 2, because it seems like it's almost double counting the impacts, and I still think that because the impact value is an aggregation of so many things it makes interpretation of this model with specific drivers + all impacts a challenge. On the other hand, I don't have a better solution to suggest. 
 
 # I like figure 3, I like the addition of more years, and agree with Marc's comment about having + temps. I also really like the alpha to show magnitude of change. 
+
+
+
+## @knitr duration-var-weighted-shannon-model-output-table1
+mod1_shan_output_df <- 
+  data_frame(model = 'LR ~ D', 
+             parameter = rownames(mod1_shan$b), 
+             estimate = round(as.vector(mod1_shan$b), digits = 3),
+             `% change` = round(get_percent_change(as.vector(mod1_shan$b)), digits = 2), 
+             se = round(mod1_shan$se, digits = 3), 
+             pval = round(mod1_shan$pval, digits = 3), 
+             ci.lb = round(mod1_shan$ci.lb, digits = 3), 
+             ci.ub = round(mod1_shan$ci.ub, digits = 3), 
+             k = mod1_shan$k, 
+             n = mod1_shan$s.nlevels)
+
+#mod1_output_df %>% 
+#  knitr::kable(., caption = '**Table 1.** Parameter estimates from a variance-weighted meta-regression of the log ratio of the proportion of species richness change (LR) over study duration (D). For each parameter estimate the standard error (se), p-value (pval), lower (ci.lb) and upper (ci.ub) 95% confidence intervals, number of sites (k) and number of studies (n) is included. The percent change (% change) has been back-calculated from the estimated log ratio of the proportion of change in species richness. Each study could contain multiple sites and therefore studies were modeled as random effects.')
+
+## @knitr impact-var-weighted-shannon-model-output-table2
+imp_mod_shan_output_df <- 
+  data_frame(model = 'LR ~ Imp + D + D*Imp', 
+             parameter = rownames(impact_ne_w_shan$b), 
+             estimate = round(as.vector(impact_ne_w_shan$b), digits = 3), 
+             `% change` = round(get_percent_change(as.vector(impact_ne_w_shan$b)), digits = 2), 
+             se = round(impact_ne_w_shan$se, digits = 3), 
+             pval = round(impact_ne_w_shan$pval, digits = 3), 
+             ci.lb = round(impact_ne_w_shan$ci.lb, digits = 3), 
+             ci.ub = round(impact_ne_w_shan$ci.ub, digits = 3), 
+             k = impact_ne_w_shan$k, 
+             n = impact_ne_w_shan$s.nlevels) %>% 
+  mutate(parameter = gsub('mean_imps', 'Impact', parameter)) %>% 
+  mutate(per_lb = round(get_percent_change(impact_ne_w_shan$ci.lb), digits = 3), 
+         per_ub = round(get_percent_change(impact_ne_w_shan$ci.ub), digits = 3))
+
+
+## @knitr drivers-var-weighted-shannon-model-output-df-scaled-table3
+drivers_mod_shan_output_df <- 
+  data_frame(model = 'LR ~ D * (I + N + LTC)', 
+             parameter = gsub('scale\\(|\\)', replacement = '', rownames(drivers_scaled_shan$b)), 
+             estimate = round(as.vector(drivers_scaled_shan$b), digits = 3), 
+             `% change` = round(get_percent_change(as.vector(drivers_unscaled$b)), digits = 4), 
+             se = round(drivers_scaled_shan$se, digits = 3), 
+             pval = round(drivers_scaled_shan$pval, digits = 3), 
+             ci.lb = round(drivers_scaled_shan$ci.lb, digits = 3), 
+             ci.ub = round(drivers_scaled_shan$ci.ub, digits = 3), 
+             k = drivers_scaled_shan$k, 
+             n = drivers_scaled_shan$s.nlevels) %>% 
+  mutate(parameter = gsub('scaled_invs', 'Inv', parameter)) %>% 
+  mutate(parameter = gsub('sliced_ltc', 'LTC', parameter)) %>% 
+  mutate(parameter = gsub('mean_nuts', 'Nut', parameter)) %>% 
+  mutate(per_lb = round(get_percent_change(drivers_unscaled_shan$ci.lb), digits = 5), 
+         per_ub = round(get_percent_change(drivers_unscaled_shan$ci.ub), digits = 3))
