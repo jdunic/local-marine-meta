@@ -136,4 +136,74 @@ marg_data_frame <- bind_rows(
 
 pred_frame <- as_tibble(predict(drivers_unscaled, newdata = marg_data_frame))
   
+######## A little animation
+library(gganimate)
+theme_set( theme_bw(base_size=17) +
+             theme(legend.background = element_blank(), 
+                   legend.key = element_blank(), 
+                   panel.background = element_blank(), 
+                   panel.border = element_blank(), 
+                   panel.grid.major = element_blank(), 
+                   panel.grid.minor = element_blank(), 
+                   strip.background = element_blank(), 
+                   plot.background = element_blank(),
+                   strip.text.y = element_text(angle = 0), 
+                   axis.text.x = element_text(angle = 45, hjust = 1)))
+#make the predictions
+surface_df <- no_event2 %>%
+  data_grid(duration = 20,
+            invs = seq_range(invs, 101),
+            temp = seq(-1,1,length.out = 101),
+            nuts = seq_range(nuts, 101))
+  crossing(duration, invs, temp, nuts) 
   
+surface_mat <- surface_df %>% 
+  mutate(invs_dur = invs*duration, temp_dur = temp*duration, nuts_dur = nuts*duration) %>%
+  as.matrix()
+dimnames(surface_mat) <- NULL
+
+#format for plotting
+g_surface <- 
+  bind_cols(surface_df, 
+            predict.rma(object = drivers_unscaled, newmods = surface_mat) %>%
+            as_tibble()) %>%
+  mutate(change = case_when(ci.ub < 0 ~ 'Loss', ci.lb > 0 ~ 'Gain', ci.lb < 0 & ci.ub > 0 ~ 'No change')) %>%
+  mutate(change = factor(change, level = c('Gain', 'No change', 'Loss'))) 
+
+beepr::beep()
+
+
+g_surface <- g_surface %>% group_by(nuts, invs) %>%
+  slice(1L) %>%
+  ungroup %>%
+  select(nuts, invs) %>%
+  mutate(pointgroup = 1:n()) %>%
+  right_join(g_surface)
+
+saveRDS(g_surface, file = "../Data_outputs/g_surface.Rds")
+
+
+#g_surface <- readRDS("../Data_outputs/g_surface.Rds")
+
+anim <- ggplot(g_surface %>% mutate(temp = factor(round(temp,2))),
+       aes(x = invs, y = nuts, color = change, 
+           fill = change, alpha=abs(pred),
+           group = pointgroup)) + 
+  geom_raster(interpolate=TRUE) + 
+  scale_fill_manual(values = c('#0571b0', 'grey90', '#ca0020'),
+                    guide = guide_legend("Direction of\nRichness Change")) + 
+  scale_alpha(guide = guide_legend("Absolute\nMagnitude\n(LRR)")) +
+  xlab('\n   Invasion potential\n(Metric tonnes cargo in 2011') + 
+  ylab('Nutrient use\n(Metric tonnes N and P fertilizer from 2007-2011\n') + 
+  labs(colour = 'LRR') + 
+  guides(colour = guide_legend(override.aes = list(size = 3))) + 
+  transition_states(temp)+
+  enter_fade() +
+  exit_fade() +
+  ggtitle("Temperature Change:  {closest_state} deg C per decade")
+
+
+animate(anim, width = 700, height = 500, nframes=250)
+anim_save("../figures/surface_anim.gif")
+beepr::beep()
+
