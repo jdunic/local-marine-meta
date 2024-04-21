@@ -1,3 +1,11 @@
+library(vegan)
+library(tidyverse)
+
+fl_combined <- readr::read_csv("../Data_outputs/fl_combined.csv") %>% 
+  mutate(Study.ID = factor(Study.ID))
+
+event <- filter(fl_combined, Event == 'Yes')
+no_event <- filter(fl_combined, Event != 'Yes')
 
 #install.packages("vegan")
 library(vegan)
